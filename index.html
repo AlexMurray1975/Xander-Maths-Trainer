@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Xander's Maths Trainer</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Maths Trainer">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#FBFAF4">
+<meta name="description" content="Year 3 maths practice for Xander, ready for Year 4.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-512.png" sizes="512x512" type="image/png">
+<link rel="apple-touch-icon" href="icons/icon-512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#FBFAF4;
+    --grid:#E8EDE4;
+    --ink:#25324B;
+    --soft:#6B7690;
+    --card:#FFFFFF;
+    --tick:#D6362B;
+    --gold:#F2B33D;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html,body{height:100%;}
+  body{
+    font-family:'Nunito',sans-serif;color:var(--ink);
+    background:var(--paper);
+    background-image:linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(90deg,var(--grid) 1px,transparent 1px);
+    background-size:26px 26px;
+    min-height:100vh;padding-bottom:48px;
+  }
+  header{max-width:560px;margin:0 auto;padding:26px 18px 10px;display:flex;align-items:center;justify-content:space-between;gap:12px;}
+  header h1{font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.5rem;letter-spacing:.2px;}
+  header .sub{font-size:.8rem;color:var(--soft);font-weight:700;}
+  .starbadge{
+    background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:8px 14px;
+    font-family:'Fredoka',sans-serif;font-weight:600;font-size:1.05rem;white-space:nowrap;
+    box-shadow:3px 3px 0 rgba(37,50,75,.15);
+  }
+  main{max-width:560px;margin:0 auto;padding:8px 16px 0;}
+
+  /* ---------- Home ---------- */
+  .mixcard{
+    width:100%;text-align:left;border:2px solid var(--ink);border-radius:18px;background:var(--ink);color:#fff;
+    padding:16px 18px;margin:10px 0 18px;cursor:pointer;font-family:inherit;
+    box-shadow:4px 4px 0 rgba(37,50,75,.25);display:flex;justify-content:space-between;align-items:center;gap:10px;
+  }
+  .mixcard .t{font-family:'Fredoka',sans-serif;font-weight:600;font-size:1.15rem;}
+  .mixcard .d{font-size:.8rem;opacity:.85;margin-top:2px;}
+  .mixcard .go{font-size:1.5rem;}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .topic{
+    border:2px solid var(--ink);border-radius:16px;background:var(--card);padding:14px 12px 12px;
+    cursor:pointer;text-align:left;font-family:inherit;color:var(--ink);
+    box-shadow:3px 3px 0 rgba(37,50,75,.14);position:relative;overflow:hidden;
+  }
+  .topic::before{content:'';position:absolute;top:0;left:0;right:0;height:8px;background:var(--tc);}
+  .topic .emoji{font-size:1.5rem;margin:4px 0 6px;display:block;}
+  .topic .name{font-family:'Fredoka',sans-serif;font-weight:600;font-size:.95rem;line-height:1.15;}
+  .topic .stats{font-size:.7rem;color:var(--soft);font-weight:700;margin-top:6px;}
+  .meter{height:7px;border-radius:5px;background:#EDEFF3;margin-top:6px;overflow:hidden;}
+  .meter div{height:100%;background:var(--tc);border-radius:5px;transition:width .3s;}
+
+  /* ---------- Quiz ---------- */
+  .quizhead{display:flex;align-items:center;justify-content:space-between;margin:6px 0 12px;}
+  .quizhead .topicname{font-family:'Fredoka',sans-serif;font-weight:600;font-size:1.05rem;display:flex;align-items:center;gap:8px;}
+  .quizhead .dot{width:14px;height:14px;border-radius:5px;background:var(--tc);display:inline-block;border:2px solid var(--ink);}
+  .quit{background:none;border:none;color:var(--soft);font-weight:800;font-size:.8rem;cursor:pointer;text-decoration:underline;font-family:inherit;}
+  .progress{display:flex;gap:5px;margin-bottom:14px;}
+  .pip{flex:1;height:9px;border-radius:5px;background:#E7E9EE;border:1px solid #D8DCE4;}
+  .pip.right{background:#57B36A;border-color:#57B36A;}
+  .pip.wrong{background:#E0715F;border-color:#E0715F;}
+  .pip.now{background:var(--tc);border-color:var(--ink);}
+
+  .qcard{
+    background:var(--card);border:2px solid var(--ink);border-radius:18px;padding:20px 18px;
+    box-shadow:4px 4px 0 rgba(37,50,75,.15);
+  }
+  .qtext{font-family:'Fredoka',sans-serif;font-weight:600;font-size:1.2rem;line-height:1.35;}
+  .qvisual{margin:14px auto 2px;text-align:center;}
+  .qvisual svg{max-width:170px;height:auto;}
+  .bars{display:flex;align-items:flex-end;justify-content:center;gap:16px;height:120px;margin:14px 0 4px;}
+  .bars .bwrap{display:flex;flex-direction:column;align-items:center;gap:5px;height:100%;justify-content:flex-end;}
+  .bars .bar{width:34px;border:2px solid var(--ink);border-radius:5px 5px 0 0;}
+  .bars .blabel{font-size:.75rem;font-weight:800;}
+  .picto{margin:14px 0 4px;text-align:center;font-size:1.4rem;letter-spacing:3px;}
+  .picto .key{display:block;font-size:.78rem;font-weight:800;color:var(--soft);letter-spacing:0;margin-top:6px;}
+  .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px;}
+  .opt{
+    border:2px solid var(--ink);border-radius:13px;background:#fff;padding:14px 8px;min-height:56px;
+    font-family:'Fredoka',sans-serif;font-weight:600;font-size:1.05rem;cursor:pointer;color:var(--ink);
+    box-shadow:2px 2px 0 rgba(37,50,75,.12);transition:transform .06s;
+  }
+  .opt:active{transform:scale(.97);}
+  .opt.picked{background:#FFF3D6;border-color:var(--gold);box-shadow:2px 2px 0 var(--gold);}
+  .opt.correct{background:#DCF2E1;border-color:#57B36A;}
+  .opt.incorrect{background:#F9DCD7;border-color:#E0715F;}
+  .opt:disabled{cursor:default;opacity:1;}
+  .checkrow{margin-top:16px;text-align:center;min-height:64px;}
+  .checkhint{font-size:.8rem;color:var(--soft);font-weight:800;margin-bottom:8px;}
+  .lockbtn,.nextbtn{
+    font-family:'Fredoka',sans-serif;font-weight:600;font-size:1.05rem;color:#fff;
+    background:var(--ink);border:2px solid var(--ink);border-radius:13px;padding:12px 28px;cursor:pointer;
+    box-shadow:3px 3px 0 rgba(37,50,75,.25);
+  }
+  .nextbtn{background:var(--tc);color:var(--ink);}
+  .mark{
+    font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.05rem;margin-bottom:10px;
+  }
+  .mark.good{color:#2F8C46;}
+  .mark.bad{color:var(--tick);}
+  .explain{font-size:.88rem;font-weight:700;color:var(--soft);margin-bottom:10px;line-height:1.4;}
+  .bigtick{
+    position:fixed;inset:0;display:none;align-items:center;justify-content:center;pointer-events:none;z-index:9;
+  }
+  .bigtick span{
+    font-size:7rem;color:var(--tick);font-family:'Fredoka',sans-serif;transform:rotate(-12deg);
+    text-shadow:2px 2px 0 rgba(255,255,255,.8);animation:stamp .5s ease;
+  }
+  @keyframes stamp{0%{transform:rotate(-12deg) scale(2.4);opacity:0;}60%{transform:rotate(-12deg) scale(.95);opacity:1;}100%{transform:rotate(-12deg) scale(1);}}
+  @media (prefers-reduced-motion:reduce){.bigtick span{animation:none;}}
+
+  /* ---------- Summary ---------- */
+  .summary{background:var(--card);border:2px solid var(--ink);border-radius:18px;padding:26px 20px;text-align:center;box-shadow:4px 4px 0 rgba(37,50,75,.15);}
+  .summary .big{font-size:3rem;}
+  .summary h2{font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.4rem;margin:8px 0 4px;}
+  .summary p{font-weight:700;color:var(--soft);font-size:.92rem;margin-bottom:6px;}
+  .summary .stickerline{font-size:1.6rem;margin:8px 0;}
+  .sumbtns{display:flex;gap:10px;justify-content:center;margin-top:16px;flex-wrap:wrap;}
+  footer{max-width:560px;margin:20px auto 0;padding:0 18px;text-align:center;font-size:.72rem;color:var(--soft);font-weight:700;line-height:1.5;}
+  .reset{background:none;border:none;color:var(--soft);text-decoration:underline;cursor:pointer;font-family:inherit;font-size:.72rem;font-weight:700;margin-top:4px;}
+  .hidden{display:none;}
+
+  /* ---------- Parent view ---------- */
+  .starbadge{cursor:pointer;user-select:none;-webkit-user-select:none;}
+  .pv-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin:4px 0 4px;}
+  .pv-top h2{font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.4rem;}
+  .pv-top .sub{font-size:.78rem;color:var(--soft);font-weight:700;margin-top:2px;}
+  .pv-back{background:var(--card);border:2px solid var(--ink);border-radius:12px;padding:9px 13px;font-family:'Fredoka',sans-serif;font-weight:600;font-size:.85rem;color:var(--ink);cursor:pointer;box-shadow:2px 2px 0 rgba(37,50,75,.15);flex-shrink:0;}
+  .pv-chip{display:inline-block;background:#EEF3EE;border:1.5px dashed #B9C6BC;color:var(--soft);font-weight:800;font-size:.72rem;border-radius:20px;padding:6px 12px;margin:6px 0 16px;}
+  .pv-tiles{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:9px;margin-bottom:20px;}
+  .pv-tile{background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:11px 6px;text-align:center;box-shadow:3px 3px 0 rgba(37,50,75,.12);}
+  .pv-tile .n{font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.35rem;line-height:1;}
+  .pv-tile .l{font-size:.62rem;font-weight:800;text-transform:uppercase;letter-spacing:.03em;color:var(--soft);margin-top:5px;}
+  .pv-sec{font-family:'Fredoka',sans-serif;font-weight:600;font-size:1.05rem;margin:6px 2px 2px;}
+  .pv-note{font-size:.76rem;color:var(--soft);font-weight:700;margin:0 2px 12px;}
+  .pv-row{background:var(--card);border:2px solid var(--ink);border-radius:14px;padding:10px 12px;margin-bottom:8px;box-shadow:2px 2px 0 rgba(37,50,75,.10);display:flex;align-items:center;gap:11px;}
+  .pv-row .emo{font-size:1.35rem;width:24px;text-align:center;flex-shrink:0;}
+  .pv-row .mid{flex:1;min-width:0;}
+  .pv-row .name{font-weight:800;font-size:.92rem;}
+  .pv-row .barw{height:8px;border-radius:6px;background:#EDEFF3;margin-top:6px;overflow:hidden;}
+  .pv-row .bar{height:100%;border-radius:6px;}
+  .pv-row .cnt{font-size:.7rem;color:var(--soft);font-weight:700;margin-top:4px;}
+  .pv-row .pct{font-family:'Fredoka',sans-serif;font-weight:700;font-size:1.1rem;flex-shrink:0;width:48px;text-align:right;}
+  .pv-flag{display:inline-block;font-size:.6rem;font-weight:800;text-transform:uppercase;letter-spacing:.02em;color:#fff;background:#D0553F;border-radius:9px;padding:2px 6px;margin-left:6px;vertical-align:middle;}
+  .pv-sess{background:var(--card);border:2px solid var(--ink);border-radius:14px;box-shadow:2px 2px 0 rgba(37,50,75,.10);overflow:hidden;}
+  .pv-sess .s{display:flex;align-items:center;gap:10px;padding:10px 13px;border-bottom:1.5px solid #EEF0F3;}
+  .pv-sess .s:last-child{border-bottom:none;}
+  .pv-sess .when{font-size:.72rem;color:var(--soft);font-weight:800;width:92px;flex-shrink:0;}
+  .pv-sess .what{flex:1;font-weight:800;font-size:.86rem;min-width:0;}
+  .pv-sess .score{font-family:'Fredoka',sans-serif;font-weight:700;font-size:.95rem;}
+  .pv-sess .st{color:var(--gold);font-weight:800;font-size:.8rem;width:42px;text-align:right;flex-shrink:0;}
+  .pv-foot{font-size:.72rem;color:var(--soft);font-weight:700;text-align:center;line-height:1.5;margin-top:20px;}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1 id="title">Xander's Maths Trainer</h1>
+    <div class="sub" id="subtitle">Year 4, here we come</div>
+  </div>
+  <div class="starbadge">⭐ <span id="starCount">0</span></div>
+</header>
+
+<main id="main"></main>
+
+<div class="bigtick" id="bigtick"><span id="bigtickChar">✓</span></div>
+
+<footer>
+  Answers are marked like a teacher would: check your answer before you lock it in.
+  <br><button class="reset" id="resetBtn">Reset all progress</button>
+</footer>
+
+<script>
+(function(){
+'use strict';
+
+/* ================= utilities ================= */
+const ri = (a,b)=>a+Math.floor(Math.random()*(b-a+1));
+const pick = arr=>arr[Math.floor(Math.random()*arr.length)];
+const shuffle = arr=>{const a=arr.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;};
+function opts(correct, wrongs){
+  const set=[String(correct)];
+  for(const w of wrongs){const s=String(w);if(!set.includes(s)&&set.length<4)set.push(s);}
+  let guard=0;
+  while(set.length<4&&guard++<40){
+    const c=Number(correct);
+    if(!isNaN(c)){const s=String(c+pick([-1,1,2,-2,10,-10])* (ri(1,3)));if(Number(s)>=0&&!set.includes(s))set.push(s);}
+    else break;
+  }
+  return shuffle(set);
+}
+const words1to12=['zero','one','two','three','four','five','six','seven','eight','nine','ten','eleven','twelve'];
+function numToWords(n){
+  const ones=['','one','two','three','four','five','six','seven','eight','nine'];
+  const teens=['ten','eleven','twelve','thirteen','fourteen','fifteen','sixteen','seventeen','eighteen','nineteen'];
+  const tens=['','','twenty','thirty','forty','fifty','sixty','seventy','eighty','ninety'];
+  const h=Math.floor(n/100),r=n%100,t=Math.floor(r/10),o=r%10;
+  let s=h?ones[h]+' hundred':'';
+  if(r){ if(h)s+=' and ';
+    if(r<10)s+=ones[r]; else if(r<20)s+=teens[r-10];
+    else {s+=tens[t]; if(o)s+='-'+ones[o];}
+  }
+  return s||'zero';
+}
+function moneyStr(p){
+  const pounds=Math.floor(p/100),pence=p%100;
+  if(pounds&&pence)return '£'+pounds+' and '+pence+'p';
+  if(pounds)return '£'+pounds;
+  return pence+'p';
+}
+function clockSVG(h,m){
+  const hd=((h%12)+m/60)*30, md=m*6;
+  let nums='';
+  for(let i=1;i<=12;i++){
+    const a=(i*30-90)*Math.PI/180;
+    nums+='<text x="'+(80+62*Math.cos(a)).toFixed(1)+'" y="'+(84+62*Math.sin(a)).toFixed(1)+'" font-size="13" font-weight="700" text-anchor="middle" fill="#25324B" font-family="Nunito,sans-serif">'+i+'</text>';
+  }
+  return '<svg viewBox="0 0 160 160" role="img" aria-label="clock face">'+
+    '<circle cx="80" cy="80" r="76" fill="#fff" stroke="#25324B" stroke-width="4"/>'+nums+
+    '<line x1="80" y1="80" x2="'+(80+34*Math.cos((hd-90)*Math.PI/180)).toFixed(1)+'" y2="'+(80+34*Math.sin((hd-90)*Math.PI/180)).toFixed(1)+'" stroke="#D6362B" stroke-width="6" stroke-linecap="round"/>'+
+    '<line x1="80" y1="80" x2="'+(80+52*Math.cos((md-90)*Math.PI/180)).toFixed(1)+'" y2="'+(80+52*Math.sin((md-90)*Math.PI/180)).toFixed(1)+'" stroke="#25324B" stroke-width="4" stroke-linecap="round"/>'+
+    '<circle cx="80" cy="80" r="5" fill="#25324B"/></svg>';
+}
+function timeWords(h,m){
+  const hw=words1to12[((h-1)%12)+1], nx=words1to12[(h%12)+1];
+  if(m===0)return hw+" o'clock";
+  if(m===15)return 'quarter past '+hw;
+  if(m===30)return 'half past '+hw;
+  if(m===45)return 'quarter to '+nx;
+  if(m<30)return m+' minutes past '+hw;
+  return (60-m)+' minutes to '+nx;
+}
+
+/* ================= question generators ================= */
+/* each returns {q, correct, options, visual?, explain} */
+
+const GEN = {
+
+  place(){
+    const t=ri(1,5);
+    if(t===1){ // value of a digit
+      const n=ri(111,987); const s=String(n); const i=ri(0,2); const d=s[i];
+      const vals=[Number(d)*100,Number(d)*10,Number(d)];
+      const correct=vals[i];
+      return {q:'What is the value of the digit '+d+' in '+n+'?',
+        correct:String(correct), options:opts(correct,[vals[(i+1)%3],vals[(i+2)%3],Number(d)]),
+        explain:'The '+['hundreds','tens','ones'][i]+' column: '+d+' is worth '+correct+'.'};
+    }
+    if(t===2){ // compare
+      let a=ri(100,999),b=ri(100,999); if(a===b)b+=7;
+      const correct=a>b?'>':'<';
+      return {q:'Which sign goes here?  '+a+'  ?  '+b,
+        correct, options:shuffle(['>','<','=']),
+        explain:a+' is '+(a>b?'greater':'smaller')+' than '+b+', so '+a+' '+correct+' '+b+'.'};
+    }
+    if(t===3){ // words
+      const n=ri(101,999);
+      const w1=numToWords(ri(101,999)), w2=numToWords(ri(101,999));
+      return {q:'How do you write '+n+' in words?',
+        correct:numToWords(n), options:opts(numToWords(n),[numToWords(n+10>999?n-10:n+10),w1,w2]),
+        explain:n+' is '+numToWords(n)+'.'};
+    }
+    if(t===4){ // counting on
+      const step=pick([4,8,50,100]); const start=step*ri(1,6);
+      const seq=[start,start+step,start+2*step];
+      const correct=start+3*step;
+      return {q:'Counting in '+step+'s: '+seq.join(', ')+', ...?',
+        correct:String(correct), options:opts(correct,[correct+step,correct-step,correct+(step===4?2:10)]),
+        explain:'Add '+step+' each time: '+seq[2]+' + '+step+' = '+correct+'.'};
+    }
+    // partition
+    const n=ri(111,987), h=Math.floor(n/100)*100, te=Math.floor((n%100)/10)*10, o=n%10;
+    return {q:n+' = '+h+' + ? + '+o,
+      correct:String(te), options:opts(te,[te/10,te+10,h/10]),
+      explain:n+' partitions into '+h+' + '+te+' + '+o+'.'};
+  },
+
+  addsub(){
+    const t=ri(1,4);
+    if(t===1){
+      const a=ri(120,860),b=ri(6,99);
+      return {q:'What is '+a+' + '+b+'?',
+        correct:String(a+b), options:opts(a+b,[a+b+10,a+b-10,a+b+1]),
+        explain:a+' + '+b+' = '+(a+b)+'. Check it with '+(a+b)+' − '+b+' = '+a+'.'};
+    }
+    if(t===2){
+      const a=ri(150,980),b=ri(14,120), s=a-b;
+      return {q:'What is '+a+' − '+b+'?',
+        correct:String(s), options:opts(s,[s+10,s-10,s+1]),
+        explain:a+' − '+b+' = '+s+'. Check it with '+s+' + '+b+' = '+a+'.'};
+    }
+    if(t===3){ // inverse check
+      const a=ri(200,700),b=ri(30,150), s=a-b;
+      return {q:'Which calculation CHECKS that '+a+' − '+b+' = '+s+'?',
+        correct:s+' + '+b+' = '+a,
+        options:shuffle([s+' + '+b+' = '+a, a+' + '+b+' = '+(a+b), s+' − '+b+' = '+(s-b), b+' + '+a+' = '+(a+b)]),
+        explain:'Addition undoes subtraction: '+s+' + '+b+' should take you back to '+a+'.'};
+    }
+    // estimate
+    const a=ri(140,390),b=ri(60,120);
+    const ra=Math.round(a/10)*10, rb=Math.round(b/10)*10;
+    return {q:'Best ESTIMATE for '+a+' − '+b+'? Use near numbers.',
+      correct:ra+' − '+rb,
+      options:shuffle([ra+' − '+rb, (ra+100)+' − '+rb, ra+' − '+(rb+100), (ra-100)+' − '+rb]),
+      explain:a+' is close to '+ra+' and '+b+' is close to '+rb+'.'};
+  },
+
+  tables(){
+    const t=ri(1,4), tb=pick([3,4,8]);
+    if(t===1){
+      const a=ri(2,12);
+      return {q:'What is '+a+' × '+tb+'?',
+        correct:String(a*tb), options:opts(a*tb,[(a+1)*tb,(a-1)*tb,a*tb+2]),
+        explain:a+' × '+tb+' = '+(a*tb)+'.'};
+    }
+    if(t===2){
+      const a=ri(2,12), p=a*tb;
+      return {q:'What is '+p+' ÷ '+tb+'?',
+        correct:String(a), options:opts(a,[a+1,a-1,a+2]),
+        explain:'Because '+a+' × '+tb+' = '+p+', we know '+p+' ÷ '+tb+' = '+a+'.'};
+    }
+    if(t===3){ // missing number
+      const a=ri(2,12);
+      return {q:'? × '+tb+' = '+(a*tb),
+        correct:String(a), options:opts(a,[a+1,a-1,tb]),
+        explain:a+' lots of '+tb+' make '+(a*tb)+'.'};
+    }
+    // related facts
+    const a=ri(2,9);
+    return {q:'If '+a+' × '+tb+' = '+(a*tb)+', what is '+(a*10)+' × '+tb+'?',
+      correct:String(a*tb*10), options:opts(a*tb*10,[a*tb,a*tb*100,a*tb*10+10]),
+      explain:(a*10)+' is ten times bigger, so the answer is ten times bigger: '+(a*tb*10)+'.'};
+  },
+
+  fractions(){
+    const t=ri(1,5);
+    if(t===1){ // fraction of amount
+      const d=pick([2,3,4,5,8,10]); const n=ri(2,9)*d;
+      const top=pick([1,1,1,2]); const ans=(n/d)*top;
+      return {q:'What is '+top+'/'+d+' of '+n+'?',
+        correct:String(ans), options:opts(ans,[n/d,ans+d,ans-1]),
+        explain:'Divide by '+d+' to get '+(n/d)+(top>1?', then multiply by '+top:'')+'.'};
+    }
+    if(t===2){ // equivalent
+      const pairs=[[1,2,2,4],[1,2,3,6],[1,2,5,10],[1,4,2,8],[2,3,4,6],[1,3,2,6],[3,4,6,8],[2,5,4,10]];
+      const [a,b,c,d]=pick(pairs);
+      return {q:'Complete the equivalent fraction:  '+a+'/'+b+' = ?/'+d,
+        correct:String(c), options:opts(c,[c+1,c-1,a]),
+        explain:'Multiply top and bottom by the same number: '+a+'/'+b+' = '+c+'/'+d+'.'};
+    }
+    if(t===3){ // add/sub same denominator
+      const d=pick([5,6,7,8]); const a=ri(1,d-2), b=ri(1,d-a-1);
+      const add=Math.random()<.5;
+      if(add)return {q:'What is '+a+'/'+d+' + '+b+'/'+d+'?',
+        correct:(a+b)+'/'+d, options:shuffle([(a+b)+'/'+d,(a+b)+'/'+(2*d),a+'/'+d,(a+b+1)+'/'+d]),
+        explain:'Same denominator: just add the numerators. '+a+' + '+b+' = '+(a+b)+', so '+(a+b)+'/'+d+'.'};
+      const big=Math.max(a+b,b+1), small=b;
+      return {q:'What is '+big+'/'+d+' − '+small+'/'+d+'?',
+        correct:(big-small)+'/'+d, options:shuffle([(big-small)+'/'+d,(big-small)+'/'+(d-small),(big+small)+'/'+d,(big-small+1)+'/'+d]),
+        explain:'Subtract the numerators: '+big+' − '+small+' = '+(big-small)+'.'};
+    }
+    if(t===4){ // compare unit fractions
+      let a=pick([2,3,4,5,8]), b=pick([2,3,4,5,8,10]); if(a===b)b=a===10?5:a+1;
+      const correct='1/'+Math.min(a,b);
+      return {q:'Which fraction is BIGGER: 1/'+a+' or 1/'+b+'?',
+        correct, options:shuffle(['1/'+a,'1/'+b]),
+        explain:'More equal parts means smaller pieces, so the smaller denominator wins.'};
+    }
+    // tenths
+    const n=ri(1,9);
+    return {q:'Write '+n+'/10 as a decimal.',
+      correct:'0.'+n, options:shuffle(['0.'+n, n+'.0','0.0'+n,'0.'+((n%9)+1)]),
+      explain:n+' tenths is 0.'+n+'.'};
+  },
+
+  money(){
+    const t=ri(1,4);
+    if(t===1){ // pence to pounds
+      const p=ri(101,399);
+      return {q:'Convert '+p+' pence into pounds and pence.',
+        correct:moneyStr(p), options:shuffle([moneyStr(p),moneyStr(p+100),moneyStr(p-100<0?p+200:p-100),'£'+p]),
+        explain:'100 pence = £1, so '+p+'p = '+moneyStr(p)+'.'};
+    }
+    if(t===2){ // add
+      const a=ri(120,260), b=ri(105,240);
+      return {q:'A toy costs '+moneyStr(a)+' and another costs '+moneyStr(b)+'. What is the total?',
+        correct:moneyStr(a+b), options:shuffle([moneyStr(a+b),moneyStr(a+b+10),moneyStr(a+b-10),moneyStr(a+b+100)]),
+        explain:moneyStr(a)+' + '+moneyStr(b)+' = '+moneyStr(a+b)+'.'};
+    }
+    if(t===3){ // change from £1
+      const c=ri(21,89);
+      return {q:'You pay for a '+c+'p snack with £1. How much change?',
+        correct:(100-c)+'p', options:shuffle([(100-c)+'p',(100-c+10)+'p',(90-c<0?100-c+5:90-c)+'p',c+'p']),
+        explain:'100p − '+c+'p = '+(100-c)+'p change.'};
+    }
+    // change from £10
+    const cost=ri(320,880);
+    return {q:'A game costs '+moneyStr(cost)+'. How much change from £10?',
+      correct:moneyStr(1000-cost), options:shuffle([moneyStr(1000-cost),moneyStr(1000-cost+100),moneyStr(1000-cost-10<0?1000-cost+10:1000-cost-10),moneyStr(cost)]),
+      explain:'£10 is 1000p. 1000p − '+cost+'p = '+(1000-cost)+'p = '+moneyStr(1000-cost)+'.'};
+  },
+
+  length(){
+    const t=ri(1,4);
+    if(t===1){ // conversions
+      const kind=ri(1,3);
+      if(kind===1){const cm=ri(2,9);return {q:'How many millimetres in '+cm+'cm?',correct:cm*10+'mm',options:shuffle([cm*10+'mm',cm+'mm',cm*100+'mm',(cm*10+5)+'mm']),explain:'10mm = 1cm, so '+cm+'cm = '+(cm*10)+'mm.'};}
+      if(kind===2){const m=ri(2,9);return {q:'How many centimetres in '+m+'m?',correct:m*100+'cm',options:shuffle([m*100+'cm',m*10+'cm',(m*100+10)+'cm',m+'0cm']),explain:'100cm = 1m, so '+m+'m = '+(m*100)+'cm.'};}
+      const m=ri(2,5),c=ri(11,99);
+      return {q:'Write '+m+'m '+c+'cm in centimetres.',correct:(m*100+c)+'cm',options:shuffle([(m*100+c)+'cm',(m*10+c)+'cm',(m*100+c+100)+'cm',(m+c)+'cm']),explain:m+'m = '+(m*100)+'cm, plus '+c+'cm = '+(m*100+c)+'cm.'};
+    }
+    if(t===2){ // compare
+      const mm=ri(5,9)*10+ri(1,9), cmv=Math.floor(mm/10)+ri(1,3);
+      const correct=mm>cmv*10?mm+'mm':cmv+'cm';
+      return {q:'Which is LONGER: '+mm+'mm or '+cmv+'cm?',
+        correct, options:shuffle([mm+'mm',cmv+'cm']),
+        explain:cmv+'cm = '+(cmv*10)+'mm. Compare: '+mm+'mm vs '+(cmv*10)+'mm.'};
+    }
+    if(t===3){ // add lengths
+      const a=ri(12,25),b=ri(9,24);
+      return {q:'What is '+a+'cm + '+b+'cm?',
+        correct:(a+b)+'cm', options:shuffle([(a+b)+'cm',(a+b+1)+'cm',(a+b-1)+'cm',(a+b+10)+'cm']),
+        explain:a+' + '+b+' = '+(a+b)+'.'};
+    }
+    // perimeter
+    if(Math.random()<.5){
+      const l=ri(4,9),w=ri(2,l-1);
+      return {q:'A rectangle is '+l+'cm long and '+w+'cm wide. What is its PERIMETER?',
+        correct:(2*(l+w))+'cm', options:shuffle([(2*(l+w))+'cm',(l+w)+'cm',(l*w)+'cm',(2*(l+w)+2)+'cm']),
+        explain:'Add all four sides: '+l+' + '+w+' + '+l+' + '+w+' = '+(2*(l+w))+'cm.'};
+    }
+    const s=ri(3,8);
+    return {q:'A square has sides of '+s+'cm. What is its perimeter?',
+      correct:(4*s)+'cm', options:shuffle([(4*s)+'cm',(2*s)+'cm',(s*s)+'cm',(4*s+4)+'cm']),
+      explain:'4 equal sides: 4 × '+s+' = '+(4*s)+'cm.'};
+  },
+
+  mass(){
+    const t=ri(1,4);
+    if(t===1){
+      const g=ri(2,9)*100, tot=1000+g;
+      return {q:'What is 1kg in grams?',correct:'1000g',options:shuffle(['1000g','100g','10g','1kg 100g']),explain:'1kg = 1000g. Worth knowing by heart!'};
+    }
+    if(t===2){ // add mass crossing 1kg
+      const a=ri(5,9)*100,b=ri(3,9)*100, s=a+b;
+      const kg=Math.floor(s/1000), g=s%1000;
+      const correct=g? '1kg '+g+'g' : kg+'kg';
+      return {q:'What is '+a+'g + '+b+'g?',
+        correct, options:shuffle([correct, s+'kg', (g? '1kg '+(g+100)+'g':'1kg 100g'), (a+b-100)+'g']),
+        explain:a+' + '+b+' = '+s+'g, and 1000g makes 1kg, so '+correct+'.'};
+    }
+    if(t===3){ // subtract from 1kg / 1l
+      const useMass=Math.random()<.5;
+      const x=ri(2,8)*100;
+      if(useMass)return {q:'What is 1kg − '+x+'g?',correct:(1000-x)+'g',options:shuffle([(1000-x)+'g',(1000-x+100)+'g',x+'g',(1000-x)+'kg']),explain:'1kg = 1000g. 1000 − '+x+' = '+(1000-x)+'g.'};
+      return {q:'What is 1 litre − '+x+'ml?',correct:(1000-x)+'ml',options:shuffle([(1000-x)+'ml',(1000-x+100)+'ml',x+'ml',(1000-x)+'l']),explain:'1l = 1000ml. 1000 − '+x+' = '+(1000-x)+'ml.'};
+    }
+    // add capacity
+    const a=ri(5,9)*100,b=ri(3,9)*100,s=a+b,mlR=s%1000;
+    const correct=mlR? '1l '+mlR+'ml':'2l';
+    return {q:'What is '+a+'ml + '+b+'ml?',
+      correct, options:shuffle([correct, s+'l', (mlR? '1l '+(mlR+100)+'ml':'1l 100ml'), (s-100)+'ml']),
+      explain:a+' + '+b+' = '+s+'ml, and 1000ml makes 1 litre, so '+correct+'.'};
+  },
+
+  time(){
+    const t=ri(1,5);
+    if(t===1){ // read the clock
+      const h=ri(1,12), m=pick([0,15,30,45,pick([5,10,20,25,35,40,50,55])]);
+      const correct=timeWords(h,m);
+      const w=[timeWords((h%12)+1,m),timeWords(h,(m+15)%60),timeWords(h===1?12:h-1,m)];
+      return {q:'What time does this clock show?', visual:'<div class="qvisual">'+clockSVG(h,m)+'</div>',
+        correct, options:opts(correct,w),
+        explain:'The short hand is the hour hand, the long hand shows the minutes.'};
+    }
+    if(t===2){ // 24-hour
+      const h=ri(13,23);
+      const correct=(h-12)+' p.m.';
+      return {q:'What is '+String(h).padStart(2,'0')+':00 in 12-hour time?',
+        correct, options:shuffle([correct,(h-12)+' a.m.',h+' p.m.',((h-11)%12+1)+' p.m.']),
+        explain:'After midday, subtract 12: '+h+' − 12 = '+(h-12)+', so '+(h-12)+' p.m.'};
+    }
+    if(t===3){ // durations
+      const h=ri(1,11), m1=pick([0,10,15,20]), dur=pick([15,20,25,30,35,40]);
+      const m2=m1+dur;
+      const end=m2>=60?(h+1)+':'+String(m2-60).padStart(2,'0'):h+':'+String(m2).padStart(2,'0');
+      return {q:'A film starts at '+h+':'+String(m1).padStart(2,'0')+' and ends at '+end+'. How long is it?',
+        correct:dur+' minutes', options:shuffle([dur+' minutes',(dur+5)+' minutes',(dur-5)+' minutes',(dur+10)+' minutes']),
+        explain:'Count on from '+h+':'+String(m1).padStart(2,'0')+' to '+end+': '+dur+' minutes.'};
+    }
+    if(t===4){ // facts + compare durations
+      const facts=[
+        {q:'How many minutes in one hour?',c:'60',w:['100','30','24']},
+        {q:'How many seconds in one minute?',c:'60',w:['100','30','12']},
+        {q:'How many hours in one day?',c:'24',w:['12','60','48']},
+        {q:'Which is LONGER: 90 minutes or 2 hours?',c:'2 hours',w:['90 minutes']},
+        {q:'Which is LONGER: 48 hours or 1 day?',c:'48 hours',w:['1 day']},
+        {q:'180 seconds is the same as...?',c:'3 minutes',w:['2 minutes','18 minutes','30 minutes']}
+      ];
+      const f=pick(facts);
+      return {q:f.q,correct:f.c,options:shuffle([f.c].concat(f.w)),explain:'One to remember!'};
+    }
+    // Roman numerals
+    const romans=['I','II','III','IV','V','VI','VII','VIII','IX','X','XI','XII'];
+    const n=ri(1,12);
+    return {q:'On a clock face, which number is '+romans[n-1]+'?',
+      correct:String(n), options:opts(n,[n+1,n-1,n+2>12?n-2:n+2]),
+      explain:romans[n-1]+' is the Roman numeral for '+n+'.'};
+  },
+
+  stats(){
+    const t=ri(1,3);
+    if(t===1){ // pictogram
+      const per=pick([2,4,8]); const syms=ri(2,5); const half=Math.random()<.5;
+      const total=syms*per+(half?per/2:0);
+      const row='🟡'.repeat(syms)+(half?'◐':'');
+      return {q:'How many pets does this row show?',
+        visual:'<div class="picto">'+row+'<span class="key">Key: 🟡 = '+per+' pets, ◐ = '+(per/2)+' pets</span></div>',
+        correct:String(total), options:opts(total,[syms,total+per,total-per/2]),
+        explain:syms+' symbols × '+per+(half?' plus a half symbol ('+per/2+')':'')+' = '+total+'.'};
+    }
+    if(t===2){ // bar chart
+      const scale=pick([2,5,10]);
+      const names=['Red','Blue','Green'], vals=names.map(()=>ri(1,5)*scale);
+      const target=ri(0,2);
+      const maxV=Math.max.apply(null,vals);
+      const colors=['#E0715F','#4A90D8','#57B36A'];
+      let bars='<div class="bars">';
+      names.forEach((n,i)=>{bars+='<div class="bwrap"><div class="bar" style="height:'+(vals[i]/maxV*95)+'%;background:'+colors[i]+'"></div><div class="blabel">'+n+'</div></div>';});
+      bars+='</div>';
+      return {q:'The scale counts in '+scale+'s. The '+names[target]+' bar reaches '+(vals[target]/scale)+' marks up. How many is that?',
+        visual:bars,
+        correct:String(vals[target]), options:opts(vals[target],[vals[target]+scale,vals[target]-scale,vals[target]/scale]),
+        explain:(vals[target]/scale)+' marks × '+scale+' = '+vals[target]+'.'};
+    }
+    // table
+    const adult=ri(5,9), child=ri(3,adult-1);
+    return {q:'Cinema prices: Adult £'+adult+', Child £'+child+'. How much for one adult and one child?',
+      correct:'£'+(adult+child), options:shuffle(['£'+(adult+child),'£'+(adult+child+1),'£'+(2*adult),'£'+(2*child)]),
+      explain:'£'+adult+' + £'+child+' = £'+(adult+child)+'.'};
+  },
+
+  shape(){
+    const t=ri(1,4);
+    if(t===1){ // angles
+      const items=[
+        {q:'An angle LESS than 90° is called...?',c:'acute',w:['obtuse','right angle','reflex']},
+        {q:'An angle GREATER than 90° but less than 180° is called...?',c:'obtuse',w:['acute','right angle','straight']},
+        {q:'An angle of exactly 90° is called a...?',c:'right angle',w:['acute angle','obtuse angle','full turn']},
+        {q:'How many right angles make a HALF turn?',c:'2',w:['1','3','4']},
+        {q:'How many right angles make a FULL turn?',c:'4',w:['2','3','8']}
+      ];
+      const f=pick(items);
+      return {q:f.q,correct:f.c,options:shuffle([f.c].concat(f.w)),explain:'Right angle = 90°, acute is smaller, obtuse is bigger.'};
+    }
+    if(t===2){ // lines
+      const items=[
+        {q:'Lines that stay the same distance apart and NEVER meet are...?',c:'parallel',w:['perpendicular','vertical','horizontal']},
+        {q:'Lines that meet at a right angle are...?',c:'perpendicular',w:['parallel','horizontal','curved']},
+        {q:'A line going straight up and down is...?',c:'vertical',w:['horizontal','parallel','diagonal']},
+        {q:'A line going straight across, like the horizon, is...?',c:'horizontal',w:['vertical','perpendicular','oblique']}
+      ];
+      const f=pick(items);
+      return {q:f.q,correct:f.c,options:shuffle([f.c].concat(f.w)),explain:'Think of the horizon for horizontal.'};
+    }
+    if(t===3){ // 2D shapes
+      const shapes=[['pentagon',5],['hexagon',6],['heptagon',7],['octagon',8],['triangle',3],['square',4]];
+      const [name,sides]=pick(shapes);
+      if(Math.random()<.5)return {q:'How many sides does a '+name+' have?',correct:String(sides),options:opts(sides,[sides+1,sides-1,sides+2]),explain:'A '+name+' has '+sides+' sides and '+sides+' vertices.'};
+      const target=pick(shapes);
+      return {q:'Which 2D shape has '+target[1]+' sides?',correct:target[0],
+        options:shuffle([target[0]].concat(shuffle(shapes.filter(s=>s[0]!==target[0])).slice(0,3).map(s=>s[0]))),
+        explain:'A '+target[0]+' has '+target[1]+' sides.'};
+    }
+    // 3D shapes
+    const items=[
+      {q:'How many faces does a CUBE have?',c:'6',w:['4','8','12']},
+      {q:'Which 3D shape has a square base and 4 triangular faces?',c:'square-based pyramid',w:['cube','triangular prism','cylinder']},
+      {q:'Which 3D shape has one continuous curved surface and no edges?',c:'sphere',w:['cylinder','cuboid','tetrahedron']},
+      {q:'Which 3D shape has 2 circular faces and 1 curved surface?',c:'cylinder',w:['sphere','cone','cuboid']},
+      {q:'A cereal box is which 3D shape?',c:'cuboid',w:['cube','cylinder','pyramid']}
+    ];
+    const f=pick(items);
+    return {q:f.q,correct:f.c,options:shuffle([f.c].concat(f.w)),explain:'Faces are flat surfaces; edges are where faces meet.'};
+  }
+};
+
+const TOPICS=[
+  {id:'place',   name:'Place Value',            emoji:'🔢', color:'#57B36A'},
+  {id:'addsub',  name:'Add & Subtract',         emoji:'➕', color:'#2E9E8F'},
+  {id:'tables',  name:'Times Tables 3, 4, 8',   emoji:'✖️', color:'#E07B39'},
+  {id:'fractions',name:'Fractions',             emoji:'🍕', color:'#4A6FD8'},
+  {id:'money',   name:'Money',                  emoji:'💰', color:'#1E6FB8'},
+  {id:'length',  name:'Length & Perimeter',     emoji:'📏', color:'#3E9FD8'},
+  {id:'mass',    name:'Mass & Capacity',        emoji:'⚖️', color:'#7CA82B'},
+  {id:'time',    name:'Time',                   emoji:'⏰', color:'#8A6FC8'},
+  {id:'stats',   name:'Statistics',             emoji:'📊', color:'#2E8B57'},
+  {id:'shape',   name:'Shape',                  emoji:'🔷', color:'#C24E86'}
+];
+const QUESTIONS_PER_ROUND=8;
+const STARS_PER_STICKER=10;
+const STICKERS=['🦖','🚀','🏉','🌋','🧲','🏏','🦎','🗺️','🏊','🏅','🔍','🐍','🛡️','⚔️','🏛️','🌈','🎯','🦅','🧭','🎸'];
+
+/* ================= state ================= */
+const KEY='xander-maths-trainer-v1';
+const store={
+  async get(k){const v=localStorage.getItem(k);return v===null?null:{key:k,value:v};},
+  async set(k,v){localStorage.setItem(k,v);return {key:k,value:v};}
+};
+let state=null;
+function freshState(){
+  const per={}; TOPICS.forEach(t=>per[t.id]={c:0,w:0});
+  return {stars:0, stickers:[], per, sessions:[]};
+}
+async function loadState(){
+  try{const r=await store.get(KEY); state=r?JSON.parse(r.value):freshState();}
+  catch(e){state=freshState();}
+  // guard against missing topics after updates
+  TOPICS.forEach(t=>{if(!state.per[t.id])state.per[t.id]={c:0,w:0};});
+  if(!Array.isArray(state.sessions)) state.sessions=[];
+}
+async function saveState(){
+  try{await store.set(KEY,JSON.stringify(state));}catch(e){console.error('save failed',e);}
+}
+
+/* ================= views ================= */
+const main=document.getElementById('main');
+function setStars(){document.getElementById('starCount').textContent=state.stars;}
+
+function renderHome(){
+  setStars();
+  let html='<button class="mixcard" id="mixBtn"><span><span class="t">🎲 Mix it up</span><div class="d">A bit of everything, with extra practice where it\'s needed</div></span><span class="go">›</span></button>';
+  html+='<div class="grid">';
+  TOPICS.forEach(t=>{
+    const s=state.per[t.id], total=s.c+s.w;
+    const pct=total?Math.round(s.c/total*100):0;
+    html+='<button class="topic" style="--tc:'+t.color+'" data-id="'+t.id+'">'+
+      '<span class="emoji">'+t.emoji+'</span>'+
+      '<div class="name">'+t.name+'</div>'+
+      '<div class="stats">'+(total? s.c+' right of '+total : 'Not tried yet')+'</div>'+
+      '<div class="meter"><div style="width:'+pct+'%"></div></div>'+
+      '</button>';
+  });
+  html+='</div>';
+  main.innerHTML=html;
+  document.getElementById('mixBtn').addEventListener('click',()=>startRound(null));
+  main.querySelectorAll('.topic').forEach(b=>b.addEventListener('click',()=>startRound(b.dataset.id)));
+}
+
+/* weighted topic choice for Mix mode: more errors → more likely */
+function weightedTopic(){
+  const weights=TOPICS.map(t=>{
+    const s=state.per[t.id], total=s.c+s.w;
+    if(!total)return 3;                    // untried topics come up
+    return 1+ (s.w/total)*4;               // error-heavy topics come up more
+  });
+  let sum=weights.reduce((a,b)=>a+b,0), r=Math.random()*sum;
+  for(let i=0;i<TOPICS.length;i++){ r-=weights[i]; if(r<=0)return TOPICS[i]; }
+  return TOPICS[TOPICS.length-1];
+}
+
+let round=null;
+function startRound(topicId){
+  round={topicId, i:0, results:[], starsEarned:0};
+  nextQuestion();
+}
+function nextQuestion(){
+  const topic=round.topicId?TOPICS.find(t=>t.id===round.topicId):weightedTopic();
+  round.currentTopic=topic;
+  round.q=GEN[topic.id]();
+  round.pickedIdx=null; round.locked=false;
+  renderQuestion();
+}
+function renderQuestion(){
+  setStars();
+  const t=round.currentTopic, q=round.q;
+  let pips='';
+  for(let i=0;i<QUESTIONS_PER_ROUND;i++){
+    let cls='pip';
+    if(i<round.results.length)cls+=round.results[i]?' right':' wrong';
+    else if(i===round.results.length)cls+=' now';
+    pips+='<div class="'+cls+'" style="--tc:'+t.color+'"></div>';
+  }
+  let html='<div class="quizhead" style="--tc:'+t.color+'">'+
+    '<div class="topicname"><span class="dot"></span>'+t.emoji+' '+t.name+'</div>'+
+    '<button class="quit" id="quitBtn">exit</button></div>'+
+    '<div class="progress">'+pips+'</div>'+
+    '<div class="qcard" style="--tc:'+t.color+'">'+
+      '<div class="qtext">'+q.q+'</div>'+(q.visual||'')+
+      '<div class="opts" id="opts">'+
+        q.options.map((o,i)=>'<button class="opt" data-i="'+i+'">'+o+'</button>').join('')+
+      '</div>'+
+      '<div class="checkrow" id="checkrow"><div class="checkhint">Tap an answer to choose it</div></div>'+
+    '</div>';
+  main.innerHTML=html;
+  document.getElementById('quitBtn').addEventListener('click',renderHome);
+  main.querySelectorAll('.opt').forEach(b=>b.addEventListener('click',()=>pickOption(Number(b.dataset.i))));
+}
+function pickOption(i){
+  if(round.locked)return;
+  round.pickedIdx=i;
+  main.querySelectorAll('.opt').forEach((b,j)=>b.classList.toggle('picked',j===i));
+  document.getElementById('checkrow').innerHTML=
+    '<div class="checkhint">Checked it? Read the question one more time first.</div>'+
+    '<button class="lockbtn" id="lockBtn">Lock it in ✓</button>';
+  document.getElementById('lockBtn').addEventListener('click',lockAnswer);
+}
+async function lockAnswer(){
+  if(round.locked||round.pickedIdx===null)return;
+  round.locked=true;
+  const q=round.q, t=round.currentTopic;
+  const picked=q.options[round.pickedIdx];
+  const isRight=String(picked)===String(q.correct);
+  main.querySelectorAll('.opt').forEach((b,j)=>{
+    b.disabled=true;
+    if(String(q.options[j])===String(q.correct))b.classList.add('correct');
+    else if(j===round.pickedIdx)b.classList.add('incorrect');
+  });
+  round.results.push(isRight);
+  if(isRight){round.starsEarned++; state.stars++; state.per[t.id].c++;}
+  else state.per[t.id].w++;
+  // sticker check
+  let newSticker=null;
+  if(state.stars>0 && state.stars%STARS_PER_STICKER===0){
+    newSticker=STICKERS[state.stickers.length%STICKERS.length];
+    state.stickers.push(newSticker);
+  }
+  await saveState();
+  setStars();
+  // big animated mark
+  const bt=document.getElementById('bigtick');
+  document.getElementById('bigtickChar').textContent=isRight?'✓':'✗';
+  document.getElementById('bigtickChar').style.color=isRight?'#2F8C46':'var(--tick)';
+  bt.style.display='flex';
+  setTimeout(()=>{bt.style.display='none';},650);
+
+  const last=round.results.length>=QUESTIONS_PER_ROUND;
+  document.getElementById('checkrow').innerHTML=
+    '<div class="mark '+(isRight?'good':'bad')+'">'+(isRight?pick(['Spot on!','Nailed it!','Correct!','Great checking!']):'Not this time — the green one is right.')+'</div>'+
+    '<div class="explain">'+q.explain+'</div>'+
+    (newSticker?'<div class="mark good">🎉 New sticker earned: '+newSticker+'</div>':'')+
+    '<button class="nextbtn" id="nextBtn" style="--tc:'+t.color+'">'+(last?'See my score':'Next question ›')+'</button>';
+  document.getElementById('nextBtn').addEventListener('click',()=>{ last?renderSummary():nextQuestion(); });
+}
+function renderSummary(){
+  setStars();
+  const right=round.results.filter(Boolean).length;
+  // log this completed round for the parent view (additive; does not affect scoring)
+  if(!round.logged){
+    round.logged=true;
+    const lt=round.topicId?TOPICS.find(t=>t.id===round.topicId):null;
+    state.sessions.unshift({
+      t:Date.now(),
+      topic:lt?lt.name:'Mix it up',
+      emoji:lt?lt.emoji:'🎲',
+      right:right, total:QUESTIONS_PER_ROUND, stars:round.starsEarned
+    });
+    if(state.sessions.length>60) state.sessions.length=60;
+    saveState();
+  }
+  const perfect=right===QUESTIONS_PER_ROUND;
+  const face=perfect?'🏆':right>=6?'🌟':right>=4?'💪':'🔁';
+  const msg=perfect?'Perfect round! Checking your answers really works.':
+    right>=6?'Brilliant work. Nearly a perfect round!':
+    right>=4?'Good effort. One more round and you\'ll crack it.':
+    'Tricky one! Have another go — the explanations will help.';
+  main.innerHTML='<div class="summary">'+
+    '<div class="big">'+face+'</div>'+
+    '<h2>'+right+' out of '+QUESTIONS_PER_ROUND+'</h2>'+
+    '<p>'+msg+'</p>'+
+    '<p>⭐ '+round.starsEarned+' stars earned this round</p>'+
+    (state.stickers.length?'<div class="stickerline">'+state.stickers.join(' ')+'</div>':'')+
+    '<p>'+(((STARS_PER_STICKER-(state.stars%STARS_PER_STICKER))%STARS_PER_STICKER)||STARS_PER_STICKER)+' stars until your next sticker</p>'+
+    '<div class="sumbtns">'+
+      '<button class="lockbtn" id="againBtn">Play again</button>'+
+      '<button class="nextbtn" id="homeBtn" style="--tc:#F2B33D">All topics</button>'+
+    '</div></div>';
+  document.getElementById('againBtn').addEventListener('click',()=>startRound(round.topicId));
+  document.getElementById('homeBtn').addEventListener('click',renderHome);
+}
+
+document.getElementById('resetBtn').addEventListener('click',async()=>{
+  if(confirm('Reset all stars, stickers and topic progress?')){
+    state=freshState(); await saveState(); renderHome();
+  }
+});
+
+/* ---------- Parent view (hold the star badge to open) ---------- */
+function band(pct){ return pct>=80?'#2F8C46':pct>=60?'#C98A1A':'#D0553F'; }
+function whenLabel(ts){
+  const d=new Date(ts), now=new Date();
+  const day=new Date(d.getFullYear(),d.getMonth(),d.getDate());
+  const today=new Date(now.getFullYear(),now.getMonth(),now.getDate());
+  const diff=Math.round((today-day)/86400000);
+  if(diff===0) return 'Today, '+d.toLocaleTimeString('en-GB',{hour:'numeric',minute:'2-digit'});
+  if(diff===1) return 'Yesterday';
+  if(diff>1 && diff<7) return d.toLocaleDateString('en-GB',{weekday:'short'});
+  return d.toLocaleDateString('en-GB',{day:'numeric',month:'short'});
+}
+function renderParentView(){
+  const rows=TOPICS.map(t=>{
+    const s=state.per[t.id], total=s.c+s.w;
+    return {t, c:s.c, total, pct: total?Math.round(s.c/total*100):null};
+  }).sort((a,b)=>{
+    if(a.pct===null&&b.pct===null) return 0;
+    if(a.pct===null) return 1;
+    if(b.pct===null) return -1;
+    return a.pct-b.pct;
+  });
+  const totC=TOPICS.reduce((n,t)=>n+state.per[t.id].c,0);
+  const totW=TOPICS.reduce((n,t)=>n+state.per[t.id].w,0);
+  const totQ=totC+totW, overall=totQ?Math.round(totC/totQ*100):0;
+
+  let h='<div class="pv-top"><div><h2>Parent view</h2><div class="sub">Xander &middot; Year 3 &rarr; Year 4</div></div>'+
+    '<button class="pv-back" id="pvBack">&lsaquo; Back</button></div>'+
+    '<div class="pv-chip">🔒 Hold the ⭐ badge for 2 seconds to open this</div>'+
+    '<div class="pv-tiles">'+
+      '<div class="pv-tile"><div class="n">'+state.stars+'</div><div class="l">Stars</div></div>'+
+      '<div class="pv-tile"><div class="n">'+state.stickers.length+'</div><div class="l">Stickers</div></div>'+
+      '<div class="pv-tile"><div class="n">'+totQ+'</div><div class="l">Questions</div></div>'+
+      '<div class="pv-tile"><div class="n">'+overall+'%</div><div class="l">Overall</div></div>'+
+    '</div>'+
+    '<div class="pv-sec">Accuracy by topic</div>'+
+    '<div class="pv-note">Weakest first &mdash; the topics &ldquo;Mix it up&rdquo; gives him more of.</div>';
+  rows.forEach(r=>{
+    if(r.pct===null){
+      h+='<div class="pv-row"><div class="emo">'+r.t.emoji+'</div><div class="mid"><div class="name">'+r.t.name+'</div><div class="cnt">Not tried yet</div></div><div class="pct" style="color:#9AA3B2">–</div></div>';
+    } else {
+      const col=band(r.pct);
+      h+='<div class="pv-row"><div class="emo">'+r.t.emoji+'</div><div class="mid"><div class="name">'+r.t.name+
+         (r.pct<60?' <span class="pv-flag">Needs practice</span>':'')+
+         '</div><div class="barw"><div class="bar" style="width:'+r.pct+'%;background:'+col+'"></div></div>'+
+         '<div class="cnt">'+r.c+' right of '+r.total+'</div></div><div class="pct" style="color:'+col+'">'+r.pct+'%</div></div>';
+    }
+  });
+  h+='<div class="pv-sec" style="margin-top:20px">Recent sessions</div>';
+  if(!state.sessions.length){
+    h+='<div class="pv-note">No rounds played yet.</div>';
+  } else {
+    h+='<div class="pv-sess">';
+    state.sessions.slice(0,10).forEach(se=>{
+      h+='<div class="s"><div class="when">'+whenLabel(se.t)+'</div><div class="what">'+(se.emoji||'')+' '+se.topic+'</div><div class="score">'+se.right+' / '+se.total+'</div><div class="st">+'+se.stars+'★</div></div>';
+    });
+    h+='</div>';
+  }
+  h+='<div class="pv-foot">Everything stays on this device &mdash; no accounts, no internet needed.</div>';
+  main.innerHTML=h;
+  document.getElementById('pvBack').addEventListener('click',renderHome);
+}
+(function(){
+  const badge=document.querySelector('.starbadge');
+  if(!badge) return;
+  let timer=null;
+  const start=function(e){ if(timer)return; timer=setTimeout(function(){timer=null;renderParentView();},2000); };
+  const cancel=function(){ if(timer){clearTimeout(timer);timer=null;} };
+  badge.addEventListener('touchstart',start,{passive:true});
+  badge.addEventListener('touchend',cancel);
+  badge.addEventListener('touchmove',cancel);
+  badge.addEventListener('touchcancel',cancel);
+  badge.addEventListener('mousedown',start);
+  badge.addEventListener('mouseup',cancel);
+  badge.addEventListener('mouseleave',cancel);
+})();
+
+loadState().then(renderHome);
+})();
+</script>
+
+<script>
+/* ---- PWA: offline support + durable storage so progress survives being put away ---- */
+(function(){
+  // Ask the browser to keep our saved progress and not evict it.
+  if(navigator.storage && navigator.storage.persist){
+    navigator.storage.persisted().then(function(already){
+      if(!already) navigator.storage.persist();
+    }).catch(function(){});
+  }
+  // Register the service worker (only works over http/https, e.g. once installed to the Home Screen).
+  if('serviceWorker' in navigator && location.protocol.startsWith('http')){
+    window.addEventListener('load', function(){
+      navigator.serviceWorker.register('sw.js').catch(function(err){
+        console.warn('Service worker registration failed:', err);
+      });
+    });
+  }
+})();
+</script>
+</body>
+</html>

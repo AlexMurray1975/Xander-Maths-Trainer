@@ -1,0 +1,16 @@
+{
+  "name": "Xander's Maths Trainer",
+  "short_name": "Maths Trainer",
+  "description": "Year 3 maths practice for Xander, ready for Year 4.",
+  "start_url": ".",
+  "scope": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FBFAF4",
+  "theme_color": "#FBFAF4",
+  "lang": "en-GB",
+  "icons": [
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
