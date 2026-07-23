@@ -1,7 +1,7 @@
 /* Xander's Maths Trainer — service worker
    Full offline support. Bump CACHE_VERSION whenever the app files change
    so devices pick up the new version. */
-const CACHE_VERSION = 'xmt-v1';
+const CACHE_VERSION = 'xmt-v2';
 const APP_SHELL = [
   './',
   './index.html',

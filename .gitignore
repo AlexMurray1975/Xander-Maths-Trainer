@@ -1,5 +1,9 @@
+# local project notes (not for the public repo)
+CLAUDE.md
+
 # OS / editor cruft
 .DS_Store
 Thumbs.db
 desktop.ini
 *.tmp
+*.zip

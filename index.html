@@ -176,7 +176,10 @@
     <h1 id="title">Xander's Maths Trainer</h1>
     <div class="sub" id="subtitle">Year 4, here we come</div>
   </div>
-  <div class="starbadge">⭐ <span id="starCount">0</span></div>
+  <div style="display:flex;align-items:center;gap:10px;">
+    <div class="starbadge">⭐ <span id="starCount">0</span></div>
+    <button class="starbadge" id="soundBtn" aria-label="Toggle sounds">🔊</button>
+  </div>
 </header>
 
 <main id="main"></main>
@@ -239,6 +242,27 @@ function clockSVG(h,m){
     '<line x1="80" y1="80" x2="'+(80+52*Math.cos((md-90)*Math.PI/180)).toFixed(1)+'" y2="'+(80+52*Math.sin((md-90)*Math.PI/180)).toFixed(1)+'" stroke="#25324B" stroke-width="4" stroke-linecap="round"/>'+
     '<circle cx="80" cy="80" r="5" fill="#25324B"/></svg>';
 }
+function gaugeSVG(val,max){
+  const cx=80,cy=80,r=64;
+  let ticks='';
+  for(let i=0;i<=max;i++){
+    const a=(-90+i/max*360)*Math.PI/180;
+    const x1=cx+(r-7)*Math.cos(a), y1=cy+(r-7)*Math.sin(a);
+    const x2=cx+r*Math.cos(a), y2=cy+r*Math.sin(a);
+    ticks+='<line x1="'+x1.toFixed(1)+'" y1="'+y1.toFixed(1)+'" x2="'+x2.toFixed(1)+'" y2="'+y2.toFixed(1)+'" stroke="#25324B" stroke-width="2"/>';
+    if(i<max){
+      const lx=cx+(r-17)*Math.cos(a), ly=cy+(r-17)*Math.sin(a);
+      ticks+='<text x="'+lx.toFixed(1)+'" y="'+(ly+4).toFixed(1)+'" font-size="12" font-weight="700" text-anchor="middle" fill="#25324B" font-family="Nunito,sans-serif">'+i+'</text>';
+    }
+  }
+  const na=(-90+val/max*360)*Math.PI/180;
+  const nx=cx+(r-20)*Math.cos(na), ny=cy+(r-20)*Math.sin(na);
+  return '<svg viewBox="0 0 160 160" role="img" aria-label="kitchen scale dial">'+
+    '<circle cx="80" cy="80" r="72" fill="#fff" stroke="#25324B" stroke-width="4"/>'+ticks+
+    '<line x1="80" y1="80" x2="'+nx.toFixed(1)+'" y2="'+ny.toFixed(1)+'" stroke="#D6362B" stroke-width="4" stroke-linecap="round"/>'+
+    '<circle cx="80" cy="80" r="5" fill="#25324B"/>'+
+    '<text x="80" y="150" font-size="11" font-weight="800" text-anchor="middle" fill="#6B7690" font-family="Nunito,sans-serif">kilograms</text></svg>';
+}
 function timeWords(h,m){
   const hw=words1to12[((h-1)%12)+1], nx=words1to12[(h%12)+1];
   if(m===0)return hw+" o'clock";
@@ -249,13 +273,39 @@ function timeWords(h,m){
   return (60-m)+' minutes to '+nx;
 }
 
+/* ================= sounds (Web Audio, no files; gentle for early mornings) ================= */
+const SFX=(function(){
+  let ctx=null;
+  function ac(){
+    if(!ctx){const A=window.AudioContext||window.webkitAudioContext;if(A)ctx=new A();}
+    if(ctx&&ctx.state==='suspended')ctx.resume();
+    return ctx;
+  }
+  function tone(f,t0,dur,type,vol){
+    const c=ac();if(!c)return;
+    const o=c.createOscillator(),g=c.createGain();
+    o.type=type||'sine';o.frequency.value=f;
+    g.gain.setValueAtTime(0.0001,c.currentTime+t0);
+    g.gain.exponentialRampToValueAtTime(vol||0.18,c.currentTime+t0+0.015);
+    g.gain.exponentialRampToValueAtTime(0.0001,c.currentTime+t0+dur);
+    o.connect(g);g.connect(c.destination);
+    o.start(c.currentTime+t0);o.stop(c.currentTime+t0+dur+0.05);
+  }
+  return {
+    tap(){if(state.muted)return;tone(520,0,0.06,'triangle',0.12);},
+    right(){if(state.muted)return;tone(523,0,0.12,'sine',0.2);tone(659,0.1,0.12,'sine',0.2);tone(784,0.2,0.18,'sine',0.2);},
+    wrong(){if(state.muted)return;tone(220,0,0.18,'sawtooth',0.07);tone(185,0.16,0.22,'sawtooth',0.07);},
+    sticker(){if(state.muted)return;[523,659,784,1047].forEach((f,i)=>tone(f,i*0.09,0.15,'sine',0.2));tone(1319,0.4,0.3,'sine',0.16);}
+  };
+})();
+
 /* ================= question generators ================= */
 /* each returns {q, correct, options, visual?, explain} */
 
 const GEN = {
 
   place(){
-    const t=ri(1,5);
+    const t=ri(1,6);
     if(t===1){ // value of a digit
       const n=ri(111,987); const s=String(n); const i=ri(0,2); const d=s[i];
       const vals=[Number(d)*100,Number(d)*10,Number(d)];
@@ -285,6 +335,15 @@ const GEN = {
       return {q:'Counting in '+step+'s: '+seq.join(', ')+', ...?',
         correct:String(correct), options:opts(correct,[correct+step,correct-step,correct+(step===4?2:10)]),
         explain:'Add '+step+' each time: '+seq[2]+' + '+step+' = '+correct+'.'};
+    }
+    if(t===6){ // 10 or 100 more / less
+      const base=ri(120,870), d=pick([10,-10,100,-100]);
+      const word=d===10?'10 more than':d===-10?'10 less than':d===100?'100 more than':'100 less than';
+      const ans=base+d;
+      const wrongs=[base-d, base+(d>0?-1:1)*(Math.abs(d)===10?100:10)].filter(x=>x>=0&&x!==ans);
+      return {q:'What is '+word+' '+base+'?',
+        correct:String(ans), options:opts(ans,wrongs.map(String)),
+        explain:base+(d>0?' + ':' − ')+Math.abs(d)+' = '+ans+'.'};
     }
     // partition
     const n=ri(111,987), h=Math.floor(n/100)*100, te=Math.floor((n%100)/10)*10, o=n%10;
@@ -392,7 +451,7 @@ const GEN = {
   },
 
   money(){
-    const t=ri(1,4);
+    const t=ri(1,6);
     if(t===1){ // pence to pounds
       const p=ri(101,399);
       return {q:'Convert '+p+' pence into pounds and pence.',
@@ -410,6 +469,21 @@ const GEN = {
       return {q:'You pay for a '+c+'p snack with £1. How much change?',
         correct:(100-c)+'p', options:shuffle([(100-c)+'p',(100-c+10)+'p',(90-c<0?100-c+5:90-c)+'p',c+'p']),
         explain:'100p − '+c+'p = '+(100-c)+'p change.'};
+    }
+    if(t===4){ // total a set of coins
+      const coins=[1,2,5,10,20,50,100,200];
+      const chosen=[pick(coins),pick(coins),pick(coins)];
+      const total=chosen.reduce((a,b)=>a+b,0);
+      const names=chosen.map(c=>c>=100?('£'+c/100+' coin'):(c+'p')).join(', ');
+      return {q:'You have these coins: '+names+'. How much altogether?',
+        correct:moneyStr(total), options:shuffle([moneyStr(total),moneyStr(total+10),moneyStr(total>10?total-10:total+20),moneyStr(total+100)]),
+        explain:'Add them up: '+chosen.join('p + ')+'p = '+total+'p = '+moneyStr(total)+'.'};
+    }
+    if(t===5){ // subtract amounts
+      const a=ri(500,950), b=ri(120,460), s=a-b;
+      return {q:'What is '+moneyStr(a)+' − '+moneyStr(b)+'?',
+        correct:moneyStr(s), options:shuffle([moneyStr(s),moneyStr(s+100),moneyStr(s>10?s-10:s+10),moneyStr(s+10)]),
+        explain:moneyStr(a)+' − '+moneyStr(b)+' = '+moneyStr(s)+'. Check: '+moneyStr(s)+' + '+moneyStr(b)+' = '+moneyStr(a)+'.'};
     }
     // change from £10
     const cost=ri(320,880);
@@ -454,7 +528,7 @@ const GEN = {
   },
 
   mass(){
-    const t=ri(1,4);
+    const t=ri(1,5);
     if(t===1){
       const g=ri(2,9)*100, tot=1000+g;
       return {q:'What is 1kg in grams?',correct:'1000g',options:shuffle(['1000g','100g','10g','1kg 100g']),explain:'1kg = 1000g. Worth knowing by heart!'};
@@ -472,6 +546,17 @@ const GEN = {
       const x=ri(2,8)*100;
       if(useMass)return {q:'What is 1kg − '+x+'g?',correct:(1000-x)+'g',options:shuffle([(1000-x)+'g',(1000-x+100)+'g',x+'g',(1000-x)+'kg']),explain:'1kg = 1000g. 1000 − '+x+' = '+(1000-x)+'g.'};
       return {q:'What is 1 litre − '+x+'ml?',correct:(1000-x)+'ml',options:shuffle([(1000-x)+'ml',(1000-x+100)+'ml',x+'ml',(1000-x)+'l']),explain:'1l = 1000ml. 1000 − '+x+' = '+(1000-x)+'ml.'};
+    }
+    if(t===4){ // read a dial scale
+      const max=pick([4,5]);
+      const val=ri(1,max);
+      const cands=[val+1,val-1,val+2,val-2].filter(x=>x>=1&&x!==val);
+      const wrongs=[];
+      for(let wi=0;wi<cands.length&&wrongs.length<3;wi++){ if(wrongs.indexOf(cands[wi])<0) wrongs.push(cands[wi]); }
+      return {q:'What mass does this scale show?',
+        visual:'<div class="qvisual">'+gaugeSVG(val,max)+'</div>',
+        correct:val+'kg', options:shuffle([val+'kg'].concat(wrongs.map(x=>x+'kg'))),
+        explain:'The pointer is on '+val+', so the mass is '+val+'kg.'};
     }
     // add capacity
     const a=ri(5,9)*100,b=ri(3,9)*100,s=a+b,mlR=s%1000;
@@ -628,7 +713,7 @@ const store={
 let state=null;
 function freshState(){
   const per={}; TOPICS.forEach(t=>per[t.id]={c:0,w:0});
-  return {stars:0, stickers:[], per, sessions:[]};
+  return {stars:0, stickers:[], per, sessions:[], muted:false};
 }
 async function loadState(){
   try{const r=await store.get(KEY); state=r?JSON.parse(r.value):freshState();}
@@ -636,6 +721,7 @@ async function loadState(){
   // guard against missing topics after updates
   TOPICS.forEach(t=>{if(!state.per[t.id])state.per[t.id]={c:0,w:0};});
   if(!Array.isArray(state.sessions)) state.sessions=[];
+  if(typeof state.muted!=='boolean') state.muted=false;
 }
 async function saveState(){
   try{await store.set(KEY,JSON.stringify(state));}catch(e){console.error('save failed',e);}
@@ -643,7 +729,7 @@ async function saveState(){
 
 /* ================= views ================= */
 const main=document.getElementById('main');
-function setStars(){document.getElementById('starCount').textContent=state.stars;}
+function setStars(){document.getElementById('starCount').textContent=state.stars;document.getElementById('soundBtn').textContent=state.muted?'🔇':'🔊';}
 
 function renderHome(){
   setStars();
@@ -679,13 +765,17 @@ function weightedTopic(){
 
 let round=null;
 function startRound(topicId){
-  round={topicId, i:0, results:[], starsEarned:0};
+  round={topicId, i:0, results:[], starsEarned:0, seen:[]};
   nextQuestion();
 }
 function nextQuestion(){
   const topic=round.topicId?TOPICS.find(t=>t.id===round.topicId):weightedTopic();
   round.currentTopic=topic;
-  round.q=GEN[topic.id]();
+  let q, tries=0;
+  do{ q=GEN[topic.id](); tries++; }
+  while(round.seen.includes(q.q) && tries<25);
+  round.seen.push(q.q);
+  round.q=q;
   round.pickedIdx=null; round.locked=false;
   renderQuestion();
 }
@@ -716,6 +806,7 @@ function renderQuestion(){
 }
 function pickOption(i){
   if(round.locked)return;
+  SFX.tap();
   round.pickedIdx=i;
   main.querySelectorAll('.opt').forEach((b,j)=>b.classList.toggle('picked',j===i));
   document.getElementById('checkrow').innerHTML=
@@ -729,6 +820,7 @@ async function lockAnswer(){
   const q=round.q, t=round.currentTopic;
   const picked=q.options[round.pickedIdx];
   const isRight=String(picked)===String(q.correct);
+  if(isRight)SFX.right();else SFX.wrong();
   main.querySelectorAll('.opt').forEach((b,j)=>{
     b.disabled=true;
     if(String(q.options[j])===String(q.correct))b.classList.add('correct');
@@ -751,6 +843,7 @@ async function lockAnswer(){
   document.getElementById('bigtickChar').style.color=isRight?'#2F8C46':'var(--tick)';
   bt.style.display='flex';
   setTimeout(()=>{bt.style.display='none';},650);
+  if(newSticker) setTimeout(()=>SFX.sticker(),650);
 
   const last=round.results.length>=QUESTIONS_PER_ROUND;
   document.getElementById('checkrow').innerHTML=
@@ -801,6 +894,13 @@ document.getElementById('resetBtn').addEventListener('click',async()=>{
   if(confirm('Reset all stars, stickers and topic progress?')){
     state=freshState(); await saveState(); renderHome();
   }
+});
+
+document.getElementById('soundBtn').addEventListener('click',async()=>{
+  state.muted=!state.muted;
+  document.getElementById('soundBtn').textContent=state.muted?'🔇':'🔊';
+  if(!state.muted)SFX.tap();
+  await saveState();
 });
 
 /* ---------- Parent view (hold the star badge to open) ---------- */
