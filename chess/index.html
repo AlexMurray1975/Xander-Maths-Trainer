@@ -217,6 +217,18 @@ h1,h2,h3,.title,.btn,.crest,.turn-name,.coord{font-family:'Cinzel',Georgia,serif
 .hint-tip .wiz{font-style:normal; margin-right:6px; font-size:20px;}
 @keyframes tipin{from{opacity:0;transform:translateY(6px) scale(.96)}to{opacity:1;transform:none}}
 
+/* owl coach note (appears when the computer captures your piece) */
+.coach-note{position:fixed; left:50%; top:calc(var(--safe-t) + 96px); transform:translateX(-50%);
+  width:min(92vw,520px); z-index:30; display:none; padding:12px 16px; border-radius:14px; cursor:pointer;
+  font-family:'Cormorant Garamond',Georgia,serif; font-size:18px; font-style:italic; text-align:center; line-height:1.3;
+  color:#eef3ff; background:linear-gradient(180deg, rgba(40,46,70,.96), rgba(22,26,42,.97));
+  border:1px solid rgba(150,180,240,.5); box-shadow:0 14px 34px rgba(0,0,0,.6), inset 0 1px 0 rgba(255,255,255,.12);
+  backdrop-filter:blur(2px);}
+.coach-note.show{display:block; animation:coachin .35s cubic-bezier(.2,1.2,.4,1);}
+.coach-note .owl{font-style:normal; margin-right:6px; font-size:21px;}
+.coach-note .dismiss{display:block; margin-top:4px; font-size:13px; font-style:normal; opacity:.55;}
+@keyframes coachin{from{opacity:0;transform:translateX(-50%) translateY(-14px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+
 .bottombar{width:min(96vw,560px); display:flex; gap:10px; margin-top:2px;}
 .bottombar .btn{margin:0; font-size:17px; padding:12px;}
 
@@ -289,6 +301,7 @@ h1,h2,h3,.title,.btn,.crest,.turn-name,.coord{font-family:'Cinzel',Georgia,serif
 
   <!-- ================= GAME ================= -->
   <section class="screen" id="game">
+    <div class="coach-note" id="coach-note"></div>
     <div class="topbar">
       <button class="iconbtn" id="btn-menu" title="Menu">☰</button>
       <div class="turnbox" id="turnbox">
@@ -360,6 +373,10 @@ h1,h2,h3,.title,.btn,.crest,.turn-name,.coord{font-family:'Cinzel',Georgia,serif
     <div class="settings-row">
       <div><div class="lbl">✨ “Show me a move” button</div><div class="sub">Always on vs the computer; this adds it to Two Wizards too</div></div>
       <div class="toggle" id="tg-hint" data-key="hintButton"><div class="knob"></div></div>
+    </div>
+    <div class="settings-row">
+      <div><div class="lbl">🦉 Coach my captures</div><div class="sub">A gentle note when the computer takes a piece</div></div>
+      <div class="toggle" id="tg-coach" data-key="coach"><div class="knob"></div></div>
     </div>
     <p style="font-size:14px;opacity:.6;text-align:center;margin-top:12px;">
       For grown-ups: turn helpers on while Xander is learning, off for real-wizard mode.
@@ -553,7 +570,7 @@ const GLYPH={k:'♚',q:'♛',r:'♜',b:'♝',n:'♞',p:'♟'};
 const HOUSE_NAME={gryffindor:'Gryffindor',slytherin:'Slytherin'};
 const HOUSE_CLASS={gryffindor:'gryf',slytherin:'slyth'};
 
-const DEFAULT_SETTINGS={sound:true,showLegal:false,announceCheck:true,showLast:true,hintButton:false};
+const DEFAULT_SETTINGS={sound:true,showLegal:false,announceCheck:true,showLast:true,hintButton:false,coach:true};
 let settings=loadSettings();
 let stats=loadStats();
 
@@ -591,6 +608,7 @@ const sCapture=()=>{noiseThud();tone(120,.14,'sawtooth',.14);};
 const sCheck=()=>{tone(660,.12,'square',.14);tone(880,.14,'square',.12,.1);};
 const sWin=()=>{[523,659,784,1046].forEach((f,i)=>tone(f,.22,'triangle',.2,i*.11));};
 const sHint=()=>{tone(784,.12,'sine',.14);tone(1175,.16,'sine',.12,.08);};
+const sCoach=()=>{tone(494,.16,'sine',.10);tone(392,.2,'sine',.09,.1);};
 const sLose=()=>{[392,330,262].forEach((f,i)=>tone(f,.3,'sine',.18,i*.14));};
 
 /* ---------- Board build ---------- */
@@ -629,8 +647,9 @@ function newGame(opts){
     humanColor:opts.humanColor||WHITE,   // human plays this internal colour (always WHITE here)
     houseOf:opts.houseOf,           // {w:'gryffindor', b:'slytherin'}
     sel:null, legalForSel:[], lastMove:null,
-    history:[], posCounts:{}, thinking:false, animating:false, over:false
+    history:[], posCounts:{}, thinking:false, animating:false, over:false, pendingCoach:null
   };
+  hideCoach();
   recordPosition();
   showScreen('game');
   render();
@@ -865,6 +884,33 @@ function moveTip(m){
   if(fromT==='p'&&(m.to[1]===3||m.to[1]===4)&&(m.to[0]===3||m.to[0]===4)) return 'Grab the middle of the board — that’s where wizards win! ♟️';
   return 'A strong move — it makes your position better. ✨';
 }
+
+/* ---------- Owl coach: gentle note when the computer captures your piece ---------- */
+let coachTimer=null;
+function hideCoach(){const el=document.getElementById('coach-note');if(el)el.classList.remove('show');if(coachTimer){clearTimeout(coachTimer);coachTimer=null;}}
+function showCoach(msg){
+  const el=document.getElementById('coach-note');
+  el.innerHTML='<span class="owl">🦉</span>'+msg+'<span class="dismiss">(tap to close)</span>';
+  el.classList.add('show');
+  sCoach();
+  if(coachTimer)clearTimeout(coachTimer);
+  coachTimer=setTimeout(hideCoach,9000);
+}
+// Analyse (post-move, human to move) what the computer's capture means.
+function coachMessage(capType,m){
+  const s=G.state, human=G.humanColor, ai=other(human), b=s.board;
+  const capturerT=typeOf(b[idx(m.to[0],m.to[1])]);   // the computer's piece now on the square
+  const their=HOUSE_NAME[G.houseOf[ai]];
+  const capName=PIECE_NAME[capturerT], lostName=PIECE_NAME[capType];
+  const canRecap=isAttacked(b,m.to[0],m.to[1],human);
+  const inChk=inCheck(s,human);
+  const lostBig=VAL[capType]>=300;
+  if(inChk) return `The ${their} ${capName} took your ${lostName} — and it’s check! Get your king safe. 🛡️`;
+  if(canRecap&&VAL[capturerT]>=VAL[capType]) return `The ${their} ${capName} took your ${lostName} — but you can grab it straight back! ⚔️`;
+  if(canRecap) return `The ${their} ${capName} took your ${lostName}. You can take it back, though it cost a little — guard your big pieces! 🛡️`;
+  if(!lostBig) return `The ${their} ${capName} nibbled a pawn. No worries — that happens to every wizard! 🙂`;
+  return `Ouch — the ${their} ${capName} took your ${lostName}. Try to guard it or move it from danger next time. Tap ✨ Show Me a Good Move for a clever reply. 🛡️`;
+}
 function drawArrow(from,to){
   const svg=document.getElementById('hint-svg');
   const line=svg.querySelector('.hint-line'), head=svg.querySelector('.hint-head'), ring=svg.querySelector('.hint-ring');
@@ -884,11 +930,13 @@ function drawArrow(from,to){
 
 /* ---------- Apply move (with animation) ---------- */
 function applyMove(m){
-  clearHint();
+  clearHint(); hideCoach();
   // snapshot for undo
   G.history.push({state:cloneState(G.state),lastMove:G.lastMove,posCounts:{...G.posCounts}});
   const movingPieceIsCastle=(m.flag==='castleK'||m.flag==='castleQ');
   const willCapture=!!G.state.board[idx(m.to[0],m.to[1])]||m.flag==='ep';
+  const moverColor=G.state.turn;
+  const capType = m.flag==='ep' ? 'p' : (G.state.board[idx(m.to[0],m.to[1])] ? typeOf(G.state.board[idx(m.to[0],m.to[1])]) : null);
 
   // compute pixel delta for slide
   const cell=boardEl.clientWidth/8;
@@ -898,6 +946,11 @@ function applyMove(m){
   G.lastMove={from:m.from,to:m.to};
   G.sel=null; G.legalForSel=[];
   recordPosition();
+  // queue an owl-coach note if the COMPUTER just captured one of the human's pieces
+  G.pendingCoach=null;
+  if(settings.coach && G.mode==='computer' && moverColor!==G.humanColor && capType){
+    try{ G.pendingCoach=coachMessage(capType,m); }catch(e){}
+  }
   render();
 
   // animate the moved piece sliding in from origin
@@ -931,6 +984,7 @@ function afterMove(){
   if(settings.announceCheck&&inCheck(G.state,G.state.turn)&&!isGameOver()){sCheck();}
   render();
   if(checkGameEnd())return;
+  if(G.pendingCoach){ const msg=G.pendingCoach; G.pendingCoach=null; setTimeout(()=>{ if(G&&!G.over)showCoach(msg); },300); }
   maybeAI();
 }
 
@@ -1034,7 +1088,7 @@ function undo(){
   // in vs-computer, step back to the human's turn
   if(G.mode==='computer'&&G.state.turn!==G.humanColor&&G.history.length>0)restore();
   G.over=false; G.sel=null; G.legalForSel=[];
-  clearHint();
+  clearHint(); hideCoach();
   closeOverlay('over-overlay');
   render(); updateTurnBanner();
 }
@@ -1082,6 +1136,7 @@ document.getElementById('menu-resume').addEventListener('click',()=>closeOverlay
 document.getElementById('menu-restart').addEventListener('click',()=>{closeOverlay('menu-overlay');restartGame();});
 document.getElementById('menu-home').addEventListener('click',()=>{closeOverlay('menu-overlay');goHome();});
 document.getElementById('btn-hint').addEventListener('click',showHint);
+document.getElementById('coach-note').addEventListener('click',hideCoach);
 document.getElementById('btn-undo').addEventListener('click',undo);
 document.getElementById('btn-restart').addEventListener('click',restartGame);
 document.getElementById('over-again').addEventListener('click',()=>{closeOverlay('over-overlay');restartGame();});
@@ -1094,7 +1149,7 @@ function restartGame(){
   if(!G)return goHome();
   newGame({mode:G.mode,difficulty:G.difficulty,humanColor:G.humanColor,houseOf:G.houseOf});
 }
-function goHome(){G=null;showScreen('home');updateHomeStats();}
+function goHome(){hideCoach();G=null;showScreen('home');updateHomeStats();}
 
 /* ---------- Settings overlay ---------- */
 document.getElementById('open-settings').addEventListener('click',()=>{syncToggles();openOverlay('settings-overlay');});

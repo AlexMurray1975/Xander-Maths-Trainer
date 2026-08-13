@@ -18,6 +18,10 @@ installable, and works fully offline.
   it!", "Careful — your queen was in danger!", "Checkmate — this wins the game!",
   "Castle to keep your king safe", and so on). Shown automatically when playing the
   computer, and can be added to Two Wizards in Settings.
+- **Owl coach 🦉:** when playing the computer, a gentle note explains what happened
+  whenever the computer captures one of your pieces ("you can grab it straight
+  back!", "that happens to every wizard", "guard your big pieces") — encouraging,
+  never naggy. On by default vs the computer; switch it off in Settings.
 - Full chess rules: castling, en passant, pawn promotion (a pawn reaching the far
   side automatically becomes a Queen), check, checkmate, stalemate, plus draw by
   repetition / 50-move / insufficient material.

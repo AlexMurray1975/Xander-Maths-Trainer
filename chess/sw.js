@@ -1,7 +1,7 @@
 /* Wizard Chess — service worker (scoped to /chess/).
    Full offline support. Bump CACHE_VERSION whenever files change so installed
    devices pick up the new version on next launch. */
-const CACHE_VERSION = 'wizchess-v3';
+const CACHE_VERSION = 'wizchess-v4';
 const APP_SHELL = [
   './',
   './index.html',
