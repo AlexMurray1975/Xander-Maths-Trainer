@@ -22,6 +22,15 @@ installable, and works fully offline.
   whenever the computer captures one of your pieces ("you can grab it straight
   back!", "that happens to every wizard", "guard your big pieces") — encouraging,
   never naggy. On by default vs the computer; switch it off in Settings.
+- **Learn mode 📖** (off by default; toggle in Settings): tap any piece — yours or
+  the opponent's — to see gentle dots for how it can move, plus a one-line
+  description of that piece ("The knight leaps in an L-shape…").
+- **Capture graveyard + score:** each side shows its fallen enemies and a running
+  points score, with a 👑 crown for whoever is ahead.
+- **Chess clock ⏳** for Two Wizards: optional Off / 5 / 10 / 15-minute timers, chosen
+  when you start. The active player's clock ticks and glows; running out of time
+  loses the duel. Clocks pause while the menu is open.
+- Settings are reachable from the home screen **and** the in-game pause menu (☰).
 - Full chess rules: castling, en passant, pawn promotion (a pawn reaching the far
   side automatically becomes a Queen), check, checkmate, stalemate, plus draw by
   repetition / 50-move / insufficient material.

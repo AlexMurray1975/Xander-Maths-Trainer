@@ -310,6 +310,17 @@ h1,h2,h3,.title,.btn,.crest,.turn-name,.coord{font-family:'Cinzel',Georgia,serif
         <button class="btn" id="btn-begin" style="margin-top:14px;"><span class="em">🏰</span> Begin the Duel</button>
       </div>
 
+      <div id="friend-setup" style="display:none;">
+        <div class="sectlabel">Chess clock</div>
+        <div class="choices" id="clock-choices">
+          <div class="choice sel" data-clock="0"><div class="cn">Off</div><div class="cd">No timer</div></div>
+          <div class="choice" data-clock="5"><div class="cn">5 min</div><div class="cd">Speedy</div></div>
+          <div class="choice" data-clock="10"><div class="cn">10 min</div><div class="cd">Classic</div></div>
+          <div class="choice" data-clock="15"><div class="cn">15 min</div><div class="cd">Relaxed</div></div>
+        </div>
+        <button class="btn" id="btn-begin-friend" style="margin-top:14px;"><span class="em">🧙‍♂️</span> Start the Duel</button>
+      </div>
+
       <div class="hint">Your house always moves first — like the giant chess set at Hogwarts.</div>
     </div>
 
@@ -376,6 +387,7 @@ h1,h2,h3,.title,.btn,.crest,.turn-name,.coord{font-family:'Cinzel',Georgia,serif
     <h2>Paused</h2>
     <p>The duel is frozen in time.</p>
     <button class="btn" id="menu-resume"><span class="em">▶︎</span> Keep Playing</button>
+    <button class="btn ghost" id="menu-settings" style="margin-top:8px;">⚙︎ Settings</button>
     <button class="btn ghost" id="menu-restart" style="margin-top:8px;">🔄 New Duel</button>
     <button class="btn ghost" id="menu-home" style="margin-top:8px;">🏰 Back to Great Hall</button>
   </div>
@@ -688,15 +700,46 @@ function newGame(opts){
     houseOf:opts.houseOf,           // {w:'gryffindor', b:'slytherin'}
     sel:null, legalForSel:[], guide:null, lastMove:null,
     history:[], posCounts:{}, thinking:false, animating:false, over:false, pendingCoach:null,
-    clock:opts.clock||null
+    clock: opts.clock ? {ms:{w:opts.clock.ms.w,b:opts.clock.ms.b}, startMs:opts.clock.ms.w, lastTs:null} : null
   };
   hideCoach(); clearLearn();
   recordPosition();
   showScreen('game');
   render();
   updateTurnBanner();
+  startClock();
+  renderClocks();   // ensures clock pills are cleared when this game has no clock
   // If computer moves first (human chose to be the black-army... not possible here since human is always white)
   maybeAI();
+}
+
+/* ---------- Two-player chess clock ---------- */
+let clockInterval=null;
+function anyOverlayOpen(){return document.querySelectorAll('.overlay.show').length>0;}
+function fmtClock(ms){const s=Math.max(0,Math.ceil(ms/1000));return Math.floor(s/60)+':'+String(s%60).padStart(2,'0');}
+function startClock(){ stopClock(); if(!G||!G.clock)return; G.clock.lastTs=null; clockInterval=setInterval(clockTick,200); renderClocks(); }
+function stopClock(){ if(clockInterval){clearInterval(clockInterval);clockInterval=null;} }
+function clockTick(){
+  if(!G||!G.clock){stopClock();return;}
+  if(G.over||anyOverlayOpen()||G.thinking){ G.clock.lastTs=null; renderClocks(); return; }
+  const now=performance.now();
+  if(G.clock.lastTs==null){ G.clock.lastTs=now; renderClocks(); return; }
+  const dt=now-G.clock.lastTs; G.clock.lastTs=now;
+  const side=G.state.turn;
+  G.clock.ms[side]-=dt;
+  if(G.clock.ms[side]<=0){ G.clock.ms[side]=0; renderClocks(); stopClock(); endGame('timeout',other(side)); return; }
+  renderClocks();
+}
+function renderClocks(){
+  const ct=document.getElementById('clock-top'), cb=document.getElementById('clock-bottom');
+  if(!G||!G.clock){ [ct,cb].forEach(c=>c.classList.remove('on','active','low')); return; }
+  ct.classList.add('on'); cb.classList.add('on');
+  ct.textContent=fmtClock(G.clock.ms[BLACK]); cb.textContent=fmtClock(G.clock.ms[WHITE]);
+  const live=!G.over&&!anyOverlayOpen();
+  ct.classList.toggle('active', live && G.state.turn===BLACK);
+  cb.classList.toggle('active', live && G.state.turn===WHITE);
+  ct.classList.toggle('low', G.clock.ms[BLACK]<30000);
+  cb.classList.toggle('low', G.clock.ms[WHITE]<30000);
 }
 
 function positionKey(s){return s.board.join('')+'|'+s.turn+'|'+(s.castling.K?'K':'')+(s.castling.Q?'Q':'')+(s.castling.k?'k':'')+(s.castling.q?'q':'')+'|'+(s.ep?s.ep.join(','):'-');}
@@ -791,6 +834,7 @@ function updateTurnBanner(){
   sub.style.color = inChk ? '#ff8a7a' : '';
 }
 function setThinking(on){
+  if(!G)return;
   G.thinking=on;
   document.getElementById('thinking').classList.toggle('show',on);
   document.getElementById('turn-sub').style.visibility=on?'hidden':'visible';
@@ -1063,6 +1107,7 @@ function applyMove(m){
   else sMove();
 
   const finish=()=>{
+    if(!G)return;
     if(pe){pe.classList.remove('moving');pe.style.transition='';pe.style.transform='';}
     G.animating=false;
     afterMove();
@@ -1075,6 +1120,7 @@ function afterMove(){
   // check sound + toast
   if(settings.announceCheck&&inCheck(G.state,G.state.turn)&&!isGameOver()){sCheck();}
   render();
+  renderClocks();
   if(checkGameEnd())return;
   if(G.pendingCoach){ const msg=G.pendingCoach; G.pendingCoach=null; setTimeout(()=>{ if(G&&!G.over)showCoach(msg); },300); }
   maybeAI();
@@ -1115,6 +1161,7 @@ function maybeAI(){
     let m=null;
     try{m=chooseMove(G.state,G.difficulty);}catch(e){m=legalMoves(G.state)[0];}
     setThinking(false);
+    if(!G||G.over)return;
     if(!m){checkGameEnd();return;}
     applyMove(m);
   },260);
@@ -1123,6 +1170,7 @@ function maybeAI(){
 /* ---------- End game ---------- */
 function endGame(kind,winnerColor){
   G.over=true;
+  stopClock();
   stats.games++;
   const emoji=document.getElementById('over-emoji');
   const title=document.getElementById('over-title');
@@ -1133,7 +1181,13 @@ function endGame(kind,winnerColor){
     repetition:'A draw by repetition — the same position, three times over.',
     material:'A draw — not enough pieces left to checkmate.'
   };
-  if(kind==='checkmate'){
+  if(kind==='timeout'){
+    const winHouse=G.houseOf[winnerColor], loseHouse=G.houseOf[other(winnerColor)];
+    emoji.textContent='⏳';
+    title.textContent='Out of Time!';
+    msg.textContent=`${HOUSE_NAME[loseHouse]} ran out of time — ${HOUSE_NAME[winHouse]} wins the duel! 🏆`;
+    sWin(); confetti();
+  }else if(kind==='checkmate'){
     const winHouse=G.houseOf[winnerColor];
     const humanWon=(G.mode==='computer'&&winnerColor===G.humanColor);
     emoji.textContent = winHouse==='gryffindor'?'🦁':'🐍';
@@ -1191,19 +1245,22 @@ function openOverlay(id){document.getElementById(id).classList.add('show');}
 function closeOverlay(id){document.getElementById(id).classList.remove('show');}
 
 /* ---------- Home wiring ---------- */
-let chosenHouse='gryffindor', chosenDiff='medium';
+let chosenHouse='gryffindor', chosenDiff='medium', chosenClock=0;
 function updateHomeStats(){
   const el=document.getElementById('home-stats');
   el.textContent = stats.games>0 ? `Duels won vs the computer: ${stats.wins}` : '';
 }
 document.getElementById('btn-computer').addEventListener('click',()=>{
   ensureAudio();
+  document.getElementById('friend-setup').style.display='none';
   document.getElementById('setup').style.display='block';
   document.getElementById('setup').scrollIntoView({behavior:'smooth',block:'nearest'});
 });
 document.getElementById('btn-friend').addEventListener('click',()=>{
   ensureAudio();
-  newGame({mode:'friend',houseOf:{w:'gryffindor',b:'slytherin'},humanColor:WHITE});
+  document.getElementById('setup').style.display='none';
+  document.getElementById('friend-setup').style.display='block';
+  document.getElementById('friend-setup').scrollIntoView({behavior:'smooth',block:'nearest'});
 });
 document.getElementById('house-choices').addEventListener('click',e=>{
   const ch=e.target.closest('.choice'); if(!ch)return;
@@ -1215,16 +1272,27 @@ document.getElementById('diff-choices').addEventListener('click',e=>{
   document.querySelectorAll('#diff-choices .choice').forEach(x=>x.classList.remove('sel'));
   ch.classList.add('sel'); chosenDiff=ch.dataset.diff;
 });
+document.getElementById('clock-choices').addEventListener('click',e=>{
+  const ch=e.target.closest('.choice'); if(!ch)return;
+  document.querySelectorAll('#clock-choices .choice').forEach(x=>x.classList.remove('sel'));
+  ch.classList.add('sel'); chosenClock=parseInt(ch.dataset.clock,10);
+});
 document.getElementById('btn-begin').addEventListener('click',()=>{
   ensureAudio();
   const opp = chosenHouse==='gryffindor'?'slytherin':'gryffindor';
   // human's chosen house is the WHITE army (moves first, sits at the bottom)
   newGame({mode:'computer',difficulty:chosenDiff,humanColor:WHITE,houseOf:{w:chosenHouse,b:opp}});
 });
+document.getElementById('btn-begin-friend').addEventListener('click',()=>{
+  ensureAudio();
+  const clock = chosenClock>0 ? {ms:{w:chosenClock*60000,b:chosenClock*60000}} : null;
+  newGame({mode:'friend',houseOf:{w:'gryffindor',b:'slytherin'},humanColor:WHITE,clock:clock});
+});
 
 /* ---------- Game controls ---------- */
 document.getElementById('btn-menu').addEventListener('click',()=>openOverlay('menu-overlay'));
 document.getElementById('menu-resume').addEventListener('click',()=>closeOverlay('menu-overlay'));
+document.getElementById('menu-settings').addEventListener('click',()=>{closeOverlay('menu-overlay');syncToggles();openOverlay('settings-overlay');});
 document.getElementById('menu-restart').addEventListener('click',()=>{closeOverlay('menu-overlay');restartGame();});
 document.getElementById('menu-home').addEventListener('click',()=>{closeOverlay('menu-overlay');goHome();});
 document.getElementById('btn-hint').addEventListener('click',showHint);
@@ -1239,9 +1307,10 @@ document.getElementById('btn-sound').addEventListener('click',()=>{
 function syncSoundBtn(){document.getElementById('btn-sound').textContent=settings.sound?'🔊':'🔇';}
 function restartGame(){
   if(!G)return goHome();
-  newGame({mode:G.mode,difficulty:G.difficulty,humanColor:G.humanColor,houseOf:G.houseOf});
+  const clock = G.clock ? {ms:{w:G.clock.startMs,b:G.clock.startMs}} : null;
+  newGame({mode:G.mode,difficulty:G.difficulty,humanColor:G.humanColor,houseOf:G.houseOf,clock:clock});
 }
-function goHome(){hideCoach();G=null;showScreen('home');updateHomeStats();}
+function goHome(){stopClock();hideCoach();G=null;showScreen('home');updateHomeStats();}
 
 /* ---------- Settings overlay ---------- */
 document.getElementById('open-settings').addEventListener('click',()=>{syncToggles();openOverlay('settings-overlay');});
