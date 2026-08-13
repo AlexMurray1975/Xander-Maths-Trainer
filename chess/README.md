@@ -13,8 +13,11 @@ installable, and works fully offline.
   the board. Grown-ups can turn learning helpers on in **⚙︎ Settings** (show legal
   moves, announce check, show last move).
 - **"Show Me a Good Move" helper:** a button that draws a golden arrow to a strong
-  move *only when tapped* — nothing appears unless asked. It's shown automatically
-  when playing the computer, and can be added to Two Wizards in Settings.
+  move *only when tapped* — nothing appears unless asked — plus a one-line **wizard
+  tip** on a parchment ribbon explaining *why* ("Free knight — nothing's guarding
+  it!", "Careful — your queen was in danger!", "Checkmate — this wins the game!",
+  "Castle to keep your king safe", and so on). Shown automatically when playing the
+  computer, and can be added to Two Wizards in Settings.
 - Full chess rules: castling, en passant, pawn promotion (a pawn reaching the far
   side automatically becomes a Queen), check, checkmate, stalemate, plus draw by
   repetition / 50-move / insufficient material.
