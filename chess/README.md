@@ -9,12 +9,15 @@ installable, and works fully offline.
   on one iPad.
 - **Choose your house:** your army plays in Gryffindor red-and-gold or Slytherin
   green-and-silver, and always moves first (like the giant Hogwarts set).
-- **Real-wizard mode by default:** no glowing squares, no hints — just the board.
-  Grown-ups can turn learning helpers on in **⚙︎ Settings** (show legal moves,
-  announce check, show last move).
-- Full chess rules: castling, en passant, pawn promotion (choose your piece),
-  check, checkmate, stalemate, plus draw by repetition / 50-move / insufficient
-  material.
+- **Real-wizard mode by default:** no glowing squares, no automatic hints — just
+  the board. Grown-ups can turn learning helpers on in **⚙︎ Settings** (show legal
+  moves, announce check, show last move).
+- **"Show Me a Good Move" helper:** a button that draws a golden arrow to a strong
+  move *only when tapped* — nothing appears unless asked. It's shown automatically
+  when playing the computer, and can be added to Two Wizards in Settings.
+- Full chess rules: castling, en passant, pawn promotion (a pawn reaching the far
+  side automatically becomes a Queen), check, checkmate, stalemate, plus draw by
+  repetition / 50-move / insufficient material.
 - No accounts, no backend, no analytics, no trackers. Sound effects and win/loss
   tally are stored on the device.
 
