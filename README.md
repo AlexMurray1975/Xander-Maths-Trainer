@@ -1,3 +1,13 @@
+# Xander's Apps
+
+This repo holds two self-contained, installable, offline web apps for Xander:
+
+- **[Xander's Wizard Chess](chess/)** — a Harry Potter-style marble chess game (Gryffindor
+  vs Slytherin), play the computer or a friend. See [`chess/`](chess/).
+- **Maths Trainer** — Year 3 maths practice (below), at the repo root.
+
+---
+
 # Xander's Maths Trainer
 
 A single-page, installable web app (PWA) that quizzes an 8-year-old on Year 3 (White Rose)
