@@ -1,4 +1,4 @@
-# Wizard Chess — Xander's Marble Duel
+# Xander's Wizard Chess
 
 A Harry Potter-style chess game for Xander: **Gryffindor vs Slytherin** in carved
 marble, on a marble board in a candle-lit Hogwarts great hall. Single-page,
