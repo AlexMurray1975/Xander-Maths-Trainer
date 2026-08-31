@@ -154,11 +154,22 @@ blocking, but all of them worth settling first.
    the softness. Replacing them with proper headshots (≥600px square) would be a
    visible improvement. Drop new files over `assets/img/team/*.jpg`.
 
-4. **The Outrigger logo is raster, not vector.** The best copy available in the deck is
-   145×102px, too coarse to trace cleanly. The site uses the mark as an image
-   alongside a live-text wordmark set in Jost, which is a close match to the
-   original. If you have the original vector logo, replace `assets/img/mark.png`
-   and `assets/img/logo-white.png` with SVG and the whole identity sharpens.
+4. **Nothing outstanding on the Outrigger logo.** Outrigger supplied the
+   artwork at 500×350 with clean alpha, and the mark has been traced to vector:
+   `assets/img/mark.svg` is 49 ellipses in the two brand blues, 5KB, sharp at
+   any size. It drives the header, the footer and the favicons, which are now
+   rendered from the vector geometry rather than upscaled. The supplied lockup
+   is kept at native resolution as `assets/img/logo.png` for use elsewhere.
+
+   The brand tokens in `site.css` were corrected to the exact values in the
+   artwork: `--brand: #3871C1` and `--cyan: #51ADE5`, replacing the values
+   sampled from the low-resolution deck copy.
+
+   The wordmark is still live text set in Jost rather than traced letterforms —
+   tracing type is a different job from tracing 49 ellipses, and live text stays
+   selectable, searchable and accessible. Jost is a close match to the original.
+   If the exact wordmark matters, send the vector lockup and it can replace the
+   text.
 
 5. **The regional allocation split.** The deck shows 35% / 25% / 25% with a 15%
    floating allocation across three columns, but the percentages sit outside the
