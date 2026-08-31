@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Where We Invest — Big Ocean States — Outrigger Impact</title>
+<meta name="description" content="The 35 Big Ocean States in Outrigger's eligible geography, with exclusive economic zone, population and GDP data for each, on an interactive map.">
+<link rel="canonical" href="https://www.outriggerimpact.com/states.html">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Outrigger Impact">
+<meta property="og:title" content="Where We Invest — Big Ocean States — Outrigger Impact">
+<meta property="og:description" content="The 35 Big Ocean States in Outrigger's eligible geography, with exclusive economic zone, population and GDP data for each, on an interactive map.">
+<meta property="og:url" content="https://www.outriggerimpact.com/states.html">
+<meta property="og:image" content="https://www.outriggerimpact.com/assets/img/hero-outrigger.jpg">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="assets/img/icon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="assets/img/icon-180.png">
+<meta name="theme-color" content="#04182B">
+
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/inter-400-normal-latin.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/newsreader-300-normal-latin.woff2" crossorigin>
+<link rel="stylesheet" href="assets/css/fonts.css">
+<link rel="stylesheet" href="assets/css/site.css">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Outrigger Impact",
+  "url": "https://www.outriggerimpact.com/",
+  "logo": "https://www.outriggerimpact.com/assets/img/icon-512.png",
+  "description": "Outrigger Impact Fund I is an impact-led blended finance fund investing in the sustainable blue economy of Small Island Developing States.",
+  "email": "simon.dent@outriggerimpact.com",
+  "sameAs": []
+}
+</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="hdr">
+  <div class="wrap hdr__in">
+    <a class="brand" href="index.html" aria-label="Outrigger Impact — home">
+      <img src="assets/img/mark.png" alt="" width="176" height="192">
+      <span class="brand__txt">
+        <span class="brand__a">Outrigger</span>
+        <span class="brand__b">Impact</span>
+      </span>
+    </a>
+
+    <button class="burger" type="button" aria-expanded="false" aria-controls="nav" aria-label="Menu">
+      <span></span>
+    </button>
+
+    <nav class="nav" id="nav" aria-label="Primary">
+      <a href="fund.html">The Fund</a>
+      <a href="states.html" aria-current="page">Where We Invest</a>
+      <a href="impact.html">Impact</a>
+      <a href="otaf.html">OTAF</a>
+      <a href="team.html">Team</a>
+      <a class="btn" href="contact.html">Get in touch</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="banner">
+  <div class="banner__media"><img src="assets/img/palms.jpg" alt="" width="1200" height="580" fetchpriority="high"></div>
+  <div class="banner__scrim"></div>
+  <div class="wrap banner__in on-dark" style="background:none">
+    <p class="crumb"><a href="index.html">Home</a><span>/</span>Where We Invest</p>
+    <h1 class="display">Big Ocean States</h1>
+    <p class="lede">Small Island Developing States steward 30% of the world’s ocean through their exclusive economic zones, and receive eleven times less finance than other lower-middle-income countries. Outrigger invests where that gap is widest.</p>
+  </div>
+</section>
+
+<!-- ---------- Scale ---------- -->
+<section class="section section--tight">
+  <div class="wrap">
+    <div class="grid g-3">
+      <div class="rv">
+        <div class="stat__n"><span data-count="1.34" data-dp="2">1.34</span>m km²</div>
+        <p class="stat__l">The Seychelles’ EEZ — nearly two and a half times the landmass of France (551,000 km²)</p>
+      </div>
+      <div class="rv" data-delay="80">
+        <div class="stat__n"><span data-count="3.29" data-dp="2">3.29</span>m km²</div>
+        <p class="stat__l">Kiribati’s ocean territory — larger than India, and among the largest in the world</p>
+      </div>
+      <div class="rv" data-delay="160">
+        <div class="stat__n"><span data-count="286000">286,000</span> km²</div>
+        <p class="stat__l">Jamaica’s EEZ — bigger than the land area of the United Kingdom (~243,000 km²)</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ---------- Map ---------- -->
+<section class="section on-dark is-abyss">
+  <div class="wrap">
+    <div class="rv" style="max-width:60ch">
+      <p class="eyebrow">The eligible geography</p>
+      <h2 class="h2">Thirty-five states, three regions, one strategy</h2>
+      <p class="lede mt-2">Outrigger focuses on 20 of the 38 UN SIDS Member States for the investment window. The remaining countries are addressed through the hub-and-spoke strategy and the Technical Assistance Facility. At least 80% of the fund is deployed into ODA-eligible developing countries, with a 15% floating allocation.</p>
+    </div>
+
+    <div class="mt-3 rv">
+      <div class="chips mb-2">
+        <button class="chip" type="button" data-mapfilter="all" aria-pressed="true">All regions</button>
+        <button class="chip" type="button" data-mapfilter="Caribbean" aria-pressed="false">Caribbean · 35%</button>
+        <button class="chip" type="button" data-mapfilter="AIS" aria-pressed="false">Atlantic &amp; Indian Ocean · 25%</button>
+        <button class="chip" type="button" data-mapfilter="Pacific" aria-pressed="false">Pacific · 25%</button>
+      </div>
+
+      <div class="map-shell" id="map"></div>
+      <p class="small mt-1" style="opacity:.8">Hover, tap or tab to a point for its ocean and economic data.</p>
+
+      <div class="map-legend mt-2">
+        <span><i style="background:#fff"></i> Initial investment window</span>
+        <span><i style="background:#54B3ED"></i> Eligible geography</span>
+        <span>Point size reflects the size of the exclusive economic zone</span>
+      </div>
+      <p class="small mt-2">Filtering the map filters the table below. The map is a schematic equirectangular projection centred on the Pacific: states are plotted at their true longitude and latitude, and no coastlines or boundaries are drawn.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ---------- Table ---------- -->
+<section class="section">
+  <div class="wrap">
+    <div class="rv" style="max-width:56ch">
+      <p class="eyebrow">The data</p>
+      <h2 class="h2">Big Ocean States by size of EEZ</h2>
+      <p class="lede mt-2">Sort any column. Population, GDP per capita and growth are World Bank figures for 2024.</p>
+    </div>
+
+    <div class="mt-3 rv" style="display:flex;flex-wrap:wrap;gap:14px;align-items:center;justify-content:space-between">
+      <label class="field" style="margin:0;flex:1 1 260px;max-width:340px">
+        <span class="vh">Search states</span>
+        <input id="states-search" type="search" placeholder="Search for a state…" autocomplete="off">
+      </label>
+      <p class="small" style="margin:0"><span id="states-count">35 states</span> shown</p>
+    </div>
+
+    <div class="table-scroll mt-2 rv">
+      <table class="dtable" id="states-table">
+        <caption class="vh">Big Ocean States in Outrigger’s eligible geography, with ocean and economic data</caption>
+        <thead>
+          <tr>
+            <th scope="col" aria-sort="none" data-key="n">State <span class="arrow" aria-hidden="true">▲</span></th>
+            <th scope="col" aria-sort="none" data-key="r">Region <span class="arrow" aria-hidden="true">▲</span></th>
+            <th scope="col" class="num" aria-sort="descending" data-key="eez">EEZ (km²) <span class="arrow" aria-hidden="true">▲</span></th>
+            <th scope="col" class="num" aria-sort="none" data-key="pop">Population <span class="arrow" aria-hidden="true">▲</span></th>
+            <th scope="col" class="num" aria-sort="none" data-key="gdp">GDP per capita <span class="arrow" aria-hidden="true">▲</span></th>
+            <th scope="col" class="num" aria-sort="none" data-key="gr">GDP growth <span class="arrow" aria-hidden="true">▲</span></th>
+            <th scope="col" aria-sort="none" data-key="oda">ODA status <span class="arrow" aria-hidden="true">▲</span></th>
+          </tr>
+        </thead>
+        <tbody id="states-body">
+          <tr><td colspan="7" style="white-space:normal">Loading the dataset. If this message persists, JavaScript is disabled — the same figures appear in the fund presentation.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="small mt-2">Sources: exclusive economic zone areas and World Bank 2024 indicators, as compiled in the Outrigger Impact Fund presentation. Sri Lanka is not designated a SIDS but faces comparable challenges and is included in the eligible geography.</p>
+  </div>
+</section>
+
+<!-- ---------- Regions ---------- -->
+<section class="section on-paper2">
+  <div class="wrap">
+    <div class="rv" style="max-width:52ch">
+      <p class="eyebrow">Regional allocation</p>
+      <h2 class="h2">Three regions, deliberately weighted</h2>
+      <p class="lede mt-2">Indicative regional allocation, with a 15% floating allocation retained for opportunity.</p>
+    </div>
+    <div class="grid g-3 mt-4">
+      <div class="card rv">
+        <div class="card__num">35% · Caribbean</div>
+        <h3 class="h3">Fourteen states</h3>
+        <p class="small">Antigua and Barbuda · Bahamas · Barbados · Belize · Dominica · Dominican Republic · Grenada · Guyana · Jamaica · Saint Kitts and Nevis · Saint Lucia · Saint Vincent and the Grenadines · Suriname · Trinidad and Tobago</p>
+      </div>
+      <div class="card rv" data-delay="80">
+        <div class="card__num">25% · Atlantic, Indian Ocean &amp; South China Sea</div>
+        <h3 class="h3">Eight states</h3>
+        <p class="small">Cabo Verde · Comoros · Guinea-Bissau · Maldives · Mauritius · São Tomé and Príncipe · Seychelles · Sri Lanka</p>
+      </div>
+      <div class="card rv" data-delay="160">
+        <div class="card__num">25% · Pacific</div>
+        <h3 class="h3">Thirteen states</h3>
+        <p class="small">Fiji · Kiribati · Marshall Islands · Federated States of Micronesia · Nauru · Palau · Papua New Guinea · Samoa · Solomon Islands · Timor-Leste · Tonga · Tuvalu · Vanuatu</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ---------- CTA ---------- -->
+<section class="section on-dark center">
+  <div class="wrap wrap-narrow">
+    <h2 class="h2 rv">A dedicated financial facility, for the countries that have never had one</h2>
+    <div class="btn-row mt-3 rv" style="justify-content:center">
+      <a class="btn" href="fund.html">How the fund works
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+      </a>
+      <a class="btn btn--ghost" href="contact.html">Get in touch</a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="ftr">
+  <div class="wrap">
+    <div class="ftr__top">
+      <div class="ftr__mark">
+        <img src="assets/img/logo-white.png" alt="Outrigger Impact" width="320" height="300">
+        <p class="small" style="max-width:34ch">Driving resilience in Big Ocean States through investment in the sustainable blue economy.</p>
+      </div>
+
+      <div>
+        <h4>The fund</h4>
+        <ul>
+          <li><a href="fund.html">Strategy &amp; structure</a></li>
+          <li><a href="states.html">Where we invest</a></li>
+          <li><a href="impact.html">Impact &amp; ESG</a></li>
+          <li><a href="otaf.html">Technical Assistance Facility</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>About</h4>
+        <ul>
+          <li><a href="team.html">Team &amp; governance</a></li>
+          <li><a href="team.html#committee">Investment Committee</a></li>
+          <li><a href="index.html#partners">Partners &amp; supporters</a></li>
+          <li><a href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4>Enquiries</h4>
+        <ul>
+          <li><a href="mailto:simon.dent@outriggerimpact.com">simon.dent@<wbr>outriggerimpact.com</a></li>
+          <li><a href="mailto:jeremy.milward@outriggerimpact.com">jeremy.milward@<wbr>outriggerimpact.com</a></li>
+        </ul>
+        <p class="small" style="margin-top:18px">Outrigger Impact Fund I SCA SICAV-RAIF is domiciled in Luxembourg. AIFM: Alter Domus Management Company S.A.</p>
+      </div>
+    </div>
+
+    <div class="ftr__legal">
+      <p><strong style="color:rgba(255,255,255,.7)">Pre-marketing notice.</strong>
+      This website is a pre-marketing screening communication and is for discussion purposes only. The present overview is neither a financial analysis nor investment advice, an investment recommendation or a capital market prospectus. It does not constitute a public offer, an invitation to buy or participate in the Outrigger Impact Fund (the Fund) nor an invitation to negotiate about buying or participating in the Fund. It is not yet possible to participate in the Fund or to issue letters of intent and this website does not contain sufficient information to make an investment decision in the Fund. Neither this website, nor any part of it, shall form the basis of, or be relied on in connection with, any contract to (commit to) purchase or subscribe for any interest in the Fund. The Outrigger team is not under any obligation to establish the Fund. Any investment in or subscription to the Fund may only be made on the basis of a partnership agreement and subscription agreement in their final form which may be provided to you by the Outrigger team (or, at their discretion, any of its affiliates or agent) in due time. Outrigger recommends you seek the advice of your own legal and tax consultants before you take an investment decision with respect to the Fund. Alter Domus Management Company S.A., a Luxembourg based Alternative Investment Fund Manager (the AIFM), has made the relevant regulatory notifications to the Commission de Surveillance du Secteur Financier (“CSSF”) in order to comply with the pre-marketing requirements under Directive (EU) 2019/1160. The Fund will be offered only to professional investors within the meaning of Annex II of Directive 2014/65/EU (MiFID II) pursuant to section 330 of the Investment Code.</p>
+      <p style="margin-top:14px">Target returns, fund size, timings and pipeline shown on this website are indicative, are based on the manager’s current expectations, and are not a guarantee of future results. Capital is at risk.</p>
+    </div>
+
+    <div class="ftr__base">
+      <span>© <span data-year>2025</span> Outrigger Impact. All rights reserved.</span>
+      <span>Registered in the United Kingdom · Fund domiciled in Luxembourg</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/js/data.js"></script>
+<script src="assets/js/site.js"></script>
+</body>
+</html>

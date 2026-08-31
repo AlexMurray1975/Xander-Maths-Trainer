@@ -1,0 +1,114 @@
+<!--
+title: Contact — Outrigger Impact
+description: Contact the Outrigger Impact team about the fund, the Technical Assistance Facility, co-investment or project opportunities in Small Island Developing States.
+slug: contact.html
+-->
+<main id="main">
+
+<section class="banner">
+  <div class="banner__scrim" style="background:linear-gradient(160deg,var(--deep),var(--abyss))"></div>
+  <div class="wrap banner__in on-dark" style="background:none">
+    <p class="crumb"><a href="index.html">Home</a><span>/</span>Contact</p>
+    <h1 class="display">Start a conversation</h1>
+    <p class="lede">Outrigger is speaking with investors, development finance institutions, donors and island partners ahead of first close.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="wrap">
+    <div class="grid g-2" style="align-items:start;gap:clamp(40px,6vw,88px)">
+
+      <div class="rv">
+        <p class="eyebrow">Enquiries</p>
+        <h2 class="h2">Who to write to</h2>
+
+        <ul class="rows mt-3">
+          <li>
+            <h3 class="h3">Simon Dent</h3>
+            <p class="small">Managing Director</p>
+            <p><a class="textlink textlink--plain" href="mailto:simon.dent@outriggerimpact.com">simon.dent@outriggerimpact.com</a></p>
+          </li>
+          <li>
+            <h3 class="h3">Jeremy Milward</h3>
+            <p class="small">Managing Director</p>
+            <p><a class="textlink textlink--plain" href="mailto:jeremy.milward@outriggerimpact.com">jeremy.milward@outriggerimpact.com</a></p>
+          </li>
+        </ul>
+
+        <div class="card mt-3">
+          <h3 class="h3">Before you write</h3>
+          <p class="small">The fund is offered only to professional investors within the meaning of Annex II of MiFID II. This website is a pre-marketing communication and does not contain sufficient information to make an investment decision. Nothing here constitutes an offer or an invitation to participate in the fund.</p>
+        </div>
+      </div>
+
+      <div class="rv" data-delay="90">
+        <p class="eyebrow">Send a message</p>
+        <h2 class="h2 mb-3">Tell us what you are interested in</h2>
+
+        <!-- Set `action` to a form endpoint (Formspree, Netlify Forms, etc.).
+             Until then the form opens the visitor's mail client. -->
+        <form id="enquiry" method="post" novalidate>
+          <noscript>
+            <p class="card" style="margin-bottom:24px">This form needs JavaScript. Please write to
+            <a href="mailto:simon.dent@outriggerimpact.com">simon.dent@outriggerimpact.com</a> instead.</p>
+          </noscript>
+          <div class="field">
+            <label for="f-name">Your name</label>
+            <input id="f-name" name="name" type="text" autocomplete="name" required>
+          </div>
+          <div class="field">
+            <label for="f-org">Organisation</label>
+            <input id="f-org" name="org" type="text" autocomplete="organization">
+          </div>
+          <div class="field">
+            <label for="f-email">Email</label>
+            <input id="f-email" name="email" type="email" autocomplete="email" required>
+          </div>
+          <div class="field">
+            <label for="f-interest">I am enquiring about</label>
+            <select id="f-interest" name="interest">
+              <option>Investing in the fund</option>
+              <option>Co-investment</option>
+              <option>Supporting the Technical Assistance Facility</option>
+              <option>A project or business in a Big Ocean State</option>
+              <option>Media or speaking</option>
+              <option>Something else</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="f-message">Message</label>
+            <textarea id="f-message" name="message" required></textarea>
+          </div>
+
+          <button class="btn" type="submit">Send message
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+          </button>
+          <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+          <p class="form-note mt-1">We use what you send only to respond to your enquiry.</p>
+        </form>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="section section--tight on-paper2">
+  <div class="wrap">
+    <div class="grid g-3">
+      <div class="rv">
+        <h3 class="h4" style="color:var(--brand);margin-bottom:12px">Fund vehicle</h3>
+        <p class="small">Outrigger Impact Fund I SCA SICAV-RAIF, domiciled in Luxembourg. AIFM: Alter Domus Management Company S.A.</p>
+      </div>
+      <div class="rv" data-delay="70">
+        <h3 class="h4" style="color:var(--brand);margin-bottom:12px">Technical Assistance Facility</h3>
+        <p class="small">A UK company limited by guarantee, with its own Grant Committee of key donors and Outrigger management.</p>
+      </div>
+      <div class="rv" data-delay="140">
+        <h3 class="h4" style="color:var(--brand);margin-bottom:12px">Advisory</h3>
+        <p class="small">Outrigger Impact Investment Advisor, supported by strategic advisers across the blue economy and island states.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>

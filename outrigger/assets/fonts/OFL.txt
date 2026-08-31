@@ -1,0 +1,11 @@
+The webfonts in this directory — Inter, Jost and Newsreader — are licensed under
+the SIL Open Font License, Version 1.1.
+
+Inter       — Copyright (c) The Inter Project Authors (https://github.com/rsms/inter)
+Jost        — Copyright (c) Owen Earl / indestructible type* (https://github.com/indestructible-type/Jost)
+Newsreader  — Copyright (c) Production Type (https://github.com/productiontype/Newsreader)
+
+The full licence text is available at https://openfontlicense.org and in each
+project's repository. Under the OFL these fonts may be used, studied, modified
+and redistributed freely, including bundled with a website, provided they are
+not sold by themselves and any derivative reserved-name requirements are met.
