@@ -15,11 +15,11 @@ Drop the folder on any static host and it works.
 | `index.html` | Home — the organisation, the opportunity, geography, sectors, impact, OTAF, partners |
 | `states.html` | The 35 Big Ocean States: interactive map, sortable dataset, the three regions |
 | `impact.html` | Standards, seven impact themes, the 14-KPI explorer, theory of change |
-| `otaf.html` | The Technical Assistance Facility, its four workstreams, and an FAQ |
+| `otaf.html` | The Technical Assistance Facility, its four workstreams, the grant timeline, and an FAQ |
+| `otaf-portfolio.html` | The four OTAF grants to date — INVERSA, SarGas, ABALOBI, Positive Change for Marine Life |
 | `team.html` | The team, collective experience, and the Investment Committee |
 | `news.html` | News index — announcements plus a reading list of third-party coverage |
 | `news-first-close.html` | The 28 July 2026 first close press release, reproduced as issued |
-| `investors.html` | **Restricted.** The whole fund proposition — strategy, models, allocation, capital structure, terms, returns, pipeline — behind an investor-status confirmation |
 | `contact.html` | Enquiry routes and a contact form |
 | `404.html` | Not-found page |
 
@@ -84,6 +84,37 @@ exercise tractable.
 claims, named investors, target figures, photography, logos or the boundary
 between public and private material should go back through approval.
 
+## The 2026 Impact Report, and what came off it
+
+The *Outrigger Impact Report 2026* is the site's primary source for the impact
+framework, the fund's targets, the eligible geography and the OTAF portfolio.
+Two things about it govern how it is used.
+
+**It is not itself publishable.** Its inside cover carries the full
+financial-promotion disclaimer approved by Robert Quinn Advisory, including the
+statement that the document is exclusively intended for Professional Clients and
+Eligible Counterparties, and page 12 sets out the fund's blended structure and
+investment models. It cannot be offered for public download. It goes to
+professional investors on request, with the rest of the fund materials. The
+website draws on the non-promotional parts of it and publishes those in its own
+words.
+
+**It disagrees with the press release, and the site follows the report.** The
+announcement of 28 July 2026 quoted "2 million people", "more than 12,500 jobs"
+and "1 million tonnes". The report's actual targets are 1.9m indirect
+beneficiaries, 12,500 **direct beneficiaries** and 950,000 tCO₂e. Two of those
+are rounding; "jobs" versus "direct beneficiaries" is not. The site now carries
+the report's figures and the report's labels. `news-first-close.html` is
+untouched — it reproduces the release as issued, and says so. Reconciling the
+two is a decision for the manager; see `CLAIMS.md` §1.
+
+The grant portfolio is publishable where the fund proposition is not, because
+OTAF makes grants rather than offering investments — nothing is offered and no
+one is invited to engage in investment activity, so FSMA s.21 is not engaged.
+Three drafting rules keep it that way, and they are set out in `CLAIMS.md` §7.
+The short version: every figure on that page is an **expected** outcome agreed
+at award, not a result, and the page says so.
+
 ## Editing the site
 
 Shared chrome (head, header, footer) lives once in `_src/partials/`. Page bodies
@@ -127,6 +158,13 @@ can be omitted). Point the domain at it and set `404.html` as the error page.
 
 A short list of things that need a decision or a rights check — none of them
 blocking, but all of them worth settling first.
+
+0. **Grantee consent for the portfolio page.** INVERSA, SarGas, ABALOBI and
+   Positive Change for Marine Life are named on `otaf-portfolio.html`, with
+   grant amounts and expected outcomes. Each should confirm it is content to be
+   named on Outrigger's public website and that the figures attributed to it are
+   accurate. Their logos and photography are a separate permission again; the
+   page currently uses neither.
 
 1. **Logo permissions — get these in writing.** The photographs and partner
    logos are taken from the fund presentation. Two things need consent, and the

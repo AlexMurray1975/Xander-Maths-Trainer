@@ -22,26 +22,73 @@ Two source documents are referred to throughout:
   First Close*, London, 28 July 2026.
 - **DECK25** — Outrigger Impact Fund pre-marketing presentation, 2025,
   including the World Bank 2024 indicators reproduced in its appendix.
+- **REPORT26** — Outrigger Impact, *Impact Report 2026*. Note that this document
+  is itself a financial promotion, approved by Robert Quinn Advisory and marked
+  as exclusively intended for Professional Clients and Eligible Counterparties.
+  It is a **source** for the website; it is not itself publishable on the
+  website. See §8.
 
 ---
 
 ## 1 · Impact objectives
 
-These are the four headline figures announced at first close. They appear on
-the home page and the impact page, and in the press release.
+The impact report resolves most of what was previously outstanding here, and in
+doing so exposes a discrepancy between the press release and the fund's own
+target document.
 
-| Claim | Where | Source | Status | Note |
-|---|---|---|---|---|
-| Aims to benefit at least 2 million people | Home, Impact, PR | PR26 | VERIFY | Needs the underlying model: what counts as a beneficiary, over what period, at what fund size |
-| Support more than 12,500 jobs | Home, Impact, PR | PR26 | VERIFY | Direct, indirect or both; jobs created vs supported |
-| Avoid 1 million tonnes of CO₂e | Impact, PR | PR26 | VERIFY | Methodology and baseline; whether avoided, reduced or sequestered |
-| Enhance resilience of 100,000+ hectares | Impact, PR | PR26 | VERIFY | Definition of "enhanced resilience"; measurement method |
-| OTAF aims to enhance protection of 10,000 hectares | OTAF | DECK25 | VERIFY | Relationship to the 100,000 ha figure above — are they additive or overlapping? |
+### The discrepancy
+
+| Announced in PR26 | Actually targeted in REPORT26 |
+|---|---|
+| Benefit at least 2 million people | 1,900,000 **indirect** beneficiaries |
+| Support more than 12,500 **jobs** | 12,500 **direct beneficiaries** |
+| Avoid 1 million tonnes of CO₂e | **950,000** tCO₂e avoided |
+| Enhance the resilience of 100,000+ hectares | 100,000 ha of seascape and landscape **under sustainable management** |
+| — | 15 enterprises with enhanced resilience |
+
+Two of these are rounding (1.9m → 2m, 950,000 → 1m). Two are relabelling, and
+those matter more: **a direct beneficiary is not a job**, and *land under
+sustainable management* is not the same claim as *ecosystems with enhanced
+resilience*. Under COBS 4.2 and ESG 4.3.1 the looser formulation is the one that
+gets challenged.
+
+**Action taken on the site.** The website now carries REPORT26's figures and
+REPORT26's labels. The press release page is unchanged — it reproduces the
+document as issued on 28 July 2026, and it says so.
+
+**Action still needed.** Outrigger should decide which set is canonical and
+reconcile them, so the organisation is not publishing two versions of the same
+target. That is a decision for the manager and the principal, not a drafting
+fix.
+
+### The register
+
+| Claim | Where | Source | Status |
+|---|---|---|---|
+| 1.9m indirect beneficiaries | Impact | REPORT26 p14 | SOURCED |
+| 12,500 direct beneficiaries | Impact | REPORT26 p14 | SOURCED |
+| 950,000 tCO₂e avoided | Impact | REPORT26 p14 | SOURCED |
+| 100,000 ha under sustainable management | Impact | REPORT26 p14 | SOURCED |
+| 15 enterprises with enhanced resilience | Impact | REPORT26 p14 | SOURCED |
+| OTAF aims to enhance protection and conservation of 10,000 ha | OTAF | REPORT26 p20 | SOURCED |
+
+**The 10,000 ha question is now answered.** OTAF's 10,000 hectares is *protection
+and conservation of coastal and marine areas*, delivered by the grant facility.
+The fund's 100,000 hectares is *seascape and landscape under sustainable
+management*, delivered by the fund. Different vehicles, different metrics. They
+should not be added together, and the site does not add them.
+
+**Methodology, now on the record.** REPORT26 p14 states that targets were set
+from the fund's expected size, its expected capital allocation across the six
+sectors, published literature, and the team's experience of comparable vehicles
+(the Sustainable Ocean Fund); that targets exist only for indicators where an
+estimate can reasonably be made; and that they will be revised as the portfolio
+develops. The site now says this. It is the single most useful thing the report
+supplies, because it converts four bare numbers into a stated method.
 
 The site states these are objectives, not forecasts or guarantees, and that they
 are portfolio-level aims rather than a projection of any individual investment.
-**Keep that qualification wherever the figures appear.** It was specifically
-identified in review as the right kind of adjacent qualification.
+**Keep that qualification wherever the figures appear.**
 
 ---
 
@@ -50,14 +97,22 @@ identified in review as the right kind of adjacent qualification.
 | Claim | Where | Source | Status |
 |---|---|---|---|
 | SIDS steward ~30% of the world's ocean through their EEZs | Home, States, PR | PR26, DECK25 | SOURCED |
-| Home to more than 20% of global biodiversity | Home, PR | PR26 | VERIFY |
-| Approximately 40% of the world's coral reefs | Home, PR | PR26 | VERIFY |
-| Blue economy contributes more than 40% of GDP in many island nations | Home, PR | PR26 | SOURCED |
-| Estimated US$10bn annual adaptation finance gap for islands | Home, PR | PR26 | VERIFY |
-| Seychelles' EEZ 1.34m km², ~2.5× the landmass of France (551,000 km²) | States | DECK25 | SOURCED |
-| Kiribati's EEZ larger than India | States | DECK25 | SOURCED |
+| Home to more than 20% of global biodiversity | Home, States, PR | REPORT26 p7 | SOURCED |
+| Approximately 40% of the world's coral reefs | Home, States, PR | REPORT26 p7 | SOURCED |
+| Blue economy accounts for **up to** 40% of GDP in **some** countries | Home, PR | Gonguet & Zhou, IMF WP/24/255 (2024), cited REPORT26 p5. Cited on the page | SOURCED. The site previously read "more than 40% ... in many island nations", which overstates the cited figure in both directions. Corrected | 
+| Estimated US$10bn annual adaptation finance gap for islands | Home, PR | PR26 | **VERIFY** — REPORT26 does *not* carry this figure. It carries a different one: US$383–717bn needed to transition to a sustainable global ocean economy (WRI 2025). Locate the source for the $10bn figure or replace it |
+| Seychelles' EEZ 1.34m km², ~2.5× the landmass of France (551,000 km²) | States, Home | DECK25, REPORT26 p5 | SOURCED |
+| Kiribati's EEZ 3.29m km², larger than India | States, Home | DECK25, REPORT26 p5 | SOURCED |
 | Jamaica's EEZ (286,000 km²) exceeds the UK land area (243,000 km²) | States | DECK25 | SOURCED |
 | Per-state EEZ, population, GDP per capita, GDP growth (35 states) | States table | DECK25 appendix, citing World Bank 2024 | SOURCED |
+| 65 million people live in these states | Home, States | REPORT26 p7 | SOURCED |
+| Global blue economy ~$1.5tn a year, ~$3tn by 2030 | Home | OECD, *The Ocean Economy in 2030* (2016), cited REPORT26 p5. Cited on the page | SOURCED |
+| SDG 14 is the least funded of the SDGs; <2% of philanthropic and ODA funding supports ocean industries | Home, Impact | REPORT26 p5 | SOURCED |
+| US$383–717bn further financing needed for a sustainable ocean economy | Home | WRI (2025), cited REPORT26 p5. Cited on the page | SOURCED |
+| A third of the SIDS population is poor or vulnerable to falling into poverty | Impact | ODI, cited REPORT26 p20 | VERIFY — REPORT26 names ODI but gives no title or year. Get the citation before this stays up |
+| One SIDS is low income, seven are UN Least Developed | Impact | REPORT26 p20 | SOURCED |
+| Eligible geography excludes Singapore, Haiti, Cuba and Bahrain, and includes Sri Lanka | States | REPORT26 p7 | SOURCED |
+| Reducing lionfish populations can increase native prey fish biomass by over 50% | OTAF portfolio | REPORT26 p23 | VERIFY — a scientific claim reproduced without a citation. Ask INVERSA for the source |
 
 The states table cites its source on the page. **If the World Bank figures are
 refreshed, update `assets/js/data.js` and re-date the citation.**
@@ -72,7 +127,11 @@ refreshed, update `assets/js/data.js` and re-date the citation.**
 | First close reached 28 July 2026 | Home, News, PR | PR26 | SOURCED |
 | Final close anticipated 2027 | Home, News, PR | PR26 | SOURCED |
 | Cornerstone commitments — NDF and Luxembourg–EIB Climate Finance Platform | Home, News, PR | PR26 | SOURCED. The site does not name which tranche; the press release does, as issued |
-| OTAF backed by UK Int'l Development, ORRAA, GEF, NDF | Home, OTAF, PR | PR26 | SOURCED |
+| OTAF funders: USAID; UK International Development via Defra and ORRAA; GEF in partnership with Conservation International; NDF committed | Home, OTAF | REPORT26 p16 | SOURCED. PR26 omitted USAID and gave less precise attributions; the site now follows REPORT26 |
+| OTAF is a three-year facility deploying up to 30 grants | Home, OTAF | REPORT26 p16 | SOURCED |
+| At least 70% of OTAF grants will support ODA-eligible countries | OTAF | REPORT26 p18 | SOURCED |
+| Four grants approved, totalling US$1m | Home, OTAF, OTAF portfolio | REPORT26 p22 | SOURCED |
+| OTAF target facility size US$10m; grants and loans of $50–250k | Home, OTAF | DECK25 | VERIFY — not carried in REPORT26. All four grants to date were $250k |
 | Fund domiciled in Luxembourg, SCA SICAV-RAIF; AIFM Alter Domus | Footer | DECK25 | SOURCED |
 | No first close **amount** is stated anywhere | — | — | Deliberate. PR26 gives none |
 
@@ -148,10 +207,80 @@ published. It remains in the press release, which is reproduced as issued.
 
 ---
 
-## 7 · Standing instruction
+## 7 · The grant portfolio, and why it is publishable
+
+The four OTAF case studies are the largest single addition the impact report
+makes to the website. They are publishable where the fund proposition is not,
+and the distinction is worth stating precisely.
+
+OTAF is a UK company limited by guarantee that makes grants. A grant is not a
+controlled investment, and describing grants made is not a financial promotion —
+nothing is being offered, and no one is being invited to engage in investment
+activity. The case studies therefore sit on the public site without engaging
+FSMA s.21 at all.
+
+**Three drafting rules keep it that way, and they must hold.**
+
+1. Every figure on the portfolio page is an **expected outcome agreed at award**,
+   not a result. The page says so twice, once at the top and once under each set
+   of figures. When outcomes are actually verified, change the label — do not
+   quietly let expected figures start reading as delivered ones.
+2. The page states that a grant is not an investment and not a commitment by the
+   fund to invest. Keep that.
+3. Grantee-supplied figures are the grantee's claims. Outrigger is reproducing
+   them, and the site should not represent them as independently verified until
+   the portfolio management system referred to in REPORT26 p22 is producing
+   verified reporting.
+
+| Claim | Source | Status |
+|---|---|---|
+| INVERSA, Belize, $250k, awarded January 2026, expected outcomes | REPORT26 p23 | SOURCED. Grantee-supplied outcome estimates |
+| SarGas, Grenada, $250k, approved December 2025, expected outcomes | REPORT26 p24 | SOURCED. Grantee-supplied outcome estimates |
+| ABALOBI, five AIS states, $250k, approved May 2026, expected outcomes | REPORT26 p25 | SOURCED. Grantee-supplied outcome estimates |
+| Positive Change for Marine Life, Solomon Islands, $250k, approved March 2026, expected outcomes | REPORT26 p26 | SOURCED. Grantee-supplied outcome estimates |
+
+**Two consents are needed before this page goes live.** Each grantee should
+confirm that it is content to be named on Outrigger's public website and that
+the outcome figures attributed to it are accurate as stated. Whether the
+grantees' own logos or photography can be used is a separate permission again;
+the page currently uses neither.
+
+---
+
+## 8 · The impact report is not itself publishable
+
+REPORT26 carries the full financial-promotion disclaimer on its inside cover,
+approved by Robert Quinn Advisory, including the statement that it is
+"exclusively intended for persons who are Professional Clients or Eligible
+Counterparties". Page 12 describes the fund's blended structure, its four
+investment models and its pursuit of risk-adjusted financial returns.
+
+So the document cannot be posted for public download, however tempting a PDF
+link on the website looks. It goes to professional investors on request,
+alongside the rest of the fund materials.
+
+What the website does instead is draw on the parts of the report that are not
+promotional — the geography, the impact framework and targets, the SDG
+alignment, the gender and poverty commitments, and the grant portfolio — and
+publish those in its own words. None of the material on page 12 has been used.
+
+---
+
+## 9 · Standing instruction
 
 Approval attaches to the site as approved, not to the disclaimer. Material
 changes to claims, pipeline, named investors, target figures, photography,
 logos or the public/restricted boundary go back through the approval process.
 
 When any figure in this register changes, update it here first, then the site.
+
+**Open items, in priority order.**
+
+1. Reconcile the press release figures with the impact report figures (§1).
+2. Obtain grantee consent to be named, and confirm the outcome figures (§7).
+3. Locate the source for the US$10bn island adaptation finance gap, or replace
+   it with the WRI figure the impact report actually carries (§2).
+4. Obtain the ODI citation for the SIDS poverty statistic (§2).
+5. Obtain the source for the lionfish prey-biomass claim (§2).
+6. Confirm the OTAF facility size and grant range, which come from DECK25 and
+   are not restated in the impact report (§3).
