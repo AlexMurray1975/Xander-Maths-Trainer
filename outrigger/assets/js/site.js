@@ -337,6 +337,77 @@
     });
   }
 
+  /* ---------------- Professional-investor gate ----------------
+     Records the visitor's confirmation, then fetches the restricted fragment.
+     Keeping the fragment out of every served page means fund terms and target
+     returns are never delivered to, or indexed for, a general audience.
+
+     This is an attestation, not an entitlement check. A static site cannot
+     enforce eligibility; if Outrigger's compliance adviser requires
+     enforcement, serve assets/data/investor-terms.html from behind an
+     authenticated endpoint instead. */
+  var GATE_KEY = 'oi.investor.confirmed';
+
+  function gate() {
+    var gateSection = document.getElementById('gate');
+    var target = document.getElementById('gated');
+    if (!gateSection || !target) return;
+
+    var check = document.getElementById('gate-agree');
+    var enter = document.getElementById('gate-enter');
+    var status = document.getElementById('gate-status');
+    var exit = document.getElementById('gate-exit');
+    var reset = document.getElementById('gate-reset');
+
+    function stored() {
+      try { return sessionStorage.getItem(GATE_KEY) === 'yes'; } catch (e) { return false; }
+    }
+
+    function open() {
+      if (target.dataset.loaded === 'yes') return;
+      fetch('assets/data/investor-terms.html', { credentials: 'same-origin' })
+        .then(function (r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.text();
+        })
+        .then(function (html) {
+          target.innerHTML = html;
+          target.dataset.loaded = 'yes';
+          target.hidden = false;
+          gateSection.hidden = true;
+          if (exit) exit.hidden = false;
+          initPage();
+          target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+        })
+        .catch(function () {
+          if (status) {
+            status.dataset.state = 'err';
+            status.textContent = 'Could not load this section. Please write to simon.dent@outriggerimpact.com and we will send the fund documentation directly.';
+          }
+        });
+    }
+
+    if (check && enter && gateSection.dataset.bound !== 'yes') {
+      gateSection.dataset.bound = 'yes';
+      check.addEventListener('change', function () { enter.disabled = !check.checked; });
+      enter.addEventListener('click', function () {
+        if (!check.checked) return;
+        try { sessionStorage.setItem(GATE_KEY, 'yes'); } catch (e) { /* private mode */ }
+        open();
+      });
+    }
+
+    if (reset && reset.dataset.bound !== 'yes') {
+      reset.dataset.bound = 'yes';
+      reset.addEventListener('click', function () {
+        try { sessionStorage.removeItem(GATE_KEY); } catch (e) { /* ignore */ }
+        window.location.href = 'fund.html';
+      });
+    }
+
+    if (stored()) open();
+  }
+
   /* ---------------- Contact form ---------------- */
   function form() {
     var f = $('#enquiry'); if (!f) return;
@@ -372,7 +443,7 @@
      which is what the single-file preview build uses to move between pages. */
   function initPage() {
     reveal(); counters(); accordions();
-    map(); statesTable(); kpis(); form(); year();
+    map(); statesTable(); kpis(); gate(); form(); year();
   }
 
   function init() { header(); initPage(); }

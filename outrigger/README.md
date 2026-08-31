@@ -18,6 +18,9 @@ Drop the folder on any static host and it works.
 | `impact.html` | Standards, seven impact themes, the 14-KPI explorer, theory of change |
 | `otaf.html` | The Technical Assistance Facility, its four workstreams, and an FAQ |
 | `team.html` | The team, collective experience, and the Investment Committee |
+| `news.html` | News index — announcements plus a reading list of third-party coverage |
+| `news-first-close.html` | The 28 July 2026 first close press release, reproduced as issued |
+| `investors.html` | **Restricted.** Fund terms, tranche sizing and target returns, behind an investor-status confirmation |
 | `contact.html` | Enquiry routes and a contact form |
 | `404.html` | Not-found page |
 
@@ -32,7 +35,40 @@ Drop the folder on any static host and it works.
 - **FAQ accordion** (`otaf.html`), animated statistics, scroll reveals.
 
 Everything degrades: with JavaScript off the pages are still complete and
-readable, and the contact form falls back to a `mailto:` link.
+readable, and the contact form falls back to a `mailto:` link. The one exception
+is the restricted investor area, which requires JavaScript by design — without
+it, nothing loads.
+
+---
+
+## How financial-promotion content is separated
+
+The site is split into two zones, and the line between them is drawn at what the
+first close press release already put on the public record.
+
+**Public pages** carry only what the announcement carries: the $100m target size,
+the first close, the blended structure described qualitatively, sectors, impact
+objectives, team and governance. No target returns, no management fee, no ticket
+size, no tranche amounts.
+
+**`investors.html` is restricted.** It asks the visitor to confirm they are a
+Professional Client or Eligible Counterparty, then fetches
+`assets/data/investor-terms.html` and renders it. That fragment holds the terms
+table, target IRRs, tranche sizing and the priced pipeline. Because it lives in a
+separate file, it is never served inside an indexed page. The page is `noindex,
+nofollow`, excluded from `sitemap.xml`, and both it and `assets/data/` are
+disallowed in `robots.txt`.
+
+**This is an attestation, not an entitlement check.** A static site cannot
+enforce eligibility — a determined visitor can fetch the fragment directly. It
+records and acts on a confirmation, which is the common practice for fund
+websites, and it keeps the content out of search results. If Robert Quinn
+Advisory require enforcement rather than attestation, serve
+`assets/data/investor-terms.html` from behind an authenticated endpoint; nothing
+else needs to change.
+
+The single-file `preview.html` build omits the restricted area entirely and
+substitutes an explanatory stub, because a preview file is made to be forwarded.
 
 ---
 
@@ -109,13 +145,29 @@ blocking, but all of them worth settling first.
    Forms, or your own handler) and rebuild. The JavaScript stands aside as soon
    as a real endpoint is present.
 
-6. **Fund status dates.** The timeline states a first close targeted at
-   Q4 2025 / Q1 2026 and a final close in Q2 2027, as per the September 2025
-   deck. Update `_src/pages/index.html` as the raise progresses.
+6. **Fund status.** The site reflects first close on 28 July 2026 and a final
+   close anticipated in 2027. No first close *amount* is stated anywhere,
+   because the press release does not give one — add it only if Outrigger
+   intends it to be public. Update `_src/pages/index.html` and
+   `assets/data/investor-terms.html` as the raise progresses.
 
-7. **The pre-marketing notice.** The full CSSF pre-marketing disclaimer from the
-   deck is reproduced in the footer of every page. Have compliance confirm the
-   wording is still current before launch.
+7. **The footer disclaimer needs Robert Quinn's sign-off.** The site footer now
+   carries the approved boilerplate from the first close release, with one
+   change: the sentence recording the CSSF *pre-marketing* notification under
+   Directive (EU) 2019/1160 has been dropped. Pre-marketing ends once marketing
+   begins, so that sentence sat oddly on a first close announcement and would
+   sit more oddly on a live site. It is retained verbatim on the press release
+   page, which is reproduced as issued. **Please have Robert Quinn Advisory
+   confirm both.**
+
+8. **Two edits to the press release text.** It is otherwise reproduced word for
+   word. "deliver more than US$100 million *to* catalytic funding" is set as
+   "*of* catalytic funding", and a stray comma in "(6), Clean Water and
+   Sanitation" is removed. Revert either if the issued wording must stand.
+
+9. **Press links have no URLs.** The five third-party articles on `news.html`
+   are listed as a reading list because the deck gave titles without links. Add
+   `href`s in `_src/pages/news.html` when you have them.
 
 ## Notes on the build
 
@@ -132,8 +184,10 @@ blocking, but all of them worth settling first.
   visible focus rings, `aria-current` on the active nav item, keyboard-reachable
   map points with descriptive labels, `aria-sort` on sortable columns, and a
   full `prefers-reduced-motion` path that disables every animation.
-- **Sources.** All figures come from the Outrigger Impact Fund pre-marketing
-  presentation (2025) and the World Bank 2024 indicators it cites.
+- **Sources.** Figures come from the first close press release (28 July 2026)
+  and the Outrigger Impact Fund presentation (2025), including the World Bank
+  2024 indicators it cites. Where the two differ, the press release wins — the
+  target fund size is $100m, not the deck's $100–125m range.
 
 ## Single-file preview
 

@@ -18,7 +18,7 @@ SRC = ROOT / "_src"
 PAGES = SRC / "pages"
 PARTIALS = SRC / "partials"
 
-NAV_KEYS = ["fund", "states", "impact", "otaf", "team"]
+NAV_KEYS = ["fund", "states", "impact", "otaf", "team", "news"]
 
 
 def front_matter(text):
@@ -52,9 +52,18 @@ def main():
         for key, default in (("title", "Outrigger Impact"), ("description", ""), ("slug", "")):
             page_head = page_head.replace("{{%s}}" % key, meta.get(key, default))
 
+        # `robots: noindex, nofollow` in a page's front matter keeps it out of
+        # search results — used for the restricted professional-investor area.
+        robots = meta.get("robots", "")
+        page_head = page_head.replace(
+            "{{robots}}",
+            '\n<meta name="robots" content="%s">' % robots if robots else "")
+
+        # Child pages mark their section's nav item (news-first-close -> news).
+        section = meta.get("section", name.split("-")[0])
         page_header = header
         for key in NAV_KEYS:
-            marker = ' aria-current="page"' if key == name else ""
+            marker = ' aria-current="page"' if key == section else ""
             page_header = page_header.replace("{{cur_%s}}" % key, marker)
 
         out = page_head + page_header + "\n" + body.strip() + "\n\n" + footer

@@ -1,4 +1,8 @@
 User-agent: *
 Allow: /
 
+# Restricted to Professional Clients and Eligible Counterparties.
+Disallow: /investors.html
+Disallow: /assets/data/
+
 Sitemap: https://www.outriggerimpact.com/sitemap.xml
