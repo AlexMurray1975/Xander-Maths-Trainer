@@ -223,17 +223,22 @@ blocking, but all of them worth settling first.
   visible focus rings, `aria-current` on the active nav item, keyboard-reachable
   map points with descriptive labels, `aria-sort` on sortable columns, and a
   full `prefers-reduced-motion` path that disables every animation.
-- **The dark panels are photographs, not flat colour.** Every `section.on-dark`
-  and the footer carry a field of open ocean built from the one underwater shot
-  in the deck (`assets/img/water-surface.jpg` for the mid-navy panels,
-  `water-deep.jpg` for the abyss panels and footer, ~90KB the pair). The crop is
-  mirror-tiled and cross-faded into a seamless column that darkens with depth,
-  so a panel opens with near-surface light and bubbles and descends from there.
-  A gradient scrim over the photograph holds the contrast: measured against the
-  brightest 1% of each panel's background, the dimmest text on the site sits at
-  4.6:1, above the WCAG AA threshold of 4.5. **If you change the scrim opacities
-  in `site.css`, re-check that** — the water is bright enough that it is easy to
-  push small print below AA without noticing.
+- **The dark panels are a photograph, not flat colour.** Every `section.on-dark`
+  and the footer share one image, `assets/img/water.jpg` (1400×2100, 172KB): a
+  single column of open ocean running from daylight at the surface to near-black
+  at depth. Rather than ship two files, the mid-navy panels are positioned at 46%
+  down that column and the abyss panels and footer at 82%, so the two surfaces
+  are literally the same water at different depths. A gradient scrim over the
+  photograph holds the contrast.
+
+  **If you retune the scrim or the positions, re-measure text contrast.** The
+  water is bright enough near the surface that it is easy to push small print
+  below WCAG AA without it being obvious. The method: render the page with all
+  foreground elements hidden to isolate the painted backgrounds, then check every
+  text colour used on a dark panel against the *brightest 1%* of that panel, not
+  its average. The current worst case is 4.60:1 against a 4.5 threshold. Judging
+  this by eye does not work — an earlier setting looked fine and measured 3.93.
+
 - **Logo order is alphabetical, and deliberately so.** Within each block, logos
   are sorted by the organisation's full name, ignoring a leading "The" and
   sorting on the name rather than the acronym — ORRAA under "Ocean Risk…", ICFA

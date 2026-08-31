@@ -681,12 +681,15 @@ em.mark { font-style: normal; color: var(--brand); }
 @media (max-width: 700px) { .logos--anchor { grid-template-columns: 1fr; } }
 
 /* ---------- Deep-water panels ----------
-   The dark sections carry open ocean rather than flat navy. Both fields are
-   crops of the same dive shot, mirror-tiled and cross-faded into a seamless
-   column that darkens with depth: near-surface light and bubbles at the top of
-   a panel, deeper water below. A gradient scrim over the photograph holds the
-   contrast white text needs, so the panels still read as the brand navy with
-   the water as structure underneath. */
+   The dark sections carry a single photograph of open ocean — one continuous
+   water column running from daylight at the surface to near-black at depth.
+   Rather than ship two images, the mid-navy panels are positioned near the top
+   of that column and the abyss panels and footer near the bottom, so the two
+   surfaces are literally the same water at different depths. A gradient scrim
+   over the photograph holds the contrast white text needs; the panels still
+   read as the brand navy with the water as structure underneath.
+
+   If the scrim is retuned, re-measure text contrast — see the README. */
 section.on-dark,
 .ftr { position: relative; isolation: isolate; }
 
@@ -695,21 +698,22 @@ section.on-dark::before,
   content: "";
   position: absolute; inset: 0; z-index: -1;
   background-image:
-    linear-gradient(180deg, rgba(6,42,71,.66) 0%, rgba(6,42,71,.42) 45%, rgba(4,24,43,.74) 100%),
-    url(../img/water-surface.jpg);
+    linear-gradient(180deg, rgba(6,42,71,.66) 0%, rgba(6,42,71,.46) 45%, rgba(4,24,43,.76) 100%),
+    url(../img/water.jpg);
   background-size: auto, cover;
-  background-position: center, 50% 0%;
+  background-position: center, 50% 46%;
   background-repeat: no-repeat;
 }
 
 section.on-dark.is-abyss::before,
 .ftr::before {
   background-image:
-    linear-gradient(180deg, rgba(4,24,43,.60) 0%, rgba(4,24,43,.30) 45%, rgba(4,24,43,.76) 100%),
-    url(../img/water-deep.jpg);
+    linear-gradient(180deg, rgba(4,24,43,.42) 0%, rgba(4,24,43,.20) 45%, rgba(4,24,43,.66) 100%),
+    url(../img/water.jpg);
+  background-position: center, 50% 82%;
 }
 
-/* Cards and tranches sit on the water, so they need a touch more body than the
-   flat-navy version carried. */
+/* Cards sit on the water, so they need a touch more body than the flat-navy
+   version carried. */
 section.on-dark .card { background: rgba(4,24,43,.34); backdrop-filter: blur(2px); }
 section.on-dark .card:hover { background: rgba(4,24,43,.5); }
