@@ -212,6 +212,17 @@ blocking, but all of them worth settling first.
   visible focus rings, `aria-current` on the active nav item, keyboard-reachable
   map points with descriptive labels, `aria-sort` on sortable columns, and a
   full `prefers-reduced-motion` path that disables every animation.
+- **The dark panels are photographs, not flat colour.** Every `section.on-dark`
+  and the footer carry a field of open ocean built from the one underwater shot
+  in the deck (`assets/img/water-surface.jpg` for the mid-navy panels,
+  `water-deep.jpg` for the abyss panels and footer, ~90KB the pair). The crop is
+  mirror-tiled and cross-faded into a seamless column that darkens with depth,
+  so a panel opens with near-surface light and bubbles and descends from there.
+  A gradient scrim over the photograph holds the contrast: measured against the
+  brightest 1% of each panel's background, the dimmest text on the site sits at
+  4.6:1, above the WCAG AA threshold of 4.5. **If you change the scrim opacities
+  in `site.css`, re-check that** — the water is bright enough that it is easy to
+  push small print below AA without noticing.
 - **Logo groups carry meaning.** The home page separates anchor investors, OTAF
   backers and partners into three labelled blocks rather than one undifferentiated
   wall. That matters: on a page that is a financial promotion, an unlabelled grid
