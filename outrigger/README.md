@@ -223,6 +223,13 @@ blocking, but all of them worth settling first.
   4.6:1, above the WCAG AA threshold of 4.5. **If you change the scrim opacities
   in `site.css`, re-check that** — the water is bright enough that it is easy to
   push small print below AA without noticing.
+- **Logo order is alphabetical, and deliberately so.** Within each block, logos
+  are sorted by the organisation's full name, ignoring a leading "The" and
+  sorting on the name rather than the acronym — ORRAA under "Ocean Risk…", ICFA
+  under "International Climate Finance…". It avoids implying a ranking between
+  institutions, which matters when two of them are cornerstone investors. There
+  is a note to this effect above the block in `_src/pages/index.html`; keep the
+  order when adding a logo.
 - **Logo groups carry meaning.** The home page separates anchor investors, OTAF
   backers and partners into three labelled blocks rather than one undifferentiated
   wall. That matters: on a page that is a financial promotion, an unlabelled grid
