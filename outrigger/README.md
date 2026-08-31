@@ -134,3 +134,10 @@ blocking, but all of them worth settling first.
   full `prefers-reduced-motion` path that disables every animation.
 - **Sources.** All figures come from the Outrigger Impact Fund pre-marketing
   presentation (2025) and the World Bank 2024 indicators it cites.
+
+## Single-file preview
+
+`python3 bundle.py` (after `build.py`) produces `preview.html`: all seven pages
+in one self-contained file, with fonts, images, CSS and JS inlined and the
+navigation on hash routes. Useful for emailing a review copy or hosting a
+preview. It is not how the site deploys — deploy the folder for that.

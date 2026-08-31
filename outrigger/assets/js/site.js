@@ -368,10 +368,16 @@
     $$('[data-year]').forEach(function (el) { el.textContent = new Date().getFullYear(); });
   }
 
-  function init() {
-    header(); reveal(); counters(); accordions();
+  /* Chrome is bound once; page content can be initialised again after a swap,
+     which is what the single-file preview build uses to move between pages. */
+  function initPage() {
+    reveal(); counters(); accordions();
     map(); statesTable(); kpis(); form(); year();
   }
+
+  function init() { header(); initPage(); }
+
+  window.OI = { initPage: initPage };
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
