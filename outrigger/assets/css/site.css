@@ -717,3 +717,29 @@ section.on-dark.is-abyss::before,
    version carried. */
 section.on-dark .card { background: rgba(4,24,43,.34); backdrop-filter: blur(2px); }
 section.on-dark .card:hover { background: rgba(4,24,43,.5); }
+
+/* ---------- Full-bleed documentary photograph ---------- */
+.photoband { margin: 0; position: relative; }
+.photoband img { width: 100%; height: clamp(280px, 46vw, 560px); object-fit: cover; display: block; }
+.photoband figcaption {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: clamp(48px, 8vw, 96px) var(--gut) clamp(20px, 3vw, 32px);
+  background: linear-gradient(180deg, rgba(4,24,43,0) 0%, rgba(4,24,43,.55) 45%, rgba(4,24,43,.92) 100%);
+  color: #fff; font-size: .9rem; line-height: 1.5; text-shadow: 0 1px 3px rgba(4,24,43,.5);
+  max-width: 62ch;
+}
+
+/* ---------- Risk strip ----------
+   A concise risk statement sits adjacent to investment-product messaging,
+   not only in the footer. Compliance review: benefits are communicated
+   visually and repeatedly, so the qualification must be equally prominent. */
+.riskstrip {
+  margin: 0; padding: 14px 20px;
+  border: 1px solid var(--line); border-left: 3px solid var(--sand);
+  border-radius: var(--r); background: var(--paper-2);
+  font: 500 13.5px/1.55 var(--sans); color: var(--ink-2);
+}
+.on-dark .riskstrip {
+  background: rgba(255,255,255,.06); border-color: var(--line-dk);
+  border-left-color: var(--sand); color: rgba(255,255,255,.86);
+}

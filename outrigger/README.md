@@ -12,15 +12,14 @@ Drop the folder on any static host and it works.
 
 | Page | What it covers |
 |---|---|
-| `index.html` | Home — the opportunity, value proposition, sectors, structure, status, partners |
-| `fund.html` | Strategy, four investment models, capital structure, governance, terms, pipeline |
-| `states.html` | The 35 Big Ocean States: interactive map, sortable dataset, regional allocation |
+| `index.html` | Home — the organisation, the opportunity, geography, sectors, impact, OTAF, partners |
+| `states.html` | The 35 Big Ocean States: interactive map, sortable dataset, the three regions |
 | `impact.html` | Standards, seven impact themes, the 14-KPI explorer, theory of change |
 | `otaf.html` | The Technical Assistance Facility, its four workstreams, and an FAQ |
 | `team.html` | The team, collective experience, and the Investment Committee |
 | `news.html` | News index — announcements plus a reading list of third-party coverage |
 | `news-first-close.html` | The 28 July 2026 first close press release, reproduced as issued |
-| `investors.html` | **Restricted.** Fund terms, tranche sizing and target returns, behind an investor-status confirmation |
+| `investors.html` | **Restricted.** The whole fund proposition — strategy, models, allocation, capital structure, terms, returns, pipeline — behind an investor-status confirmation |
 | `contact.html` | Enquiry routes and a contact form |
 | `404.html` | Not-found page |
 
@@ -41,36 +40,49 @@ it, nothing loads.
 
 ---
 
-## How financial-promotion content is separated
+## Where the fund material is — and is not
 
-The site is split into two zones, and the line between them is drawn at what the
-first close press release already put on the public record.
+**The fund proposition is not on this website at all.**
 
-**Public pages** carry only what the announcement carries: the $100m target size,
-the first close, the blended structure described qualitatively, sectors, impact
-objectives, team and governance. No target returns, no management fee, no ticket
-size, no tranche amounts.
+The site describes Outrigger the organisation: the Big Ocean States thesis, the
+geography and its data, the six sectors thematically, the impact framework and
+its objectives, OTAF, team and governance, partners, news, and the fact that
+Fund I exists and reached first close on 28 July 2026. That is the whole of it.
 
-**`investors.html` is restricted.** It asks the visitor to confirm they are a
-Professional Client or Eligible Counterparty, then fetches
-`assets/data/investor-terms.html` and renders it. That fragment holds the terms
-table, target IRRs, tranche sizing and the priced pipeline. Because it lives in a
-separate file, it is never served inside an indexed page. The page is `noindex,
-nofollow`, excluded from `sitemap.xml`, and both it and `assets/data/` are
-disallowed in `robots.txt`.
+Nowhere on these pages is there a capital structure, subordination mechanics,
+regional allocation, terms, management fee, ticket size, target returns or
+pipeline. Professional investors are directed to contact Simon Dent or Jeremy
+Milward, and the material is provided on request after the manager's
+eligibility checks.
 
-**This is an attestation, not an entitlement check.** A static site cannot
-enforce eligibility — a determined visitor can fetch the fragment directly. It
-records and acts on a confirmation, which is the common practice for fund
-websites, and it keeps the content out of search results. If Robert Quinn
-Advisory require enforcement rather than attestation, serve
-`assets/data/investor-terms.html` from behind an authenticated endpoint; nothing
-else needs to change.
+**Why this rather than a gated area.** An earlier version put the proposition
+on the site behind a self-certification checkbox. Compliance review was right
+that this does not work: a promotion distributed publicly is not made private
+by a tick-box or a footer saying it was only meant for professional clients,
+and a static site cannot enforce eligibility in any case. Publishing nothing is
+both simpler and stronger — there is no restricted area to secure, because
+there is no promotion on the site to restrict. Robert Quinn Advisory approve a
+corporate website rather than a financial promotion.
 
-The single-file `preview.html` build omits the restricted area entirely and
-substitutes an explanatory stub, because a preview file is made to be forwarded.
+The gated version is in git history (`git log -- assets/data/investor-terms.html`)
+if a password-protected investor area is ever wanted. It would need serving from
+behind real authentication, not a checkbox.
 
----
+**Public disclaimer register.** The footer says what these pages actually are —
+informational, not an offer — and states plainly that fund information is a
+financial promotion available on request to professional investors. It no
+longer claims the website is "exclusively intended for Professional Clients"
+while being served to everyone, which was the incoherence review identified.
+
+`CLAIMS.md` is the substantiation register: every quantitative and
+sustainability claim on the site, with source, status and who must approve it.
+The FCA anti-greenwashing rule (ESG 4.3.1) applies to this fund's
+sustainability claims, and the register is what makes the principal's approval
+exercise tractable.
+
+**Approval attaches to the site, not to the disclaimer.** Material changes to
+claims, named investors, target figures, photography, logos or the boundary
+between public and private material should go back through approval.
 
 ## Editing the site
 

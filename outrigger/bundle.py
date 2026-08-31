@@ -18,36 +18,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT / "preview.html"
-PAGES = ["index", "fund", "states", "impact", "otaf", "team", "news",
-         "news-first-close", "contact", "investors"]
-
-# The restricted professional-investor area is NOT bundled. A preview file is
-# meant to be forwarded, and fund terms and target returns must not travel that
-# way. In the preview, investors.html is replaced by the stub below; the real
-# gate lives in the deployed site.
-INVESTORS_STUB = """
-<section class="banner">
-  <div class="banner__scrim" style="background:linear-gradient(160deg,var(--deep),var(--abyss))"></div>
-  <div class="wrap banner__in on-dark" style="background:none">
-    <p class="crumb"><a href="#/index">Home</a><span>/</span>Professional investors</p>
-    <h1 class="display">Professional investors</h1>
-    <p class="lede">This section is restricted to Professional Clients and Eligible Counterparties.</p>
-  </div>
-</section>
-<section class="section">
-  <div class="wrap wrap-narrow">
-    <div class="gate">
-      <p class="eyebrow">Not included in this preview</p>
-      <h2 class="h2">Restricted content is omitted here</h2>
-      <p class="mt-2">On the live site this page carries an investor-status confirmation, after which
-      it loads the fund terms, tranche sizing and target returns.</p>
-      <p>Those are deliberately left out of this single-file preview, because a preview is made to be
-      forwarded and that content is a financial promotion intended only for professional investors.</p>
-      <div class="btn-row mt-3"><a class="btn" href="#/fund">Back to the fund overview</a></div>
-    </div>
-  </div>
-</section>
-"""
+PAGES = ["index", "states", "impact", "otaf", "team", "news",
+         "news-first-close", "contact"]
 
 
 def data_uri(path):
@@ -89,9 +61,6 @@ def main():
 
     bodies = {}
     for name in PAGES:
-        if name == "investors":
-            bodies[name] = INVESTORS_STUB
-            continue
         src = (ROOT / (name + ".html")).read_text()
         m = re.search(r"<main id=\"main\">(.*?)</main>", src, re.S)
         if not m:

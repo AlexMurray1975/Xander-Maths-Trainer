@@ -19,7 +19,7 @@ SRC = ROOT / "_src"
 PAGES = SRC / "pages"
 PARTIALS = SRC / "partials"
 
-NAV_KEYS = ["fund", "states", "impact", "otaf", "team", "news"]
+NAV_KEYS = ["states", "impact", "otaf", "team", "news"]
 
 LOGO_DIR = "assets/img/partners"
 

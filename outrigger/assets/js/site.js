@@ -93,6 +93,11 @@
   }
 
   /* ---------------- Number formatting ---------------- */
+  /* The 20-state investment window is fund-allocation detail, so it is shown
+     only on a page that opts in with data-show-window="yes" on <body>.
+     No public page does. */
+  function showWindow() { return document.body.dataset.showWindow === 'yes'; }
+
   var fmt = {
     int: function (n) { return n === null ? '—' : n.toLocaleString('en-GB'); },
     usd: function (n) { return n === null ? '—' : '$' + n.toLocaleString('en-GB'); },
@@ -184,7 +189,7 @@
       var x = px(s.lon), y = py(s.lat);
       var r = 2.4 + Math.sqrt(s.eez) / 750;
       var g = svgEl('g', {
-        'class': 'map-dot' + (s.w ? ' is-window' : ''),
+        'class': 'map-dot' + (s.w && showWindow() ? ' is-window' : ''),
         'data-region': s.r, tabindex: '0', role: 'button',
         'aria-label': s.n + '. Exclusive economic zone ' + fmt.km2(s.eez) +
                       '. Population ' + fmt.int(s.pop) + '.'
@@ -233,7 +238,7 @@
       '<dt>GDP per capita</dt><dd>' + fmt.usd(s.gdp) + '</dd>' +
       '<dt>GDP growth</dt><dd>' + fmt.pct(s.gr) + '</dd>' +
       '</dl>' +
-      (s.w ? '<div class="small" style="margin-top:8px">Initial investment window</div>' : '');
+      (s.w && showWindow() ? '<div class="small" style="margin-top:8px">Initial investment window</div>' : '');
     t.style.left = (fx * 100) + '%';
     t.style.top  = (fy * 100) + '%';
     t.classList.add('is-on');
@@ -272,7 +277,7 @@
     var cls = { Pacific: 'tag--pac', Caribbean: 'tag--car', AIS: 'tag--ais' };
     tb.innerHTML = rows.map(function (s) {
       return '<tr data-region="' + s.r + '" data-name="' + esc(s.n.toLowerCase()) + '">' +
-        '<td>' + esc(s.n) + (s.w ? ' <span class="tag">Window</span>' : '') + '</td>' +
+        '<td>' + esc(s.n) + (s.w && showWindow() ? ' <span class="tag">Window</span>' : '') + '</td>' +
         '<td><span class="tag ' + cls[s.r] + '">' + (s.r === 'AIS' ? 'AIS' : s.r) + '</span></td>' +
         '<td class="num">' + fmt.int(s.eez) + '</td>' +
         '<td class="num">' + fmt.int(s.pop) + '</td>' +
@@ -401,7 +406,7 @@
       reset.dataset.bound = 'yes';
       reset.addEventListener('click', function () {
         try { sessionStorage.removeItem(GATE_KEY); } catch (e) { /* ignore */ }
-        window.location.href = 'fund.html';
+        window.location.href = 'index.html';
       });
     }
 
