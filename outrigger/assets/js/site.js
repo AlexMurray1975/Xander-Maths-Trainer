@@ -102,7 +102,11 @@
     int: function (n) { return n === null ? '—' : n.toLocaleString('en-GB'); },
     usd: function (n) { return n === null ? '—' : '$' + n.toLocaleString('en-GB'); },
     pct: function (n) { return n === null ? '—' : (n > 0 ? '+' : '') + n.toFixed(1) + '%'; },
-    km2: function (n) { return n.toLocaleString('en-GB') + ' km²'; }
+    km2: function (n) { return n.toLocaleString('en-GB') + ' km²'; },
+    /* An approximate EEZ must never render as though it were exact. `ap` on a
+       state marks it so; the "c." travels with the number everywhere it shows. */
+    eez: function (s) { return (s.ap ? 'c. ' : '') + s.eez.toLocaleString('en-GB') + ' km²'; },
+    eezN: function (s) { return (s.ap ? 'c. ' : '') + s.eez.toLocaleString('en-GB'); }
   };
 
   /* ---------------- Big Ocean States map ----------------
@@ -229,7 +233,7 @@
       var g = svgEl('g', {
         'class': 'map-dot' + (s.w && showWindow() ? ' is-window' : ''),
         'data-region': s.r, tabindex: '0', role: 'button',
-        'aria-label': s.n + '. Exclusive economic zone ' + fmt.km2(s.eez) +
+        'aria-label': s.n + '. Exclusive economic zone ' + fmt.eez(s) +
                       '. Population ' + fmt.int(s.pop) + '.'
       });
       g.appendChild(svgEl('ellipse', {
@@ -291,11 +295,12 @@
     t.innerHTML =
       '<div class="map-tip__t">' + esc(s.n) + '</div>' +
       '<dl>' +
-      '<dt>EEZ</dt><dd>' + fmt.km2(s.eez) + '</dd>' +
+      '<dt>EEZ</dt><dd>' + fmt.eez(s) + '</dd>' +
       '<dt>Population</dt><dd>' + fmt.int(s.pop) + '</dd>' +
       '<dt>GDP per capita</dt><dd>' + fmt.usd(s.gdp) + '</dd>' +
       '<dt>GDP growth</dt><dd>' + fmt.pct(s.gr) + '</dd>' +
       '</dl>' +
+      (s.note ? '<div class="map-tip__note">' + esc(s.note) + '</div>' : '') +
       (s.w && showWindow() ? '<div class="small" style="margin-top:8px">Initial investment window</div>' : '');
     t.style.left = (fx * 100) + '%';
     t.style.top  = (fy * 100) + '%';
@@ -337,7 +342,7 @@
       return '<tr data-region="' + s.r + '" data-name="' + esc(s.n.toLowerCase()) + '">' +
         '<td>' + esc(s.n) + (s.w && showWindow() ? ' <span class="tag">Window</span>' : '') + '</td>' +
         '<td><span class="tag ' + cls[s.r] + '">' + (s.r === 'AIS' ? 'AIS' : s.r) + '</span></td>' +
-        '<td class="num">' + fmt.int(s.eez) + '</td>' +
+        '<td class="num">' + fmt.eezN(s) + (s.note ? ' <abbr class="qual" title="' + esc(s.note) + '">*</abbr>' : '') + '</td>' +
         '<td class="num">' + fmt.int(s.pop) + '</td>' +
         '<td class="num">' + fmt.usd(s.gdp) + '</td>' +
         '<td class="num">' + fmt.pct(s.gr) + '</td>' +

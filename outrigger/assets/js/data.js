@@ -1,19 +1,25 @@
 /* Outrigger Impact — reference data
    Source: Outrigger Impact Fund pre-marketing presentation, 2025.
-   EEZ (km²), population and GDP figures per World Bank 2024 as cited in the deck appendix.
+   Population and GDP figures per World Bank 2024 as cited in the deck appendix.
+   EEZ areas (km²) were re-checked against the deck in August 2026 after four
+   values were found to be wrong — the deck had shifted a block of rows, so
+   Fiji's figure sat on the Dominican Republic and Dominica's on Comoros.
+   `ap: true` marks a figure that is approximate; it renders with a "c." and
+   must not be presented as exact. `note` carries a qualification that has to
+   travel with the number.
    `window: true` marks the 20 UN SIDS Member States in the initial investment window.
    Coordinates are indicative national centroids, used for schematic plotting only. */
 
 window.OI_STATES = [
   // name, region, ODA status, EEZ km², population, GDP per capita US$, GDP growth %, lat, lon, in window
-  { n: "Kiribati",                          r: "Pacific",   oda: true,  eez: 3330220, pop: 134518,   gdp: 2289,  gr: 5.3,  lat: 1.45,   lon: 172.98, w: false },
+  { n: "Kiribati",                          r: "Pacific",   oda: true,  eez: 3440220, pop: 134518,   gdp: 2289,  gr: 5.3,  lat: 1.45,   lon: 172.98, w: false },
   { n: "Federated States of Micronesia",    r: "Pacific",   oda: true,  eez: 3010644, pop: 113160,   gdp: 4166,  gr: 0.7,  lat: 6.92,   lon: 158.16, w: false },
   { n: "Papua New Guinea",                  r: "Pacific",   oda: true,  eez: 2403355, pop: 10576502, gdp: 3077,  gr: null, lat: -6.31,  lon: 143.95, w: false },
   { n: "Mauritius",                         r: "AIS",       oda: true,  eez: 2203542, pop: 1259509,  gdp: 11872, gr: 4.7,  lat: -20.35, lon: 57.55,  w: true  },
-  { n: "Marshall Islands",                  r: "Pacific",   oda: true,  eez: 2001567, pop: 37548,    gdp: 7467,  gr: 2.8,  lat: 7.09,   lon: 171.38, w: false },
+  { n: "Marshall Islands",                  r: "Pacific",   oda: true,  eez: 2001566, pop: 37548,    gdp: 7467,  gr: 2.8,  lat: 7.09,   lon: 171.38, w: false },
   { n: "Solomon Islands",                   r: "Pacific",   oda: true,  eez: 1605325, pop: 819198,   gdp: 2149,  gr: 2.5,  lat: -9.43,  lon: 159.95, w: true  },
   { n: "Seychelles",                        r: "AIS",       oda: false, eez: 1341504, pop: 121354,   gdp: 17859, gr: 3.5,  lat: -4.62,  lon: 55.45,  w: true  },
-  { n: "Dominican Republic",                r: "Caribbean", oda: true,  eez: 1289978, pop: 11427557, gdp: 10876, gr: 5.0,  lat: 18.74,  lon: -70.16, w: true  },
+  { n: "Dominican Republic",                r: "Caribbean", oda: true,  eez: 350000, ap: true, pop: 11427557, gdp: 10876, gr: 5.0,  lat: 18.74,  lon: -70.16, w: true  },
   { n: "Maldives",                          r: "AIS",       oda: true,  eez: 920739,  pop: 527799,   gdp: 13215, gr: 5.1,  lat: 3.20,   lon: 73.22,  w: true  },
   { n: "Vanuatu",                           r: "Pacific",   oda: true,  eez: 810608,  pop: 327777,   gdp: 3543,  gr: 4.0,  lat: -17.74, lon: 168.32, w: false },
   { n: "Cabo Verde",                        r: "AIS",       oda: true,  eez: 801936,  pop: 524877,   gdp: 5273,  gr: 7.3,  lat: 15.12,  lon: -23.61, w: true  },
@@ -21,13 +27,13 @@ window.OI_STATES = [
   { n: "Tonga",                             r: "Pacific",   oda: true,  eez: 666052,  pop: 104175,   gdp: 4864,  gr: 2.1,  lat: -21.18, lon: -175.20, w: true },
   { n: "Bahamas",                           r: "Caribbean", oda: false, eez: 619785,  pop: 401283,   gdp: 39455, gr: 3.4,  lat: 25.03,  lon: -77.40, w: true  },
   { n: "Palau",                             r: "Pacific",   oda: true,  eez: 614807,  pop: 17695,    gdp: 15899, gr: 1.9,  lat: 7.51,   lon: 134.58, w: true  },
-  { n: "Sri Lanka",                         r: "AIS",       oda: true,  eez: 532619,  pop: 21916000, gdp: 4516,  gr: 5.0,  lat: 7.87,   lon: 80.77,  w: true  },
-  { n: "Dominica",                          r: "Caribbean", oda: true,  eez: 370973,  pop: 66205,    gdp: 10405, gr: 2.1,  lat: 15.41,  lon: -61.37, w: false },
+  { n: "Sri Lanka",                         r: "AIS",       oda: true,  eez: 533559,  pop: 21916000, gdp: 4516,  gr: 5.0,  lat: 7.87,   lon: 80.77,  w: true  },
+  { n: "Dominica",                          r: "Caribbean", oda: true,  eez: 28552,  pop: 66205,    gdp: 10405, gr: 2.1,  lat: 15.41,  lon: -61.37, w: false },
   { n: "Nauru",                             r: "Pacific",   oda: true,  eez: 309261,  pop: 11947,    gdp: 13422, gr: 1.8,  lat: -0.52,  lon: 166.93, w: false },
-  { n: "Jamaica",                           r: "Caribbean", oda: true,  eez: 286036,  pop: 2839175,  gdp: 7020,  gr: -0.7, lat: 18.11,  lon: -77.30, w: true  },
+  { n: "Jamaica",                           r: "Caribbean", oda: true,  eez: 286000, ap: true, note: "Published estimates range from about 274,000 km².",  pop: 2839175,  gdp: 7020,  gr: -0.7, lat: 18.11,  lon: -77.30, w: true  },
   { n: "Barbados",                          r: "Caribbean", oda: false, eez: 185007,  pop: 282467,   gdp: 25366, gr: 3.8,  lat: 13.19,  lon: -59.54, w: true  },
   { n: "Sao Tome and Principe",             r: "AIS",       oda: true,  eez: 165377,  pop: 235536,   gdp: 3245,  gr: 0.9,  lat: 0.19,   lon: 6.61,   w: false },
-  { n: "Guyana",                            r: "Caribbean", oda: true,  eez: 138671,  pop: 831087,   gdp: 29884, gr: 43.4, lat: 4.86,   lon: -58.93, w: true  },
+  { n: "Guyana",                            r: "Caribbean", oda: true,  eez: 139000, ap: true,  pop: 831087,   gdp: 29884, gr: 43.4, lat: 4.86,   lon: -58.93, w: true  },
   { n: "Suriname",                          r: "Caribbean", oda: true,  eez: 133303,  pop: 634431,   gdp: 7431,  gr: 2.8,  lat: 3.92,   lon: -56.03, w: true  },
   { n: "Samoa",                             r: "Pacific",   oda: true,  eez: 130480,  pop: 218019,   gdp: 4899,  gr: 9.4,  lat: -13.76, lon: -172.10, w: true },
   { n: "Antigua and Barbuda",               r: "Caribbean", oda: false, eez: 111568,  pop: 93772,    gdp: 23826, gr: 4.3,  lat: 17.06,  lon: -61.80, w: true  },
@@ -36,8 +42,8 @@ window.OI_STATES = [
   { n: "Timor-Leste",                       r: "Pacific",   oda: true,  eez: 77474,   pop: 1400638,  gdp: 1343,  gr: -2.2, lat: -8.87,  lon: 125.73, w: false },
   { n: "Saint Vincent and the Grenadines",  r: "Caribbean", oda: true,  eez: 36244,   pop: 100616,   gdp: 11501, gr: 4.1,  lat: 13.25,  lon: -61.20, w: false },
   { n: "Belize",                            r: "Caribbean", oda: true,  eez: 34312,   pop: 417072,   gdp: 8430,  gr: 8.2,  lat: 17.19,  lon: -88.50, w: true  },
-  { n: "Comoros",                           r: "AIS",       oda: true,  eez: 28552,   pop: 866628,   gdp: 1784,  gr: 3.4,  lat: -11.65, lon: 43.33,  w: false },
-  { n: "Fiji",                              r: "Pacific",   oda: true,  eez: 25571,   pop: 928784,   gdp: 6288,  gr: 3.8,  lat: -17.71, lon: 178.07, w: true  },
+  { n: "Comoros",                           r: "AIS",       oda: true,  eez: 164000, ap: true, note: "Subject to the treatment of Mayotte.",   pop: 866628,   gdp: 1784,  gr: 3.4,  lat: -11.65, lon: 43.33,  w: false },
+  { n: "Fiji",                              r: "Pacific",   oda: true,  eez: 1289978,   pop: 928784,   gdp: 6288,  gr: 3.8,  lat: -17.71, lon: 178.07, w: true  },
   { n: "Grenada",                           r: "Caribbean", oda: true,  eez: 25571,   pop: 117207,   gdp: 11872, gr: 3.7,  lat: 12.12,  lon: -61.68, w: true  },
   { n: "Saint Lucia",                       r: "Caribbean", oda: true,  eez: 15413,   pop: 179744,   gdp: 14182, gr: 3.9,  lat: 13.91,  lon: -60.98, w: false },
   { n: "Saint Kitts and Nevis",             r: "Caribbean", oda: false, eez: 9502,    pop: 46843,    gdp: 22771, gr: 1.2,  lat: 17.36,  lon: -62.78, w: false }

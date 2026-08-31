@@ -102,9 +102,10 @@ are portfolio-level aims rather than a projection of any individual investment.
 | Blue economy accounts for **up to** 40% of GDP in **some** countries | Home, PR | Gonguet & Zhou, IMF WP/24/255 (2024), cited REPORT26 p5. Cited on the page | SOURCED. The site previously read "more than 40% ... in many island nations", which overstates the cited figure in both directions. Corrected | 
 | Estimated US$10bn annual adaptation finance gap for islands | Home, PR | PR26 | **VERIFY** — REPORT26 does *not* carry this figure. It carries a different one: US$383–717bn needed to transition to a sustainable global ocean economy (WRI 2025). Locate the source for the $10bn figure or replace it |
 | Seychelles' EEZ 1.34m km², ~2.5× the landmass of France (551,000 km²) | States, Home | DECK25, REPORT26 p5 | SOURCED |
-| Kiribati's EEZ 3.29m km², larger than India | States, Home | DECK25, REPORT26 p5 | SOURCED |
-| Jamaica's EEZ (286,000 km²) exceeds the UK land area (243,000 km²) | States | DECK25 | SOURCED |
-| Per-state EEZ, population, GDP per capita, GDP growth (35 states) | States table | DECK25 appendix, citing World Bank 2024 | SOURCED |
+| Kiribati's EEZ 3.44m km², larger than India | States, Home | Checked figures, August 2026. **REPORT26 p5 says 3.29m — reconcile** | SOURCED |
+| Jamaica's EEZ (c. 286,000 km²) exceeds the UK land area (243,000 km²) | States | Checked figures, August 2026. Holds at the bottom of the range too (c. 274,000) | SOURCED |
+| Per-state population, GDP per capita, GDP growth (35 states) | States table | DECK25 appendix, citing World Bank 2024 | SOURCED |
+| Per-state EEZ areas (35 states) | States table, map | Re-checked and supplied by Outrigger, August 2026 | SOURCED, source document still to be recorded — see §10 |
 | 65 million people live in these states | Home, States | REPORT26 p7 | SOURCED |
 | Global blue economy ~$1.5tn a year, ~$3tn by 2030 | Home | OECD, *The Ocean Economy in 2030* (2016), cited REPORT26 p5. Cited on the page | SOURCED |
 | SDG 14 is the least funded of the SDGs; <2% of philanthropic and ODA funding supports ocean industries | Home, Impact | REPORT26 p5 | SOURCED |
@@ -284,46 +285,57 @@ When any figure in this register changes, update it here first, then the site.
 5. Obtain the source for the lionfish prey-biomass claim (§2).
 6. Confirm the OTAF facility size and grant range, which come from DECK25 and
    are not restated in the impact report (§3).
-7. **Correct Fiji's EEZ figure, and check Dominica, the Dominican Republic and
-   Comoros while you are in there (§10). This one blocks launch** — the states
-   table is currently publishing a figure that is demonstrably wrong.
+7. Record the source of the corrected EEZ figures, and settle the Kiribati
+   figure against the impact report's 3.29m km² (§10).
 8. Decide whether the LGPL coastline data is acceptable, or should be
    regenerated from public-domain Natural Earth (§11).
 
 ---
 
-## 10 · A data error the map exposed
+## 10 · The EEZ figures, corrected
 
 Drawing each exclusive economic zone to its true area, rather than as a symbol
 whose size merely suggests one, made an error in the underlying dataset
-immediately visible. It should be corrected before launch.
+immediately visible: Fiji's zone was recorded as 25,571 km², byte-identical to
+Grenada's, which put an archipelago of several hundred islands below Belize in
+the table. The cause was a shifted block of rows in the presentation. Fiji's
+figure had landed on the Dominican Republic, and Dominica's on Comoros.
 
-**Fiji's EEZ is recorded as 25,571 km², which is byte-identical to Grenada's.**
-That is the signature of a copy-paste error, and it does not need an external
-source to see: Fiji is an archipelagic state of several hundred islands spread
-across the south-west Pacific, and it cannot have an ocean territory the size of
-Grenada's — smaller, on this dataset, than Belize's. On the map Fiji now appears
-as a pinprick among its neighbours' discs, which is how the error surfaced.
+**Outrigger re-checked the full set in August 2026 and supplied corrected
+figures. They are now in `assets/js/data.js`.** Nine values changed:
 
-Two more values in the same table look wrong and should be checked against the
-original source at the same time:
+| State | Was | Now | |
+|---|---|---|---|
+| Fiji | 25,571 | 1,289,978 | the misplaced row, recovered |
+| Dominican Republic | 1,289,978 | c. 350,000 | had been holding Fiji's figure |
+| Dominica | 370,973 | 28,552 | had been holding Comoros' figure |
+| Comoros | 28,552 | c. 164,000 | subject to the treatment of Mayotte |
+| Kiribati | 3,330,220 | 3,440,220 | |
+| Sri Lanka | 532,619 | 533,559 | |
+| Jamaica | 286,036 | c. 286,000 | estimates range from about 274,000 |
+| Guyana | 138,671 | c. 139,000 | |
+| Marshall Islands | 2,001,567 | 2,001,566 | |
 
-| State | Recorded in `assets/js/data.js` | Why it is queried |
-|---|---|---|
-| Fiji | 25,571 km² | Identical to Grenada. Almost certainly a copied cell |
-| Dominica | 370,973 km² | Implausibly large for a single small island; Dominica and the Dominican Republic are adjacent rows and easily transposed |
-| Dominican Republic | 1,289,978 km² | Would make it one of the largest EEZs in the Caribbean by a wide margin |
-| Comoros | 28,552 km² | Low for a three-island archipelago |
+**Approximate figures are now marked as approximate.** Four of the corrected
+values were supplied with a "c." or a range, and one with a caveat about
+Mayotte. Entering those as though they were exact would be the same false
+precision this register exists to catch, so `data.js` carries an `ap` flag and
+an optional `note`: an approximate figure renders with a "c." everywhere it
+appears — table, map tooltip and the map's own accessible description — and a
+note travels with the number rather than sitting in a source line at the bottom
+of the page.
 
-**The figures have deliberately not been changed.** They come from DECK25, they
-are already published in the states table, and substituting numbers of my own
-would be the same error as quietly rewriting the press release. What is needed
-is the correct figure from the source Outrigger used, entered in
-`assets/js/data.js`, after which the map and table both update on the next
-build.
+**One divergence to settle.** The impact report (REPORT26 p5) gives Kiribati's
+ocean territory as 3.29 million km². The checked figure is 3,440,220. The site
+uses the checked figure and the states page has been updated to 3.44m km². The
+report is a published document, so Outrigger should decide which figure is
+canonical and align the two rather than leaving both in circulation — the same
+issue as the impact targets in §1, and it should be resolved the same way.
 
-Until they are corrected the states table is publishing at least one figure that
-is demonstrably wrong. This is a launch blocker, not a nice-to-have.
+**Provenance.** These figures were checked and supplied by Alex Murray on
+31 August 2026. The underlying source is not yet recorded here. It should be,
+so that the next person who has to defend a number knows where it came from.
+That is the one thing still outstanding on this section.
 
 ---
 

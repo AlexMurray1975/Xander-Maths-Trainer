@@ -447,6 +447,9 @@ em.mark { font-style: normal; color: var(--brand); }
 }
 .map-tip.is-on { opacity: 1; transform: translate(-50%, -18px) scale(1); }
 .map-tip__t { font: 600 14px/1.3 var(--sans); margin-bottom: 8px; }
+.map-tip__note { margin-top: 8px; font-size: 11.5px; line-height: 1.45; color: var(--muted); max-width: 26ch; }
+.qual { border: 0; text-decoration: none; cursor: help; color: var(--brand); font-weight: 600; }
+.on-dark .qual { color: var(--cyan); }
 .map-tip dl { display: grid; grid-template-columns: auto auto; gap: 3px 14px; margin: 0; font-size: 12.5px; }
 .map-tip dt { color: var(--muted); }
 .map-tip dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; font-weight: 500; }
