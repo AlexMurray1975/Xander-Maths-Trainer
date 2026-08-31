@@ -1,9 +1,12 @@
 /* Outrigger Impact — reference data
    Source: Outrigger Impact Fund pre-marketing presentation, 2025.
    Population and GDP figures per World Bank 2024 as cited in the deck appendix.
-   EEZ areas (km²) were re-checked against the deck in August 2026 after four
-   values were found to be wrong — the deck had shifted a block of rows, so
-   Fiji's figure sat on the Dominican Republic and Dominica's on Comoros.
+   EEZ areas (km²): Flanders Marine Institute (VLIZ), Maritime Boundaries
+   Geodatabase — Exclusive Economic Zones (200NM). Re-checked against that
+   source in August 2026 after four values were found to be wrong: the deck had
+   shifted a block of rows, so Fiji's figure sat on the Dominican Republic and
+   Dominica's on Comoros. Areas vary between sources because maritime boundary
+   claims and disputed areas are treated differently — hence the `ap` figures.
    `ap: true` marks a figure that is approximate; it renders with a "c." and
    must not be presented as exact. `note` carries a qualification that has to
    travel with the number.

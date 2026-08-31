@@ -102,10 +102,10 @@ are portfolio-level aims rather than a projection of any individual investment.
 | Blue economy accounts for **up to** 40% of GDP in **some** countries | Home, PR | Gonguet & Zhou, IMF WP/24/255 (2024), cited REPORT26 p5. Cited on the page | SOURCED. The site previously read "more than 40% ... in many island nations", which overstates the cited figure in both directions. Corrected | 
 | Estimated US$10bn annual adaptation finance gap for islands | Home, PR | PR26 | **VERIFY** — REPORT26 does *not* carry this figure. It carries a different one: US$383–717bn needed to transition to a sustainable global ocean economy (WRI 2025). Locate the source for the $10bn figure or replace it |
 | Seychelles' EEZ 1.34m km², ~2.5× the landmass of France (551,000 km²) | States, Home | DECK25, REPORT26 p5 | SOURCED |
-| Kiribati's EEZ 3.44m km², larger than India | States, Home | Checked figures, August 2026. **REPORT26 p5 says 3.29m — reconcile** | SOURCED |
-| Jamaica's EEZ (c. 286,000 km²) exceeds the UK land area (243,000 km²) | States | Checked figures, August 2026. Holds at the bottom of the range too (c. 274,000) | SOURCED |
+| Kiribati's EEZ 3.44m km², larger than India | States, Home | VLIZ, August 2026. **REPORT26 p5 says 3.29m — reconcile** | SOURCED |
+| Jamaica's EEZ (c. 286,000 km²) exceeds the UK land area (243,000 km²) | States | VLIZ, August 2026. Holds at the bottom of the range too (c. 274,000) | SOURCED |
 | Per-state population, GDP per capita, GDP growth (35 states) | States table | DECK25 appendix, citing World Bank 2024 | SOURCED |
-| Per-state EEZ areas (35 states) | States table, map | Re-checked and supplied by Outrigger, August 2026 | SOURCED, source document still to be recorded — see §10 |
+| Per-state EEZ areas (35 states) | States table, map | Flanders Marine Institute (VLIZ), Maritime Boundaries Geodatabase — EEZ (200NM), August 2026. Cited on the page | SOURCED |
 | 65 million people live in these states | Home, States | REPORT26 p7 | SOURCED |
 | Global blue economy ~$1.5tn a year, ~$3tn by 2030 | Home | OECD, *The Ocean Economy in 2030* (2016), cited REPORT26 p5. Cited on the page | SOURCED |
 | SDG 14 is the least funded of the SDGs; <2% of philanthropic and ODA funding supports ocean industries | Home, Impact | REPORT26 p5 | SOURCED |
@@ -285,8 +285,8 @@ When any figure in this register changes, update it here first, then the site.
 5. Obtain the source for the lionfish prey-biomass claim (§2).
 6. Confirm the OTAF facility size and grant range, which come from DECK25 and
    are not restated in the impact report (§3).
-7. Record the source of the corrected EEZ figures, and settle the Kiribati
-   figure against the impact report's 3.29m km² (§10).
+7. Settle the Kiribati figure — VLIZ gives 3.44m km², the impact report says
+   3.29m (§10). Confirm what the asterisk on Vanuatu denotes.
 8. Decide whether the LGPL coastline data is acceptable, or should be
    regenerated from public-domain Natural Earth (§11).
 
@@ -332,14 +332,29 @@ report is a published document, so Outrigger should decide which figure is
 canonical and align the two rather than leaving both in circulation — the same
 issue as the impact targets in §1, and it should be resolved the same way.
 
-**Provenance.** These figures were checked and supplied by Alex Murray on
-31 August 2026. The underlying source is not yet recorded here. It should be,
-so that the next person who has to defend a number knows where it came from.
-That is the one thing still outstanding on this section.
+**Provenance.** Flanders Marine Institute (VLIZ), *Maritime Boundaries
+Geodatabase — Exclusive Economic Zones (200NM)*. Checked against that source and
+supplied by Alex Murray, 31 August 2026. VLIZ's Marine Regions is the standard
+reference for EEZ extents and is the right thing to be citing.
+
+**Why some figures are approximate, and why that is not a weakness.** EEZ areas
+vary between sources because maritime boundary claims and disputed areas are
+treated differently. Comoros is the clearest case — its figure depends on how
+Mayotte is treated, which is a live sovereignty dispute between France and the
+Comoros, not a rounding question. That is why those figures carry a "c." and a
+note rather than a decimal place. The states page states the reason, so a reader
+who compares the table against another source finds the explanation already
+there rather than assuming an error.
+
+**One marker not yet resolved.** In the checked list, Vanuatu's 810,608 km²
+carried an asterisk whose meaning was not given. It currently renders as an
+exact figure. If the asterisk denotes a boundary question — the most likely
+reading, given the dispute with France over Matthew and Hunter Islands — it
+should be marked `ap` with a note, like Comoros.
 
 ---
 
-## 11 · Coastline data and its licence
+## 11 · Third-party datasets and their terms
 
 The coastline silhouette in `assets/js/land.js` is real data, not a drawing. It
 is GSHHS — the Global Self-consistent, Hierarchical, High-resolution Geography
@@ -352,5 +367,12 @@ licence asks of this kind of use. If Outrigger's counsel would rather not carry
 an LGPL dependency at all, Natural Earth is in the public domain and is a
 drop-in replacement: `land.js` holds nothing but rings of `[lon, lat]`, so
 regenerating it from another source changes no code.
+
+The EEZ areas come from the second third-party dataset on the site, the Flanders
+Marine Institute's Maritime Boundaries Geodatabase. Marine Regions asks to be
+cited, and it is — on the states page, beside both the table and the map.
+Someone should confirm the current terms of use for a commercial website and
+that the citation is in the form VLIZ asks for, including the database version
+and year, which is not yet recorded here.
 
 ---
