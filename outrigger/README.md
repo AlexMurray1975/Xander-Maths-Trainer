@@ -116,42 +116,70 @@ can be omitted). Point the domain at it and set `404.html` as the error page.
 A short list of things that need a decision or a rights check — none of them
 blocking, but all of them worth settling first.
 
-1. **Image and logo rights.** The photographs and the eight partner logos are
-   taken from the fund presentation. Confirm Outrigger holds web-usage rights to
-   the photography, and that each partner is content to be shown as a partner or
-   supporter on a public site. If any are not, remove the tile — the grid reflows.
+1. **Logo permissions — get these in writing.** The photographs and partner
+   logos are taken from the fund presentation. Two things need consent, and the
+   second is the sharper one:
 
-2. **Team photographs are low-resolution.** They were extracted from the deck at
+   - Confirm Outrigger holds web-usage rights to the photography.
+   - **Confirm each institution consents to its logo being used, in the group it
+     appears in.** Development finance institutions have strict brand
+     guidelines, and using a logo to signal investment in a fund is a different
+     ask from listing an organisation as a supporter. The EIB in particular
+     should be asked explicitly. If consent is refused, delete the tile or
+     replace it with the name — the grid reflows either way.
+
+   **The Nordic Development Fund logo is missing.** It could not be sourced.
+   Until it arrives, the site renders "Nordic Development Fund" as a typographic
+   wordmark, which looks deliberate rather than broken. Drop the file in as
+   `assets/img/partners/nordic-development-fund.svg` (or `.png`) and rebuild —
+   the build swaps it in automatically, no markup change needed. Any
+   `{{logo:slug|Name}}` slot behaves the same way.
+
+   **The Luxembourg–EIB Climate Finance Platform is shown under the EIB logo**,
+   with a caption naming the platform, because the platform has no separate mark
+   available here and the EIB manages it. If the platform has its own logo, add
+   it as `assets/img/partners/luxembourg-eib-climate-finance-platform.svg` and
+   point the slot at it.
+
+2. **Check where Builders Vision belongs.** The September 2025 deck recorded
+   Builders Vision and other family offices as committed to senior equity and
+   senior debt, but the first close release names only the Nordic Development
+   Fund and the Luxembourg–EIB Climate Finance Platform as cornerstone
+   investors. Builders Vision therefore sits under "Partners & supporters"
+   rather than "Anchor investors". If they are in fact an investor and content
+   to be named, move the tile — it is one line in `_src/pages/index.html`.
+
+3. **Team photographs are low-resolution.** They were extracted from the deck at
    roughly 100–380px and are shown small and in monochrome, which hides most of
    the softness. Replacing them with proper headshots (≥600px square) would be a
    visible improvement. Drop new files over `assets/img/team/*.jpg`.
 
-3. **The logo is raster, not vector.** The best copy available in the deck is
+4. **The Outrigger logo is raster, not vector.** The best copy available in the deck is
    145×102px, too coarse to trace cleanly. The site uses the mark as an image
    alongside a live-text wordmark set in Jost, which is a close match to the
    original. If you have the original vector logo, replace `assets/img/mark.png`
    and `assets/img/logo-white.png` with SVG and the whole identity sharpens.
 
-4. **The regional allocation split.** The deck shows 35% / 25% / 25% with a 15%
+5. **The regional allocation split.** The deck shows 35% / 25% / 25% with a 15%
    floating allocation across three columns, but the percentages sit outside the
    text flow, so which region carries the 35% cannot be read from the file with
    certainty. The site currently reads it as **Caribbean 35%, AIS 25%,
    Pacific 25%** — the natural column order. Please confirm, and correct
    `states.html` and `index.html` if it is the other way round.
 
-5. **Contact form endpoint.** The form currently opens the visitor's mail client.
+6. **Contact form endpoint.** The form currently opens the visitor's mail client.
    To collect submissions instead, set an `action` on the `<form id="enquiry">`
    in `_src/pages/contact.html` pointing at a form service (Formspree, Netlify
    Forms, or your own handler) and rebuild. The JavaScript stands aside as soon
    as a real endpoint is present.
 
-6. **Fund status.** The site reflects first close on 28 July 2026 and a final
+7. **Fund status.** The site reflects first close on 28 July 2026 and a final
    close anticipated in 2027. No first close *amount* is stated anywhere,
    because the press release does not give one — add it only if Outrigger
    intends it to be public. Update `_src/pages/index.html` and
    `assets/data/investor-terms.html` as the raise progresses.
 
-7. **The footer disclaimer needs Robert Quinn's sign-off.** The site footer now
+8. **The footer disclaimer needs Robert Quinn's sign-off.** The site footer now
    carries the approved boilerplate from the first close release, with one
    change: the sentence recording the CSSF *pre-marketing* notification under
    Directive (EU) 2019/1160 has been dropped. Pre-marketing ends once marketing
@@ -160,12 +188,12 @@ blocking, but all of them worth settling first.
    page, which is reproduced as issued. **Please have Robert Quinn Advisory
    confirm both.**
 
-8. **Two edits to the press release text.** It is otherwise reproduced word for
+9. **Two edits to the press release text.** It is otherwise reproduced word for
    word. "deliver more than US$100 million *to* catalytic funding" is set as
    "*of* catalytic funding", and a stray comma in "(6), Clean Water and
    Sanitation" is removed. Revert either if the issued wording must stand.
 
-9. **Press links have no URLs.** The five third-party articles on `news.html`
+10. **Press links have no URLs.** The five third-party articles on `news.html`
    are listed as a reading list because the deck gave titles without links. Add
    `href`s in `_src/pages/news.html` when you have them.
 
@@ -184,6 +212,11 @@ blocking, but all of them worth settling first.
   visible focus rings, `aria-current` on the active nav item, keyboard-reachable
   map points with descriptive labels, `aria-sort` on sortable columns, and a
   full `prefers-reduced-motion` path that disables every animation.
+- **Logo groups carry meaning.** The home page separates anchor investors, OTAF
+  backers and partners into three labelled blocks rather than one undifferentiated
+  wall. That matters: on a page that is a financial promotion, an unlabelled grid
+  implies every organisation in it has invested. The partners block says in as
+  many words that inclusion does not indicate an investment.
 - **Sources.** Figures come from the first close press release (28 July 2026)
   and the Outrigger Impact Fund presentation (2025), including the World Bank
   2024 indicators it cites. Where the two differ, the press release wins — the

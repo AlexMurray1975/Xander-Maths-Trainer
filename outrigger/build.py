@@ -9,6 +9,7 @@ build step and no dependencies beyond the Python standard library.
     python3 build.py
 """
 
+import html as html_mod
 import re
 import sys
 from pathlib import Path
@@ -19,6 +20,28 @@ PAGES = SRC / "pages"
 PARTIALS = SRC / "partials"
 
 NAV_KEYS = ["fund", "states", "impact", "otaf", "team", "news"]
+
+LOGO_DIR = "assets/img/partners"
+
+
+def fill_logos(text, root):
+    """Expand {{logo:slug|Name}} into an <img> when the file exists, or a
+    typographic wordmark when it does not.
+
+    This lets a logo drop into assets/img/partners/<slug>.png and appear on the
+    next build, with no markup change — useful while third-party logo
+    permissions are still being obtained.
+    """
+    def repl(m):
+        slug, name = m.group(1), m.group(2)
+        for ext in (".svg", ".png", ".jpg"):
+            f = root / LOGO_DIR / (slug + ext)
+            if f.exists():
+                return '<img src="%s/%s%s" alt="%s" loading="lazy">' % (
+                    LOGO_DIR, slug, ext, html_mod.escape(name, quote=True))
+        return '<span class="logo-wordmark">%s</span>' % html_mod.escape(name)
+
+    return re.sub(r"\{\{logo:([a-z0-9-]+)\|([^}]+)\}\}", repl, text)
 
 
 def front_matter(text):
@@ -66,7 +89,7 @@ def main():
             marker = ' aria-current="page"' if key == section else ""
             page_header = page_header.replace("{{cur_%s}}" % key, marker)
 
-        out = page_head + page_header + "\n" + body.strip() + "\n\n" + footer
+        out = page_head + page_header + "\n" + fill_logos(body.strip(), ROOT) + "\n\n" + footer
         (ROOT / (name + ".html")).write_text(out, encoding="utf-8")
         built.append(name + ".html")
 
