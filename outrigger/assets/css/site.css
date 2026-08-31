@@ -420,18 +420,25 @@ em.mark { font-style: normal; color: var(--brand); }
 /* ---------- Map ---------- */
 .map-shell { position: relative; background: var(--abyss); border-radius: var(--r); overflow: hidden; }
 .map-svg { display: block; width: 100%; height: auto; touch-action: pan-y; }
-.map-field circle { fill: rgba(255,255,255,.13); }
+.map-land path { fill: rgba(255,255,255,.055); stroke: rgba(255,255,255,.10); stroke-width: .5; }
 .map-band { fill: rgba(84,179,237,.05); }
 .map-grid { stroke: rgba(255,255,255,.07); stroke-width: .4; fill: none; }
+/* Below ~700px the map is under 300px wide, so text inside the viewBox renders
+   at two or three pixels. Drop the labels and let the silhouette carry it; the
+   table underneath holds the same information. */
+@media (max-width: 700px) { .map-glabel { display: none; } .map-key { display: none; } }
+.map-key ellipse { fill: none; stroke: rgba(255,255,255,.30); stroke-width: .6; stroke-dasharray: 2 3; }
+.map-key text { fill: rgba(255,255,255,.5); }
 .map-dot {
-  cursor: pointer;
-  transition: r .2s ease, opacity .2s ease;
+  cursor: pointer; outline: none;
+  transition: opacity .25s ease;
 }
-.map-dot circle.halo { fill: var(--cyan); opacity: .16; }
-.map-dot circle.core { fill: var(--cyan); stroke: var(--abyss); stroke-width: .6; }
-.map-dot.is-window circle.core { fill: #fff; }
-.map-dot:hover circle.halo, .map-dot.is-active circle.halo { opacity: .42; }
-.map-dot.is-dim { opacity: .18; pointer-events: none; }
+.map-dot ellipse.eez { fill: var(--cyan); opacity: .17; stroke: var(--cyan); stroke-width: .5; stroke-opacity: .5; pointer-events: none; }
+.map-dot circle.core { fill: #fff; stroke: var(--abyss); stroke-width: .5; pointer-events: none; }
+.map-dot circle.hit { fill: transparent; }
+.map-dot:hover ellipse.eez, .map-dot.is-active ellipse.eez { opacity: .46; stroke-opacity: 1; }
+.map-dot:focus-visible ellipse.eez { opacity: .46; stroke: #fff; stroke-opacity: 1; stroke-width: 1; }
+.map-dot.is-dim { opacity: .13; pointer-events: none; }
 .map-tip {
   position: absolute; z-index: 5; pointer-events: none;
   background: #fff; color: var(--ink); border-radius: var(--r);

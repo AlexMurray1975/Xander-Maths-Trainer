@@ -13,7 +13,7 @@ Drop the folder on any static host and it works.
 | Page | What it covers |
 |---|---|
 | `index.html` | Home — the organisation, the opportunity, geography, sectors, impact, OTAF, partners |
-| `states.html` | The 35 Big Ocean States: interactive map, sortable dataset, the three regions |
+| `states.html` | The 35 Big Ocean States: the map, a sortable dataset, the three regions |
 | `impact.html` | Standards, seven impact themes, the 14-KPI explorer, theory of change |
 | `otaf.html` | The Technical Assistance Facility, its four workstreams, the grant timeline, and an FAQ |
 | `otaf-portfolio.html` | The four OTAF grants to date — INVERSA, SarGas, ABALOBI, Positive Change for Marine Life |
@@ -114,6 +114,41 @@ one is invited to engage in investment activity, so FSMA s.21 is not engaged.
 Three drafting rules keep it that way, and they are set out in `CLAIMS.md` §7.
 The short version: every figure on that page is an **expected** outcome agreed
 at award, not a result, and the page says so.
+
+## The map
+
+`assets/js/site.js` draws it; `assets/js/land.js` holds the coastline; the state
+data is in `assets/js/data.js`. Three things about it are deliberate.
+
+**It runs west to east — Caribbean, then Atlantic and Indian Ocean, then
+Pacific** — which is the order Outrigger describes its own geography in. The
+projection is equirectangular, cut at 99°W in the empty eastern Pacific, and
+spans 294° of longitude. `LON_LEFT` and `LON_SPAN` at the top of the map section
+are the only two numbers that set this; everything else, coastlines included,
+derives from them.
+
+**The coastline is real GSHHS data, not a sketch.** An earlier version of this
+site drew the continents by hand and they were wrong, which is worse than
+drawing nothing. `land.js` is rings of `[lon, lat]` and nothing else, so the map
+can be re-projected without regenerating it, and the data can be swapped for
+another source without touching any code. See `CLAIMS.md` §11 on the licence.
+
+**Each state's circle covers the true area of its exclusive economic zone.** Not
+a symbol scaled to suggest area — the actual area, at the map's own scale. The
+longitude semi-axis is widened by 1/cos(latitude), which cancels the
+equirectangular stretch exactly, so the drawn area is right at any latitude. The
+circle is centred on the state and says how much ocean, not which ocean; the
+page says so, because several of these zones are island groups scattered over
+thousands of kilometres and the real boundary looks nothing like a circle.
+
+The discs overlap heavily in the Caribbean and the western Pacific, so they are
+transparent to the pointer and a small invisible circle at each state's centre
+is the only hit target. States are painted largest-first, which leaves the small
+ones on top and reachable. Removing that would make Fiji unhoverable.
+
+The map lives on `states.html` only, beside the dataset it belongs to. It used
+to run on the home page as well, which meant a visitor met the same graphic
+twice.
 
 ## Editing the site
 

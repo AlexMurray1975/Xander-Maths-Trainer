@@ -284,3 +284,61 @@ When any figure in this register changes, update it here first, then the site.
 5. Obtain the source for the lionfish prey-biomass claim (§2).
 6. Confirm the OTAF facility size and grant range, which come from DECK25 and
    are not restated in the impact report (§3).
+7. **Correct Fiji's EEZ figure, and check Dominica, the Dominican Republic and
+   Comoros while you are in there (§10). This one blocks launch** — the states
+   table is currently publishing a figure that is demonstrably wrong.
+8. Decide whether the LGPL coastline data is acceptable, or should be
+   regenerated from public-domain Natural Earth (§11).
+
+---
+
+## 10 · A data error the map exposed
+
+Drawing each exclusive economic zone to its true area, rather than as a symbol
+whose size merely suggests one, made an error in the underlying dataset
+immediately visible. It should be corrected before launch.
+
+**Fiji's EEZ is recorded as 25,571 km², which is byte-identical to Grenada's.**
+That is the signature of a copy-paste error, and it does not need an external
+source to see: Fiji is an archipelagic state of several hundred islands spread
+across the south-west Pacific, and it cannot have an ocean territory the size of
+Grenada's — smaller, on this dataset, than Belize's. On the map Fiji now appears
+as a pinprick among its neighbours' discs, which is how the error surfaced.
+
+Two more values in the same table look wrong and should be checked against the
+original source at the same time:
+
+| State | Recorded in `assets/js/data.js` | Why it is queried |
+|---|---|---|
+| Fiji | 25,571 km² | Identical to Grenada. Almost certainly a copied cell |
+| Dominica | 370,973 km² | Implausibly large for a single small island; Dominica and the Dominican Republic are adjacent rows and easily transposed |
+| Dominican Republic | 1,289,978 km² | Would make it one of the largest EEZs in the Caribbean by a wide margin |
+| Comoros | 28,552 km² | Low for a three-island archipelago |
+
+**The figures have deliberately not been changed.** They come from DECK25, they
+are already published in the states table, and substituting numbers of my own
+would be the same error as quietly rewriting the press release. What is needed
+is the correct figure from the source Outrigger used, entered in
+`assets/js/data.js`, after which the map and table both update on the next
+build.
+
+Until they are corrected the states table is publishing at least one figure that
+is demonstrably wrong. This is a launch blocker, not a nice-to-have.
+
+---
+
+## 11 · Coastline data and its licence
+
+The coastline silhouette in `assets/js/land.js` is real data, not a drawing. It
+is GSHHS — the Global Self-consistent, Hierarchical, High-resolution Geography
+database of Wessel and Smith — at crude resolution, as distributed with
+matplotlib-basemap, with lakes removed and the outlines simplified. It is
+credited on the states page.
+
+**GSHHG is released under the LGPL.** Attribution is given, which is what the
+licence asks of this kind of use. If Outrigger's counsel would rather not carry
+an LGPL dependency at all, Natural Earth is in the public domain and is a
+drop-in replacement: `land.js` holds nothing but rings of `[lon, lat]`, so
+regenerating it from another source changes no code.
+
+---

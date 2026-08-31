@@ -118,33 +118,27 @@ slug:
   <figcaption>The blue economy accounts for up to 40% of GDP in some island nations. Its participants are small enterprises, cooperatives and families.</figcaption>
 </figure>
 
-<!-- ============ MAP ============ -->
+<!-- ============ GEOGRAPHY ============ -->
+<!-- The map itself lives on states.html, with the dataset it belongs beside.
+     Running it here as well meant a visitor met the same graphic twice. -->
 <section class="section on-dark is-abyss">
   <div class="wrap">
-    <div class="rv" style="max-width:62ch">
-      <p class="eyebrow">Where we invest</p>
-      <h2 class="h2">Thirty-five Big Ocean States across three&nbsp;regions</h2>
-      <p class="lede mt-2">Thirty-five states across the Caribbean, the Pacific, and the Atlantic, Indian Ocean and South China Sea. Between them they hold exclusive economic zones covering roughly a third of the world’s ocean.</p>
-    </div>
-
-    <div class="mt-3 rv">
-      <div class="chips mb-2">
-        <button class="chip" type="button" data-mapfilter="all" aria-pressed="true">All regions</button>
-        <button class="chip" type="button" data-mapfilter="Caribbean" aria-pressed="false">Caribbean</button>
-        <button class="chip" type="button" data-mapfilter="AIS" aria-pressed="false">Atlantic &amp; Indian Ocean</button>
-        <button class="chip" type="button" data-mapfilter="Pacific" aria-pressed="false">Pacific</button>
+    <div class="split">
+      <div class="split__aside rv">
+        <p class="eyebrow">Where we invest</p>
+        <h2 class="h2">Thirty-five Big Ocean States, across three&nbsp;regions</h2>
+        <p class="mt-2"><a class="textlink" href="states.html">See the map and every state&rsquo;s ocean data
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
+        </a></p>
       </div>
-
-      <div class="map-shell" id="map"></div>
-      <p class="small mt-1">Hover, tap or tab to a point for its ocean and economic data.</p>
-
-      <div class="map-legend mt-2">
-        <span>Point size reflects the size of the exclusive economic zone</span>
+      <div class="rv" data-delay="80">
+        <p class="lede">Thirty-five states, running west to east from the Caribbean, through the Atlantic and Indian Ocean, to the Pacific. Between them they hold exclusive economic zones covering roughly a third of the world&rsquo;s ocean.</p>
+        <div class="grid g-3 mt-3">
+          <div><div class="stat__n"><span data-count="14">14</span></div><p class="stat__l">Caribbean — from Belize to Suriname</p></div>
+          <div><div class="stat__n"><span data-count="8">8</span></div><p class="stat__l">Atlantic &amp; Indian Ocean — Cabo Verde to Sri Lanka</p></div>
+          <div><div class="stat__n"><span data-count="13">13</span></div><p class="stat__l">Pacific — Timor-Leste to Tonga</p></div>
+        </div>
       </div>
-
-      <p class="mt-3"><a class="textlink" href="states.html">See every state and its ocean data
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 12h15M13 6l6 6-6 6"/></svg>
-      </a></p>
     </div>
   </div>
 </section>

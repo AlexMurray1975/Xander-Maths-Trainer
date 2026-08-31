@@ -106,15 +106,19 @@
   };
 
   /* ---------------- Big Ocean States map ----------------
-     A deliberately schematic projection: an equirectangular ocean field centred
-     on the Pacific, with the states in their true relative positions. No
-     coastlines are drawn — inventing them would be worse than omitting them. */
-  var LON0 = 140;                 // antimeridian falls in the mid-Atlantic
-  var LAT_TOP = 46, LAT_BOT = -50;
-  var VBW = 1000, VBH;
+     Equirectangular, cut in the eastern Pacific so the map reads west to east
+     in the order the fund describes its geography: Caribbean, then Atlantic and
+     Indian Ocean, then Pacific. Degrees of longitude and latitude are the same
+     size on screen, which is what lets the EEZ circles be drawn to true area.
 
-  function px(lon) { return ((((lon - LON0 + 540) % 360) - 180) + 180) / 360 * VBW; }
-  function py(lat) { return (LAT_TOP - lat) / (LAT_TOP - LAT_BOT) * VBH; }
+     The coastline in assets/js/land.js is real GSHHS data, not a sketch. It is
+     drawn faintly and only to let a reader place the states. */
+  var LON_LEFT = -99, LON_SPAN = 294;    // 99W .. 195E — Belize on the left, Samoa on the right
+  var LAT_TOP = 58, LAT_BOT = -48;
+  var VBW = 1200, VBH, K;                // K = pixels per degree, both axes
+
+  function px(lon) { return (((lon - LON_LEFT) % 360 + 360) % 360) * K; }
+  function py(lat) { return (LAT_TOP - lat) * K; }
 
   function svgEl(n, attrs) {
     var e = document.createElementNS('http://www.w3.org/2000/svg', n);
@@ -122,18 +126,59 @@
     return e;
   }
 
+  /* Semi-axis, in degrees of latitude, of an ellipse whose area on the globe
+     equals `km2`. Widening the longitude axis by 1/cos(lat) cancels the
+     equirectangular stretch exactly, so the drawn area is true at any latitude. */
+  var DEG_KM = 111.32;
+  function eezAxes(km2, lat) {
+    var r = Math.sqrt(km2 / Math.PI) / DEG_KM;
+    return [r / Math.cos(lat * Math.PI / 180), r];   // [lon semi-axis, lat semi-axis]
+  }
+
+  /* Land rings arrive as [lon, lat] in -180..180. A ring that straddles the cut
+     has to be unwrapped before it is projected, or it draws a line right across
+     the map; and a ring can be visible at more than one 360-degree offset. */
+  function landPaths() {
+    if (!window.OI_LAND) return [];
+    var out = [];
+    window.OI_LAND.forEach(function (ring) {
+      var lon = [], prev = null, i;
+      for (i = 0; i < ring.length; i++) {
+        var v = ring[i][0];
+        if (prev !== null) v = prev + ((v - prev + 540) % 360) - 180;
+        lon.push(v); prev = v;
+      }
+      var lo = Math.min.apply(null, lon), hi = Math.max.apply(null, lon);
+      for (var k = -2; k <= 2; k++) {
+        var a = lo + k * 360, b = hi + k * 360;
+        if (b < LON_LEFT || a > LON_LEFT + LON_SPAN) continue;
+        var d = '';
+        for (i = 0; i < ring.length; i++) {
+          d += (i ? 'L' : 'M') +
+               ((lon[i] + k * 360 - LON_LEFT) * K).toFixed(1) + ' ' +
+               py(ring[i][1]).toFixed(1);
+        }
+        out.push(d + 'Z');
+      }
+    });
+    return out;
+  }
+
   function map() {
     var shell = document.getElementById('map');
     if (!shell || !window.OI_STATES) return;
-    VBH = Math.round(VBW * (LAT_TOP - LAT_BOT) / 360);
+    K = VBW / LON_SPAN;
+    VBH = Math.round((LAT_TOP - LAT_BOT) * K);
 
     var svg = svgEl('svg', {
       viewBox: '0 0 ' + VBW + ' ' + VBH,
       'class': 'map-svg',
       role: 'img',
-      'aria-label': 'Schematic map of the ' + window.OI_STATES.length +
-        ' Big Ocean States in Outrigger\u2019s eligible geography, plotted by longitude and latitude. ' +
-        'The same figures are listed in the table below.'
+      'aria-label': 'Map of the ' + window.OI_STATES.length +
+        ' Big Ocean States in Outrigger’s eligible geography, running west to east ' +
+        'from the Caribbean through the Atlantic and Indian Ocean to the Pacific. ' +
+        'Each state is drawn as a circle covering the true area of its exclusive ' +
+        'economic zone. The same figures are listed in the table below.'
     });
 
     // tropical band — where almost every one of these states sits
@@ -141,18 +186,10 @@
       'class': 'map-band', x: 0, y: py(23.4), width: VBW, height: py(-23.4) - py(23.4)
     }));
 
-    // dot field, echoing the Outrigger mark
-    var field = svgEl('g', { 'class': 'map-field' });
-    for (var la = LAT_BOT + 4; la < LAT_TOP; la += 6) {
-      for (var lo = 0; lo < 360; lo += 6) {
-        var yy = py(la);
-        field.appendChild(svgEl('circle', {
-          cx: (lo / 360) * VBW, cy: yy,
-          r: (Math.abs(la) < 24 ? 1.15 : 0.8)
-        }));
-      }
-    }
-    svg.appendChild(field);
+    // coastline silhouette
+    var land = svgEl('g', { 'class': 'map-land' });
+    landPaths().forEach(function (d) { land.appendChild(svgEl('path', { d: d })); });
+    svg.appendChild(land);
 
     // graticule: equator and tropics
     var grid = svgEl('g', { 'class': 'map-grid' });
@@ -162,6 +199,7 @@
         'stroke-dasharray': g[0] === 0 ? '' : '3 6'
       }));
       var t = svgEl('text', {
+        'class': 'map-glabel',
         x: 8, y: py(g[0]) - 6, fill: 'rgba(255,255,255,.34)',
         'font-size': 8.5, 'letter-spacing': 1.4, 'font-family': 'Jost, sans-serif'
       });
@@ -170,32 +208,39 @@
     });
     svg.appendChild(grid);
 
-    // region labels, positioned over their own clusters
-    [['Atlantic, Indian Ocean & South China Sea', 55, -38],
-     ['Pacific', 176, -38],
-     ['Caribbean', -70, 33]].forEach(function (t) {
+    // region labels, over their own clusters, reading west to east
+    [['Caribbean', -70, 40],
+     ['Atlantic & Indian Ocean', 30, 40],
+     ['Pacific', 158, 40]].forEach(function (t) {
       var tx = svgEl('text', {
+        'class': 'map-glabel',
         x: px(t[1]), y: py(t[2]), 'text-anchor': 'middle',
-        fill: 'rgba(255,255,255,.42)', 'font-size': 10,
-        'letter-spacing': 2.2, 'font-family': 'Jost, sans-serif'
+        fill: 'rgba(255,255,255,.42)', 'font-size': 11,
+        'letter-spacing': 2.4, 'font-family': 'Jost, sans-serif'
       });
       tx.textContent = t[0].toUpperCase();
       svg.appendChild(tx);
     });
 
-    // state points, largest EEZ first so small ones stay clickable on top
+    // states, largest EEZ first so the small ones stay clickable on top
     var dots = svgEl('g', {});
     window.OI_STATES.slice().sort(function (a, b) { return b.eez - a.eez; }).forEach(function (s) {
-      var x = px(s.lon), y = py(s.lat);
-      var r = 2.4 + Math.sqrt(s.eez) / 750;
+      var x = px(s.lon), y = py(s.lat), ax = eezAxes(s.eez, s.lat);
       var g = svgEl('g', {
         'class': 'map-dot' + (s.w && showWindow() ? ' is-window' : ''),
         'data-region': s.r, tabindex: '0', role: 'button',
         'aria-label': s.n + '. Exclusive economic zone ' + fmt.km2(s.eez) +
                       '. Population ' + fmt.int(s.pop) + '.'
       });
-      g.appendChild(svgEl('circle', { 'class': 'halo', cx: x, cy: y, r: r * 2.6 }));
-      g.appendChild(svgEl('circle', { 'class': 'core', cx: x, cy: y, r: r }));
+      g.appendChild(svgEl('ellipse', {
+        'class': 'eez', cx: x, cy: y,
+        rx: (ax[0] * K).toFixed(2), ry: (ax[1] * K).toFixed(2)
+      }));
+      g.appendChild(svgEl('circle', { 'class': 'core', cx: x, cy: y, r: 1.9 }));
+      // The discs overlap heavily in the Caribbean and the western Pacific, so
+      // they are transparent to the pointer and this is the only hit target.
+      // States are painted largest first, which leaves the small ones on top.
+      g.appendChild(svgEl('circle', { 'class': 'hit', cx: x, cy: y, r: 7 }));
 
       var show = function () { tip(shell, s, x / VBW, y / VBH); g.classList.add('is-active'); };
       var hide = function () { hideTip(shell); g.classList.remove('is-active'); };
@@ -207,6 +252,19 @@
       dots.appendChild(g);
     });
     svg.appendChild(dots);
+
+    // scale key — a circle of exactly one million km², drawn at map scale
+    var key = svgEl('g', { 'class': 'map-key' });
+    var kr = eezAxes(1e6, -38)[1] * K, kx = px(-92) + kr, ky = py(-38);
+    key.appendChild(svgEl('ellipse', {
+      cx: kx, cy: ky, rx: (eezAxes(1e6, -38)[0] * K).toFixed(2), ry: kr.toFixed(2)
+    }));
+    var kt = svgEl('text', { 'class': 'map-glabel', x: kx, y: ky + 3.5, 'text-anchor': 'middle', 'font-size': 8,
+      'letter-spacing': 1.1, 'font-family': 'Jost, sans-serif' });
+    kt.textContent = '1M KM²';
+    key.appendChild(kt);
+    svg.appendChild(key);
+
     shell.appendChild(svg);
 
     var t = document.createElement('div');

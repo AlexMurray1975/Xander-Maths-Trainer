@@ -75,6 +75,7 @@ def main():
     footer = route_links(inline_assets(footer))
 
     js = ((ROOT / "assets/js/data.js").read_text() + "\n" +
+          (ROOT / "assets/js/land.js").read_text() + "\n" +
           (ROOT / "assets/js/site.js").read_text())
 
     pages_json = ",\n".join(
