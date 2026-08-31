@@ -80,8 +80,12 @@ def route_links(html):
 
 def main():
     css = (ROOT / "assets/css/fonts.css").read_text() + "\n" + (ROOT / "assets/css/site.css").read_text()
-    css = re.sub(r'url\(\.\./fonts/([^)]+)\)',
-                 lambda m: "url(%s)" % data_uri("assets/fonts/" + m.group(1)), css)
+
+    # Inline every asset the stylesheet references, not just the fonts: the dark
+    # panels pull their ocean photographs from CSS, and those were previously
+    # left as relative URLs that resolve to nothing once the file is moved.
+    css = re.sub(r'url\(\.\./([^)"\']+)\)',
+                 lambda m: "url(%s)" % data_uri("assets/" + m.group(1)), css)
 
     bodies = {}
     for name in PAGES:
@@ -173,6 +177,14 @@ var OI_PAGES = {%s};
 %s
 </script>
 """ % (css, header, footer, js, router)
+
+    # A single-file bundle that still points at relative paths is broken by
+    # definition: nothing resolves once it is published or emailed. Fail loudly
+    # rather than shipping a preview with silently missing images.
+    dangling = re.findall(r'url\(\.\.?/[^)]*\)|(?:src|href)="(?!data:|#|https?:|mailto:)[^"]+"', html)
+    dangling = [d for d in dangling if "assets/" in d or d.startswith("url(")]
+    if dangling:
+        sys.exit("unresolved asset references in the bundle:\n  " + "\n  ".join(sorted(set(dangling))))
 
     OUT.write_text(html, encoding="utf-8")
     print("Wrote %s (%.1f MB)" % (OUT.name, OUT.stat().st_size / 1e6))
