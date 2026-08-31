@@ -18,8 +18,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 OUT = ROOT / "preview.html"
-PAGES = ["index", "states", "impact", "otaf", "team", "news",
-         "news-first-close", "contact"]
+# Every page in _src/pages except 404, which has no route of its own. Derived
+# rather than listed, because a hand-kept list silently dropped otaf-portfolio
+# from the preview and left a link in it pointing at nothing.
+PAGES = ["index"] + sorted(
+    f.stem for f in (ROOT / "_src/pages").glob("*.html")
+    if f.stem not in ("index", "404"))
 
 
 def data_uri(path):
@@ -148,13 +152,28 @@ var OI_PAGES = {%s};
 </script>
 """ % (css, header, footer, js, router)
 
+    # The page bodies are carried through the router as JSON, so their quotes
+    # are backslash-escaped. Check against an unescaped copy or the guards below
+    # only ever see the shell — which is how a whole missing page slipped past
+    # them once already.
+    probe = html.replace('\\"', '"')
+
     # A single-file bundle that still points at relative paths is broken by
     # definition: nothing resolves once it is published or emailed. Fail loudly
     # rather than shipping a preview with silently missing images.
-    dangling = re.findall(r'url\(\.\.?/[^)]*\)|(?:src|href)="(?!data:|#|https?:|mailto:)[^"]+"', html)
+    dangling = re.findall(r'url\(\.\.?/[^)]*\)|(?:src|href)="(?!data:|#|https?:|mailto:)[^"]+"', probe)
     dangling = [d for d in dangling if "assets/" in d or d.startswith("url(")]
     if dangling:
         sys.exit("unresolved asset references in the bundle:\n  " + "\n  ".join(sorted(set(dangling))))
+
+    # route_links leaves a link untouched when its page is not in PAGES, so any
+    # surviving .html href is a link to a page the bundle does not carry. Left
+    # unchecked it fails silently: the visitor clicks and gets nothing, or is
+    # quietly shown the home page.
+    missing = sorted(set(re.findall(r'href="([a-z0-9-]+\.html)(?:#[\w-]+)?"', probe)))
+    if missing:
+        sys.exit("links to pages the bundle does not carry: " + ", ".join(missing) +
+                 "\n(every page in _src/pages should be routed; check PAGES)")
 
     OUT.write_text(html, encoding="utf-8")
     print("Wrote %s (%.1f MB)" % (OUT.name, OUT.stat().st_size / 1e6))
