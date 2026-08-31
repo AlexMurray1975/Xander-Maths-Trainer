@@ -128,12 +128,12 @@ blocking, but all of them worth settling first.
      should be asked explicitly. If consent is refused, delete the tile or
      replace it with the name — the grid reflows either way.
 
-   **The Nordic Development Fund logo is missing.** It could not be sourced.
-   Until it arrives, the site renders "Nordic Development Fund" as a typographic
-   wordmark, which looks deliberate rather than broken. Drop the file in as
-   `assets/img/partners/nordic-development-fund.svg` (or `.png`) and rebuild —
-   the build swaps it in automatically, no markup change needed. Any
-   `{{logo:slug|Name}}` slot behaves the same way.
+   The Nordic Development Fund logo was supplied by NDF and is in place
+   (`assets/img/partners/nordic-development-fund.png`, native green on
+   transparent). Any other logo can be added the same way: drop the file into
+   `assets/img/partners/<slug>.svg|png` and rebuild — a `{{logo:slug|Name}}`
+   slot swaps the image in automatically, and falls back to a typographic
+   wordmark while the file is missing.
 
    **The Luxembourg–EIB Climate Finance Platform is shown under the EIB logo**,
    with a caption naming the platform, because the platform has no separate mark
