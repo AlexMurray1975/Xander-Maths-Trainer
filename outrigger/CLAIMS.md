@@ -364,10 +364,20 @@ should be marked `ap` with a note, like Comoros.
 
 ## 11 · Photography
 
-Slots 01–09 of the photography brief were supplied on 31 August 2026 and are in
-place: the water column behind the sea panels, the home hero, and the banners
-for Where We Invest, Impact, OTAF, Team, the grant portfolio, the news card and
-Contact.
+Slots 01–14 of the photography brief were supplied on 31 August 2026 and are in
+place: the water column behind the sea panels, the home hero, the documentary
+band, the banners for Where We Invest, Impact, OTAF, Team, the grant portfolio,
+the news card and Contact, and a photograph for each of the four grantee case
+studies. Only the five team portraits are outstanding.
+
+**Identifiable people appear in four of them**, and each needs a written release
+before launch — not the photographer's licence, which is a separate thing, but
+the subject's own consent to appear on a fund's website. The Positive Change for
+Marine Life photograph is the sharpest case: five cooperative members, faces
+clear, in a frame that illustrates the project's inclusion target. It is the
+strongest image on the site and the one that most needs papering. INVERSA and
+SarGas show a single worker each, faces largely obscured. ABALOBI shows one
+clearly.
 
 **One supplied photograph needs a decision before launch.** The ABALOBI image
 on the grant portfolio page carries a legible catch board. Three things on it:
