@@ -5,7 +5,7 @@ Used to produce a shareable preview (an Artifact, an email attachment, a file on
 a USB stick) where a folder of files is not practical. Fonts, images, CSS and JS
 are inlined; cross-page links become hash routes handled in the page.
 
-The real site does not use this — deploy the folder for that.
+The real site does not use this; deploy the folder for that.
 
     python3 build.py && python3 bundle.py
 """
@@ -121,7 +121,7 @@ var OI_PAGES = {%s};
 
     html = """<meta charset="utf-8">
 <title>Outrigger Impact</title>
-<meta name="description" content="Driving resilience in Big Ocean States — a preview of the Outrigger Impact Fund website.">
+<meta name="description" content="Driving resilience in Big Ocean States: a preview of the Outrigger Impact Fund website.">
 <style>
 %s
 /* Preview shell only: this file bundles all seven pages into one document and
@@ -154,7 +154,7 @@ var OI_PAGES = {%s};
 
     # The page bodies are carried through the router as JSON, so their quotes
     # are backslash-escaped. Check against an unescaped copy or the guards below
-    # only ever see the shell — which is how a whole missing page slipped past
+    # only ever see the shell, which is how a whole missing page slipped past
     # them once already.
     probe = html.replace('\\"', '"')
 

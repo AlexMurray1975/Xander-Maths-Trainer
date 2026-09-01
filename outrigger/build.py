@@ -3,7 +3,7 @@
 
 Pages live in _src/pages/*.html and carry a short HTML-comment front matter
 block (title / description / slug). Shared chrome lives in _src/partials/.
-Output is plain static HTML written to this directory — there is no runtime
+Output is plain static HTML written to this directory. There is no runtime
 build step and no dependencies beyond the Python standard library.
 
     python3 build.py
@@ -29,7 +29,7 @@ def fill_logos(text, root):
     typographic wordmark when it does not.
 
     This lets a logo drop into assets/img/partners/<slug>.png and appear on the
-    next build, with no markup change — useful while third-party logo
+    next build, with no markup change, which is useful while third-party logo
     permissions are still being obtained.
     """
     def repl(m):
@@ -76,7 +76,7 @@ def main():
             page_head = page_head.replace("{{%s}}" % key, meta.get(key, default))
 
         # `robots: noindex, nofollow` in a page's front matter keeps it out of
-        # search results — used for the restricted professional-investor area.
+        # search results, used for the restricted professional-investor area.
         robots = meta.get("robots", "")
         page_head = page_head.replace(
             "{{robots}}",

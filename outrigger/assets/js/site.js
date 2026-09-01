@@ -1,4 +1,4 @@
-/* Outrigger Impact — site behaviour
+/* Outrigger Impact site behaviour
    No dependencies. Every enhancement degrades to plain, readable HTML. */
 (function () {
   'use strict';
@@ -79,8 +79,8 @@
     }, { threshold: 0.5 });
     // The real figure is already in the markup. Leave it there until the
     // element is actually about to animate: zeroing every counter up front
-    // means anything the observer never reaches — a short viewport, a
-    // collapsed panel, a starved animation frame — is left reading "0".
+    // means anything the observer never reaches, whether a short viewport, a
+    // collapsed panel or a starved animation frame, is left reading "0".
     els.forEach(function (el) { io.observe(el); });
   }
 
@@ -104,9 +104,9 @@
   function showWindow() { return document.body.dataset.showWindow === 'yes'; }
 
   var fmt = {
-    int: function (n) { return n === null ? '—' : n.toLocaleString('en-GB'); },
-    usd: function (n) { return n === null ? '—' : '$' + n.toLocaleString('en-GB'); },
-    pct: function (n) { return n === null ? '—' : (n > 0 ? '+' : '') + n.toFixed(1) + '%'; },
+    int: function (n) { return n === null ? '–' : n.toLocaleString('en-GB'); },
+    usd: function (n) { return n === null ? '–' : '$' + n.toLocaleString('en-GB'); },
+    pct: function (n) { return n === null ? '–' : (n > 0 ? '+' : '') + n.toFixed(1) + '%'; },
     km2: function (n) { return n.toLocaleString('en-GB') + ' km²'; },
     /* An approximate EEZ must never render as though it were exact. `ap` on a
        state marks it so; the "c." travels with the number everywhere it shows. */
@@ -122,7 +122,7 @@
 
      The coastline in assets/js/land.js is real GSHHS data, not a sketch. It is
      drawn faintly and only to let a reader place the states. */
-  var LON_LEFT = -99, LON_SPAN = 294;    // 99W .. 195E — Belize on the left, Samoa on the right
+  var LON_LEFT = -99, LON_SPAN = 294;    // 99W .. 195E, Belize on the left and Samoa on the right
   var LAT_TOP = 58, LAT_BOT = -48;
   var VBW = 1200, VBH, K;                // K = pixels per degree, both axes
 
@@ -190,7 +190,7 @@
         'economic zone. The same figures are listed in the table below.'
     });
 
-    // tropical band — where almost every one of these states sits
+    // tropical band, where almost every one of these states sits
     svg.appendChild(svgEl('rect', {
       'class': 'map-band', x: 0, y: py(23.4), width: VBW, height: py(-23.4) - py(23.4)
     }));
@@ -262,7 +262,7 @@
     });
     svg.appendChild(dots);
 
-    // scale key — a circle of exactly one million km², drawn at map scale
+    // scale key: a circle of exactly one million km², drawn at map scale
     var key = svgEl('g', { 'class': 'map-key' });
     var kr = eezAxes(1e6, -38)[1] * K, kx = px(-92) + kr, ky = py(-38);
     key.appendChild(svgEl('ellipse', {
@@ -497,7 +497,7 @@
                     'Interest: ' + (d.get('interest') || ''),
                     '', d.get('message') || ''].join('\n');
         window.location.href = 'mailto:simon.dent@outriggerimpact.com' +
-          '?subject=' + encodeURIComponent('Website enquiry — ' + (d.get('interest') || 'General')) +
+          '?subject=' + encodeURIComponent('Website enquiry: ' + (d.get('interest') || 'General')) +
           '&body=' + encodeURIComponent(body);
         if (status) {
           status.dataset.state = 'ok';

@@ -1,12 +1,12 @@
-/* Outrigger Impact — reference data
+/* Outrigger Impact reference data
    Source: Outrigger Impact Fund pre-marketing presentation, 2025.
    Population and GDP figures per World Bank 2024 as cited in the deck appendix.
    EEZ areas (km²): Flanders Marine Institute (VLIZ), Maritime Boundaries
-   Geodatabase — Exclusive Economic Zones (200NM). Re-checked against that
+   Geodatabase: Exclusive Economic Zones (200NM). Re-checked against that
    source in August 2026 after four values were found to be wrong: the deck had
    shifted a block of rows, so Fiji's figure sat on the Dominican Republic and
    Dominica's on Comoros. Areas vary between sources because maritime boundary
-   claims and disputed areas are treated differently — hence the `ap` figures.
+   claims and disputed areas are treated differently, hence the `ap` figures.
    `ap: true` marks a figure that is approximate; it renders with a "c." and
    must not be presented as exact. `note` carries a qualification that has to
    travel with the number.
@@ -52,7 +52,7 @@ window.OI_STATES = [
   { n: "Saint Kitts and Nevis",             r: "Caribbean", oda: false, eez: 9502,    pop: 46843,    gdp: 22771, gr: 1.2,  lat: 17.36,  lon: -62.78, w: false }
 ];
 
-/* Coarse continental outlines [lon, lat] — schematic orientation aid only, not a
+/* Coarse continental outlines [lon, lat], a schematic orientation aid only and not a
    cartographic boundary. Deliberately low-detail: the map's subject is the ocean. */
 window.OI_LAND = [
   // Africa
@@ -98,7 +98,7 @@ window.OI_KPIS = [
   { th: "Climate adaptation",      no: 2,  k: "Climate resilience",                m: "Number of people with improved climate resilience" },
   { th: "Biodiversity",            no: 3,  k: "Ecosystem enhancement",             m: "Area of seascapes and landscapes under sustainable management (ha, including MPAs supported)" },
   { th: "Biodiversity",            no: 4,  k: "Protection of biodiversity",        m: "Project-level indicators tracking improvement in ecosystems and species" },
-  { th: "Environmental resilience",no: 5,  k: "Pollution reduction",               m: "Project-level indicators tracking reduction in pollution — plastics, agrochemicals — and minimised water use" },
+  { th: "Environmental resilience",no: 5,  k: "Pollution reduction",               m: "Project-level indicators tracking reduction in pollution, including plastics and agrochemicals, and minimised water use" },
   { th: "Environmental resilience",no: 6,  k: "Blue infrastructure",               m: "Length of coastline with improved protection against extreme weather events (km)" },
   { th: "Economic resilience",     no: 7,  k: "Resilient enterprises",             m: "Number of enterprises supported that meet resilience criteria" },
   { th: "Economic resilience",     no: 8,  k: "Sustainable production",            m: "Value of production that is certified sustainable (US$)" },

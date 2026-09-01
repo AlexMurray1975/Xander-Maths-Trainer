@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Outrigger Impact — design system
+   Outrigger Impact ,  design system
    "Deep water editorial": warm paper, deep ocean navy, brand blues.
    ========================================================================== */
 
@@ -161,7 +161,7 @@ em.mark { font-style: normal; color: var(--brand); }
 /* Sea panels are flat navy. An earlier version ran a photograph of the water
    column behind every dark section; the design system replaces it with a
    gradient, keeping photography for the places it is full-bleed and earns the
-   attention — hero, documentary band, closing panel. */
+   attention: hero, documentary band, closing panel. */
 .on-dark { background: linear-gradient(175deg, var(--deep), var(--abyss)); color: #fff; }
 .on-dark.is-abyss { background: var(--abyss); }
 .on-paper2 { background: var(--paper-2); }
@@ -344,9 +344,9 @@ em.mark { font-style: normal; color: var(--brand); }
 .on-dark .card { background: rgba(255,255,255,.05); border-color: rgba(255,255,255,.15); color: #fff; }
 .on-dark .card:hover { background: rgba(255,255,255,.09); border-color: rgba(255,255,255,.3); box-shadow: none; }
 .on-dark .card p { color: rgba(255,255,255,.78); }
-.on-dark .card__num, .on-dark .card__icon { color: var(--cyan); }
+.on-dark .card__num, .on-dark .card__icon { color: var(--cyan-lt); }   /* Design's #8FD1F5; --cyan measured 4.52:1 over the lighter water */
 
-/* Bordered list — hairline rows, no boxes */
+/* Bordered list ,  hairline rows, no boxes */
 .rows { list-style: none; }
 .rows > li { padding: 20px 0; border-top: 1px solid var(--line); display: grid; gap: 6px; }
 .rows > li p { font-size: 14px; line-height: 1.6; color: var(--muted); }
@@ -356,7 +356,7 @@ em.mark { font-style: normal; color: var(--brand); }
 .rows--cols > li { grid-template-columns: minmax(0, 240px) minmax(0, 1fr); gap: 12px 40px; align-items: start; }
 @media (max-width: 700px) { .rows--cols > li { grid-template-columns: 1fr; } }
 
-/* Grant cards — the OTAF panel on the home page. Link cards, so the whole
+/* Grant cards ,  the OTAF panel on the home page. Link cards, so the whole
    tile is the target rather than a trailing arrow. */
 .grantcard { display: flex; flex-direction: column; text-decoration: none; color: inherit; }
 .grantcard__meta { margin: 0 0 14px; font: 500 11.5px/1.4 var(--geo); letter-spacing: .14em; text-transform: uppercase; color: var(--cyan-lt); }
@@ -682,20 +682,22 @@ em.mark { font-style: normal; color: var(--brand); }
 }
 
 /* ---------- Sea panels ----------
-   Design specifies flat navy — a 175deg gradient from #062A47 to #04182B on
+   Design specifies flat navy ,  a 175deg gradient from #062A47 to #04182B on
    the mid panels, solid #04182B on the deep ones. The photograph supplied for
    this slot happens to sit almost exactly in that range: its mid-depth mean is
    rgb(2,47,81) against the specified rgb(6,42,71), and its deep water is
    rgb(0,14,32) against rgb(4,24,43). So it goes underneath the specified
-   colours rather than in place of them — the panels still read as Design's
+   colours rather than in place of them ,  the panels still read as Design's
    navy, and pick up the particulate and the falling light.
 
    The image is cropped: its top fifth carried surface caustics at p99
    luminance .87, which no text survives. Everything below that starts at
    6.7:1 for white before any tint is applied, so the tints below are for
-   colour fidelity rather than legibility. One file, sampled at two depths —
+   colour fidelity rather than legibility. One file, sampled at two depths , 
    the mid panels near the top of the crop, the deep panels and the footer
-   near the bottom — so the page descends as you scroll.
+   near the bottom, so the page descends as you scroll. The two are set far
+   apart deliberately: the shallow panels sit at the very top of the crop where
+   the light still reaches, the deep ones at the very bottom where it does not.
 
    Re-measure if the tints change. See README. */
 section.on-dark,
@@ -706,19 +708,19 @@ section.on-dark::before,
   content: "";
   position: absolute; inset: 0; z-index: -1;
   background-image:
-    linear-gradient(175deg, rgba(6,42,71,.62) 0%, rgba(4,24,43,.80) 100%),
+    linear-gradient(175deg, rgba(6,42,71,.34) 0%, rgba(4,24,43,.60) 100%),
     url(../img/water.jpg);
   background-size: auto, cover;
-  background-position: center, 50% 16%;
+  background-position: center, 50% 2%;
   background-repeat: no-repeat;
 }
 
 section.on-dark.is-abyss::before,
 .ftr::before {
   background-image:
-    linear-gradient(180deg, rgba(4,24,43,.55) 0%, rgba(4,24,43,.78) 100%),
+    linear-gradient(180deg, rgba(4,24,43,.62) 0%, rgba(4,24,43,.88) 100%),
     url(../img/water.jpg);
-  background-position: center, 50% 86%;
+  background-position: center, 50% 99%;
 }
 
 /* ---------- Full-bleed documentary photograph ---------- */
