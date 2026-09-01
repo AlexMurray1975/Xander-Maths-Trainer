@@ -369,6 +369,19 @@ place: the water column behind the sea panels, the home hero, and the banners
 for Where We Invest, Impact, OTAF, Team, the grant portfolio, the news card and
 Contact.
 
+**One supplied photograph needs a decision before launch.** The ABALOBI image
+on the grant portfolio page carries a legible catch board. Three things on it:
+the gear type reads **BOTTOM TRAWL**, which sits badly beside a case study about
+small-scale fisheries on the website of a fund whose primary contribution is
+SDG 14; a named skipper, vessel number and exact coordinates are readable, which
+is third-party personal and commercial data; and the coordinates are off South
+Africa, where ABALOBI is established, rather than in the five island states this
+grant extends the platform to. The caption states the location honestly. The
+first point is the one that matters: it is the kind of detail that gets
+screenshotted. Ask ABALOBI for an alternative frame. Cropping the board out is
+possible but leaves a near-square image, because the board is half the
+composition.
+
 **Credit lines are outstanding.** Nothing here can be published until each
 image's photographer and library are recorded and the licence confirmed for
 website use — a fund's corporate site is a more commercial setting than the
