@@ -368,14 +368,19 @@ Slots 01–14 of the photography brief were supplied on 31 August 2026 and are i
 place: the water column behind the sea panels, the home hero, the documentary
 band, the banners for Where We Invest, Impact, OTAF, Team, the grant portfolio,
 the news card and Contact, and a photograph for each of the four grantee case
-studies. The team portraits are being replaced one at a time.
+studies. All five team portraits have been replaced with a matched set.
 
 **A correction to the photography brief.** It said the existing 360×360
 portraits were "half what a modern screen needs". That was wrong: the site
-renders them at 96×96, so 360 already covers a 3× display with room to spare.
-The reason to replace them is quality and consistency, not resolution — the
-originals are a mixed set at different distances and exposures, and several are
-washed out once the greyscale filter is applied.
+renders them at 96×96, so 360 already covered a 3× display with room to spare.
+The replacements were worth making for consistency — the originals were shot at
+different distances and exposures and several went flat under the greyscale
+filter — but not for resolution. The brief has been corrected.
+
+**Photography is now complete.** Every slot is filled and every image was
+measured against the template it sits in. Three things remain, and all three
+block launch: the credit lines, the subject releases, and the ABALOBI catch
+board.
 
 **Identifiable people appear in four of them**, and each needs a written release
 before launch — not the photographer's licence, which is a separate thing, but
