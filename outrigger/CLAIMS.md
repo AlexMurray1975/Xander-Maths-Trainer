@@ -377,7 +377,14 @@ The replacements were worth making for consistency — the originals were shot a
 different distances and exposures and several went flat under the greyscale
 filter — but not for resolution. The brief has been corrected.
 
-**Photography is now complete.** Every slot is filled and every image was
+**One slot short.** The news index borrows the Contact photograph, because no
+image was briefed for it — every other section page has its own. The press
+release page takes the atoll that already belongs to that story, which is
+correct and needs nothing further. The 404 page keeps a flat gradient
+deliberately. If a photograph is wanted for the news index, that is one more
+slot to brief.
+
+**Photography is otherwise complete.** Every slot is filled and every image was
 measured against the template it sits in. Three things remain, and all three
 block launch: the credit lines, the subject releases, and the ABALOBI catch
 board.
