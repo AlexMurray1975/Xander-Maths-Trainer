@@ -21,7 +21,7 @@
   --paper-2:    #F3F1ED;
   --ink:        #0E1A26;
   --ink-2:      #33465A;
-  --muted:      #5F7285;
+  --muted:      #5C6F81;
   --line:       #E1DED8;
   --line-dk:    rgba(255,255,255,.16);
 
@@ -110,7 +110,10 @@ table { border-collapse: collapse; width: 100%; }
   display: flex; align-items: center; gap: 10px;
   font: 500 12px/1 var(--geo);
   letter-spacing: .18em; text-transform: uppercase;
-  color: var(--brand); margin: 0 0 20px;
+  /* The darker blue, not --brand: 12px uppercase on .18em tracking is the
+     thinnest type on the page, and --brand measures 4.33:1 on the darker
+     paper, under AA. --brand-dk clears it on both grounds. */
+  color: var(--brand-dk); margin: 0 0 20px;
 }
 .eyebrow::before { content: ""; width: 26px; height: 1px; background: currentColor; flex: none; }
 .on-dark .eyebrow { color: var(--cyan-lt); }
@@ -149,9 +152,28 @@ table { border-collapse: collapse; width: 100%; }
   color: var(--ink-2);
   max-width: 62ch;
 }
-.on-dark .lede { font-size: 1.0625rem; line-height: 1.62; color: rgba(255,255,255,.85); }
+/* Only the colour changes on a sea panel. Shrinking the standfirst to 17px
+   left it half a pixel off the body it introduces, so the one thing
+   separating them was the shade, which reads as a mistake rather than as
+   hierarchy. It keeps its 20px here, as it has on paper. */
+.on-dark .lede { color: rgba(255,255,255,.9); }
 .small { font-size: .875rem; line-height: 1.55; color: var(--muted); }
 .on-dark .small { color: rgba(255,255,255,.6); }
+
+/* Notes: metadata, sources, caveats and the labels above a metric block. These
+   sit below body copy, so they are set at the caption scale rather than at
+   .small, which is only 2.5px off the body and reads as a second voice of
+   equal weight. */
+.note { font: 400 12.5px/1.6 var(--sans); color: var(--muted); }
+.on-dark .note { color: rgba(255,255,255,.6); }
+.notelabel {
+  margin: 0 0 12px;
+  font: 500 11.5px/1.4 var(--geo);
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.on-dark .notelabel { color: rgba(255,255,255,.62); }
 .tnum { font-variant-numeric: tabular-nums; }
 
 em.mark { font-style: normal; color: var(--brand); }
@@ -163,6 +185,11 @@ em.mark { font-style: normal; color: var(--brand); }
    gradient, keeping photography for the places it is full-bleed and earns the
    attention: hero, documentary band, closing panel. */
 .on-dark { background: linear-gradient(175deg, var(--deep), var(--abyss)); color: #fff; }
+/* Prose on a sea panel. Without this a plain paragraph inherits pure white and
+   ends up brighter than the standfirst introducing it. :where() holds the
+   specificity at one class so later rules on .grantcard__who and the .85 lede
+   are unaffected. */
+.on-dark :where(p) { color: rgba(255,255,255,.78); }
 .on-dark.is-abyss { background: var(--abyss); }
 .on-paper2 { background: var(--paper-2); }
 .on-dark a:not(.btn) { color: #fff; }
