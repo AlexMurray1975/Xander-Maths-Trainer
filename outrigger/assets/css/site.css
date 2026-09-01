@@ -587,7 +587,13 @@ em.mark { font-style: normal; color: var(--brand); }
 .ftr__nav { display: flex; gap: 24px; flex-wrap: wrap; }
 .ftr a { color: rgba(255,255,255,.8); text-decoration: none; font-size: 14px; transition: color .2s ease; }
 .ftr a:hover { color: #fff; }
-.brand--stack { flex-direction: column; align-items: flex-start; gap: 3px; }
+/* The footer carries the reversed lockup: the mark in white above the
+   wordmark, rather than type alone. mark-white.svg is the same geometry as the
+   header mark with both brand tones flattened to white, which keeps the
+   globe's ellipses reading as separate shapes at this size. */
+.brand--stack { flex-direction: column; align-items: flex-start; gap: 14px; }
+.brand--stack img { width: 64px; height: auto; }
+.brand--stack .brand__txt { gap: 3px; }
 .brand--stack .brand__a { font-size: 17px; color: #fff; }
 .brand--stack .brand__b { font-size: 9.5px; color: rgba(255,255,255,.62); }
 .ftr__legal { margin-top: 32px; padding-top: 24px; border-top: 1px solid rgba(255,255,255,.14); }
@@ -742,12 +748,20 @@ section.on-dark::before,
   background-repeat: no-repeat;
 }
 
+/* The deep panels and the footer sample at 35%, not at the very bottom of the
+   crop. The bottom of the column is genuinely featureless water: measured on
+   the file itself it carries a texture of 2.2 against 13.8 at the top, and
+   under the old .62-.88 tint nothing survived, so those panels rendered as
+   flat navy while the mid panels showed the photograph. They read as blue
+   panels with no image on them, which is what they were. At 35% under a
+   lighter tint every sea panel carries visible water, and the deep ones still
+   sit well below the shallow ones: p99 luminance 37 against 53. */
 section.on-dark.is-abyss::before,
 .ftr::before {
   background-image:
-    linear-gradient(180deg, rgba(4,24,43,.62) 0%, rgba(4,24,43,.88) 100%),
+    linear-gradient(180deg, rgba(4,24,43,.40) 0%, rgba(4,24,43,.62) 100%),
     url(../img/water.jpg);
-  background-position: center, 50% 99%;
+  background-position: center, 50% 35%;
 }
 
 /* ---------- Full-bleed documentary photograph ---------- */

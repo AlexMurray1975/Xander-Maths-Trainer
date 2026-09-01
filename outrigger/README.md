@@ -154,10 +154,11 @@ typographic wordmark. The mark is retained beside it at 30px, per the client.
 
 Two consequences worth knowing:
 
-**`assets/img/water.jpg` is no longer used.** The dark panels are flat navy and
-a gradient now, so the water column that used to sit behind every one of them
-has no slot. The file is still in the repository. This also removes the
-tightrope that held text contrast at 4.6:1 over a photograph.
+**`assets/img/water.jpg` is kept behind the dark panels.** The handoff makes
+them flat navy and a gradient. The photograph sits underneath those specified
+colours rather than in place of them, so the panels still read as Design's navy
+and pick up the particulate and the falling light. See "The dark panels are a
+photograph" below for the positions and the contrast method.
 
 **No JavaScript is required for the design**, and none of it is decorative, but
 the site still uses it for the map, the sortable states table, the KPI explorer
@@ -357,19 +358,26 @@ blocking, but all of them worth settling first.
   map points with descriptive labels, `aria-sort` on sortable columns, and a
   full `prefers-reduced-motion` path that disables every animation.
 - **The dark panels are a photograph, not flat colour.** Every `section.on-dark`
-  and the footer share one image, `assets/img/water.jpg` (1400×2100, 172KB): a
+  and the footer share one image, `assets/img/water.jpg` (1024×1199, 91KB): a
   single column of open ocean running from daylight at the surface to near-black
-  at depth. Rather than ship two files, the mid-navy panels are positioned at 46%
-  down that column and the abyss panels and footer at 82%, so the two surfaces
+  at depth. Rather than ship two files, the mid-navy panels are positioned at 2%
+  down that column and the abyss panels and footer at 35%, so the two surfaces
   are literally the same water at different depths. A gradient scrim over the
   photograph holds the contrast.
+
+  **Do not push the deep sample to the bottom of the column.** It was at 99%,
+  where the water is genuinely featureless: the file's own texture there
+  measures 2.2 against 13.8 at the top, and under the scrim it then read as
+  flat navy, so those panels looked as though the image had been left off them
+  while the mid panels showed it. 35% keeps them visibly photographic and still
+  clearly deeper than the shallow panels, at a p99 luminance of 37 against 53.
 
   **If you retune the scrim or the positions, re-measure text contrast.** The
   water is bright enough near the surface that it is easy to push small print
   below WCAG AA without it being obvious. The method: render the page with all
   foreground elements hidden to isolate the painted backgrounds, then check every
   text colour used on a dark panel against the *brightest 1%* of that panel, not
-  its average. The current worst case is 4.60:1 against a 4.5 threshold. Judging
+  its average. The current worst case is 4.68:1 against a 4.5 threshold. Judging
   this by eye does not work — an earlier setting looked fine and measured 3.93.
 
 - **Logo order is alphabetical, and deliberately so.** Within each block, logos
