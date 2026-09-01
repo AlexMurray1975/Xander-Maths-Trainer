@@ -115,6 +115,54 @@ Three drafting rules keep it that way, and they are set out in `CLAIMS.md` §7.
 The short version: every figure on that page is an **expected** outcome agreed
 at award, not a result, and the page says so.
 
+## The design system, and where it departs from the handoff
+
+The site follows the Design handoff (`Design_system_review_request`, home page,
+high fidelity). Tokens, type scale, spacing, radii and copy are as specified.
+Five things differ, all deliberate.
+
+**The hero scrim is .58 at the top, not .42.** Design specifies a light top
+stop and a `#8FD1F5` eyebrow over it. That eyebrow sits on bright sky —
+measured at rgb(130,131,127) — where the cyan reaches 2.3:1 and even white only
+3.8:1, against a 4.5:1 requirement for text that size. At .58 the eyebrow (now
+white) measures 5.17:1 and the headline 5.09:1. The rest of the gradient is
+exactly as specified. If the hero photograph is replaced, re-measure: a darker
+image would let the top stop go back to .42.
+
+**The footer keeps the full disclaimer.** The prototype's legal line is three
+clauses long and drops the Appointed Representative statement. Outrigger Impact
+is an AR of Robert Quinn Advisory and has to identify its principal, so the
+approved wording stays in full. The handoff's own compliance note says the
+footer disclaimer must not be altered without sign-off, which is why this reads
+as a prototype simplification rather than an instruction. Everything else about
+the footer — structure, wordmark, nav row, hairline, type — follows the design.
+
+**The map stays live, and stays on one page.** The prototype uses a PNG of the
+map on the home page, because a static prototype cannot carry an interactive
+one. The real map has per-state tooltips, region filtering that also filters the
+table, and an accessible label per state; a 2168px PNG has none of that and is
+illegible on a phone. It therefore stays as SVG, on `states.html` only — putting
+it back on the home page as well would restore the duplication that was removed
+two revisions ago.
+
+**Nav carries Team, not Partners.** The handoff lists a Partners route; there is
+no partners page, only a section on the home page. There is a team page, which
+the handoff did not see. Swap them back if a partners page gets built.
+
+**The wordmark keeps the Outrigger mark.** The prototype's nav is a pure
+typographic wordmark. The mark is retained beside it at 30px, per the client.
+
+Two consequences worth knowing:
+
+**`assets/img/water.jpg` is no longer used.** The dark panels are flat navy and
+a gradient now, so the water column that used to sit behind every one of them
+has no slot. The file is still in the repository. This also removes the
+tightrope that held text contrast at 4.6:1 over a photograph.
+
+**No JavaScript is required for the design**, and none of it is decorative, but
+the site still uses it for the map, the sortable states table, the KPI explorer
+and the accordions. Every page remains complete and readable with scripting off.
+
 ## The map
 
 `assets/js/site.js` draws it; `assets/js/land.js` holds the coastline; the state

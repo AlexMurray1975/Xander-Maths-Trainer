@@ -269,6 +269,14 @@ publish those in its own words. None of the material on page 12 has been used.
 
 ## 9 · Standing instruction
 
+The site was aligned to the Design handoff on 31 August 2026. That pass changed
+presentation only — no claim, figure, source or disclaimer was altered, with one
+exception recorded here: **the prototype's shortened footer legal line was not
+adopted.** It omits the Appointed Representative statement, which Outrigger
+Impact is required to carry as an AR of Robert Quinn Advisory. The approved
+wording stands in full.
+
+
 Approval attaches to the site as approved, not to the disclaimer. Material
 changes to claims, pipeline, named investors, target figures, photography,
 logos or the public/restricted boundary go back through the approval process.

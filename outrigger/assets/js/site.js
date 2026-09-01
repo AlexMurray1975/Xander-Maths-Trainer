@@ -67,6 +67,7 @@
         if (!en.isIntersecting) return;
         var el = en.target, to = parseFloat(el.dataset.count), t0 = null, dur = 1150;
         io.unobserve(el);
+        render(el, 0);            // zero it only as the animation starts
         var step = function (ts) {
           if (t0 === null) t0 = ts;
           var p = Math.min((ts - t0) / dur, 1);
@@ -76,7 +77,11 @@
         requestAnimationFrame(step);
       });
     }, { threshold: 0.5 });
-    els.forEach(function (el) { render(el, 0); io.observe(el); });
+    // The real figure is already in the markup. Leave it there until the
+    // element is actually about to animate: zeroing every counter up front
+    // means anything the observer never reaches — a short viewport, a
+    // collapsed panel, a starved animation frame — is left reading "0".
+    els.forEach(function (el) { io.observe(el); });
   }
 
   /* ---------------- Accordions ---------------- */
