@@ -362,7 +362,28 @@ should be marked `ap` with a note, like Comoros.
 
 ---
 
-## 11 · Third-party datasets and their terms
+## 11 · Photography
+
+Slots 01–09 of the photography brief were supplied on 31 August 2026 and are in
+place: the water column behind the sea panels, the home hero, and the banners
+for Where We Invest, Impact, OTAF, Team, the grant portfolio, the news card and
+Contact.
+
+**Credit lines are outstanding.** Nothing here can be published until each
+image's photographer and library are recorded and the licence confirmed for
+website use — a fund's corporate site is a more commercial setting than the
+impact report the same libraries were used for. Add them to this section as
+they arrive, and put the colophon on the page in whatever form the licence
+requires.
+
+Every image was measured before it went in. Text over each one holds at or
+above the 4.5:1 threshold for normal text; the sea-panel photograph was cropped
+by its top fifth because the surface caustics there reached p99 luminance .87,
+which no text survives.
+
+---
+
+## 12 · Third-party datasets and their terms
 
 The coastline silhouette in `assets/js/land.js` is real data, not a drawing. It
 is GSHHS — the Global Self-consistent, Hierarchical, High-resolution Geography

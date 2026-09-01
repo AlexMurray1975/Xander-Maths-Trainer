@@ -275,15 +275,10 @@ em.mark { font-style: normal; color: var(--brand); }
 .hero__media img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 58%; }
 .hero__scrim {
   position: absolute; inset: 0; z-index: -1;
-  /* Design specifies .42 at the top. The hero photograph puts bright sky
-     there — measured at rgb(130,131,127) — where no brand blue reaches 4.5:1
-     and even white manages only 3.82. Raised to .58, which puts the eyebrow at
-     5.17:1 and the headline at 5.09:1. The rest of the gradient is as
-     specified. See README. */
-  background: linear-gradient(180deg, rgba(4,24,43,.58) 0%, rgba(4,24,43,.62) 55%, rgba(4,24,43,.94) 88%, var(--abyss) 100%);
+  background: linear-gradient(180deg, rgba(4,24,43,.42) 0%, rgba(4,24,43,.62) 55%, rgba(4,24,43,.94) 88%, var(--abyss) 100%);
 }
 .hero__in { padding-block: clamp(96px, 14vw, 190px) clamp(48px, 6vw, 80px); }
-.hero .eyebrow { color: #fff; }   /* cyan measures 3.10:1 over the sky; white is 5.17 */
+.hero .eyebrow { color: #fff; }   /* #8FD1F5 measures 3.06:1 over this photograph; white is 5.09 */
 .hero h1 { max-width: 15ch; }
 .hero .lede { margin-top: 26px; max-width: 54ch; }
 .hero .btn-row { margin-top: 40px; }
@@ -685,13 +680,44 @@ em.mark { font-style: normal; color: var(--brand); }
 }
 
 /* ---------- Sea panels ----------
-   These used to carry a photograph of the water column, one continuous image
-   sampled at two depths. The design system replaces it with flat navy and a
-   gradient: photography is now reserved for the three places it runs full
-   bleed and holds the page on its own — the hero, the documentary band and
-   the closing panel. Flat navy also takes the text contrast well clear of
-   the AA threshold instead of holding it at 4.6:1 over a photograph. */
-.ftr { border-top: 1px solid rgba(255,255,255,.14); }
+   Design specifies flat navy — a 175deg gradient from #062A47 to #04182B on
+   the mid panels, solid #04182B on the deep ones. The photograph supplied for
+   this slot happens to sit almost exactly in that range: its mid-depth mean is
+   rgb(2,47,81) against the specified rgb(6,42,71), and its deep water is
+   rgb(0,14,32) against rgb(4,24,43). So it goes underneath the specified
+   colours rather than in place of them — the panels still read as Design's
+   navy, and pick up the particulate and the falling light.
+
+   The image is cropped: its top fifth carried surface caustics at p99
+   luminance .87, which no text survives. Everything below that starts at
+   6.7:1 for white before any tint is applied, so the tints below are for
+   colour fidelity rather than legibility. One file, sampled at two depths —
+   the mid panels near the top of the crop, the deep panels and the footer
+   near the bottom — so the page descends as you scroll.
+
+   Re-measure if the tints change. See README. */
+section.on-dark,
+.ftr { position: relative; isolation: isolate; }
+
+section.on-dark::before,
+.ftr::before {
+  content: "";
+  position: absolute; inset: 0; z-index: -1;
+  background-image:
+    linear-gradient(175deg, rgba(6,42,71,.62) 0%, rgba(4,24,43,.80) 100%),
+    url(../img/water.jpg);
+  background-size: auto, cover;
+  background-position: center, 50% 16%;
+  background-repeat: no-repeat;
+}
+
+section.on-dark.is-abyss::before,
+.ftr::before {
+  background-image:
+    linear-gradient(180deg, rgba(4,24,43,.55) 0%, rgba(4,24,43,.78) 100%),
+    url(../img/water.jpg);
+  background-position: center, 50% 86%;
+}
 
 /* ---------- Full-bleed documentary photograph ---------- */
 .photoband { margin: 0; position: relative; }
