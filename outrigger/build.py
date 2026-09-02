@@ -86,6 +86,23 @@ def fill_logos(text, root):
     return re.sub(r"\{\{logo:([a-z0-9-]+)\|([^}]+)\}\}", repl, text)
 
 
+def absolutise(html):
+    """Make every same-site reference root-absolute.
+
+    Used for 404.html alone. A not-found page is served at whatever address the
+    visitor got wrong, so its own relative links resolve against that address
+    rather than against the site root: hit /anything/wrong.html and the page
+    arrives correctly but looks for its stylesheet at /anything/assets/, finds
+    nothing, and renders as naked HTML with a broken logo. Every other page is
+    only ever served from its own known path, so they keep relative paths and
+    the site stays portable to a subdirectory.
+    """
+    return re.sub(
+        r'(src|href)="(?!https?:|mailto:|data:|#|/)([^"]+)"',
+        lambda m: '%s="/%s"' % (m.group(1), m.group(2)),
+        html)
+
+
 def front_matter(text):
     """Pull the leading <!-- key: value --> block off a page source."""
     m = re.match(r"\s*<!--(.*?)-->\s*", text, re.S)
@@ -133,6 +150,8 @@ def main():
             page_header = page_header.replace("{{cur_%s}}" % key, marker)
 
         out = page_head + page_header + "\n" + fill_logos(body.strip(), PUB) + "\n\n" + footer
+        if name == "404":
+            out = absolutise(out)
         (PUB / (name + ".html")).write_text(out, encoding="utf-8")
         built.append(name + ".html")
 
