@@ -729,6 +729,17 @@ em.mark { font-style: normal; color: var(--brand); }
 .prose > p { font-size: 1.04rem; line-height: 1.72; margin-bottom: 1.3em; }
 .prose > p.lede { font-size: clamp(1.1rem, 1.5vw, 1.28rem); line-height: 1.55; color: var(--ink-2); }
 
+/* Lists inside a reproduced release. The prose block had paragraph styling and
+   nothing else, so a list in a press release inherited the browser default and
+   sat at the wrong size beside the copy around it. The rule marker matches
+   .keypoints so the two read as one family. */
+.prose ul { list-style: none; margin: 0 0 1.3em; padding: 0; display: grid; gap: 12px; }
+.prose ul > li { position: relative; padding-left: 26px; font-size: 1.04rem; line-height: 1.72; }
+.prose ul > li::before {
+  content: ""; position: absolute; left: 0; top: .85em;
+  width: 12px; height: 1.5px; background: var(--brand-dk);
+}
+
 .pullquote {
   margin: clamp(32px, 4vw, 48px) 0;
   padding: clamp(24px, 3vw, 36px) 0 4px;
