@@ -25,6 +25,44 @@ PARTIALS = SRC / "partials"
 
 NAV_KEYS = ["states", "impact", "otaf", "team", "news"]
 
+SITE_URL = "https://www.outriggerimpact.com/"
+
+# Sitemap priorities. Any page not listed gets the default; 404 is excluded.
+# The point of generating the sitemap rather than keeping it by hand is that a
+# hand-kept list drifts: otaf-portfolio.html was missing from it for weeks,
+# having already gone missing from the preview bundle's page list for the same
+# reason. A page that exists is now in the sitemap whether or not anyone
+# remembered to add it.
+SITEMAP_PRIORITY = {
+    "index": "1.0",
+    "states": "0.9",
+    "impact": "0.9",
+    "otaf": "0.8",
+    "otaf-portfolio": "0.8",
+    "news": "0.8",
+    "news-first-close": "0.8",
+}
+SITEMAP_DEFAULT = "0.7"
+
+
+def write_sitemap(names, out):
+    """Write sitemap.xml for the built pages.
+
+    No <lastmod>. A build-time date would say every page changed whenever any
+    page did, and a date that is not true is worse than no date at all: the
+    element is optional, and search engines discount one they cannot trust.
+    """
+    lines = ['<?xml version="1.0" encoding="UTF-8"?>',
+             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">']
+    for name in names:
+        loc = SITE_URL if name == "index" else SITE_URL + name + ".html"
+        lines += ["  <url>",
+                  "    <loc>%s</loc>" % loc,
+                  "    <priority>%s</priority>" % SITEMAP_PRIORITY.get(name, SITEMAP_DEFAULT),
+                  "  </url>"]
+    lines.append("</urlset>")
+    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
 LOGO_DIR = "assets/img/partners"
 
 
@@ -98,7 +136,12 @@ def main():
         (PUB / (name + ".html")).write_text(out, encoding="utf-8")
         built.append(name + ".html")
 
+    order = ["index"] + sorted(n for n in
+                               (b[:-5] for b in built) if n not in ("index", "404"))
+    write_sitemap(order, PUB / "sitemap.xml")
+
     print("Built %d pages: %s" % (len(built), ", ".join(built)))
+    print("Wrote sitemap.xml with %d URLs" % len(order))
 
 
 if __name__ == "__main__":
