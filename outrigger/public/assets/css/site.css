@@ -387,6 +387,13 @@ em.mark { font-style: normal; color: var(--brand); }
    smallest prose on the site in its palest colour; --prose restores body size
    and body colour. */
 .rows--prose > li { padding: 26px 0; }
+
+/* A linked headline inside a row keeps the headline's type. .textlink is a
+   standalone call to action -- 12px uppercase on wide tracking -- and wrapping
+   a heading in it turns the heading into a caption. */
+.rows h3 a { color: inherit; text-decoration: none; }
+.rows h3 a:hover { color: var(--brand-dk); text-decoration: underline; text-underline-offset: 3px; }
+.on-dark .rows h3 a:hover { color: var(--cyan-lt); }
 .rows--prose > li p { font-size: 16.5px; line-height: 1.62; color: var(--ink); max-width: 62ch; }
 .on-dark .rows--prose > li p { color: rgba(255,255,255,.78); }
 

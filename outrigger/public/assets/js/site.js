@@ -295,6 +295,42 @@
     });
   }
 
+  /* News category filter. Filters in place rather than routing to a category
+     page, so a category with nothing in it shows an empty state instead of a
+     dead link, and so the count stays honest. */
+  function newsFilter() {
+    var btns = $$('[data-newsfilter]');
+    if (!btns.length) return;
+    var items = $$('[data-newscat]');
+    var count = $('#news-count');
+    var list = $('#news-list');
+
+    var empty = document.createElement('p');
+    empty.className = 'note mt-3';
+    empty.hidden = true;
+    empty.textContent = 'Nothing in this category yet.';
+    if (list) list.parentNode.insertBefore(empty, list.nextSibling);
+
+    function apply(cat) {
+      var shown = 0;
+      items.forEach(function (el) {
+        var on = cat === 'all' || el.dataset.newscat === cat;
+        el.hidden = !on;
+        if (on) shown++;
+      });
+      if (count) count.textContent = shown + (shown === 1 ? ' item' : ' items');
+      empty.hidden = shown > 0;
+    }
+
+    btns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        btns.forEach(function (b) { b.setAttribute('aria-pressed', String(b === btn)); });
+        apply(btn.dataset.newsfilter);
+      });
+    });
+    apply('all');
+  }
+
   function tip(shell, s, fx, fy) {
     var t = $('.map-tip', shell); if (!t) return;
     t.innerHTML =
@@ -516,7 +552,7 @@
      which is what the single-file preview build uses to move between pages. */
   function initPage() {
     reveal(); counters(); accordions();
-    map(); statesTable(); kpis(); gate(); form(); year();
+    map(); statesTable(); kpis(); gate(); form(); year(); newsFilter();
   }
 
   function init() { header(); initPage(); }
