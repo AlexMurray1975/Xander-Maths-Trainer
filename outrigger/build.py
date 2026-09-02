@@ -23,7 +23,7 @@ SRC = ROOT / "_src"
 PAGES = SRC / "pages"
 PARTIALS = SRC / "partials"
 
-NAV_KEYS = ["states", "impact", "otaf", "team", "news"]
+NAV_KEYS = ["states", "strategy", "impact", "otaf", "team", "news"]
 
 SITE_URL = "https://www.outriggerimpact.com/"
 
@@ -37,6 +37,7 @@ SITEMAP_PRIORITY = {
     "index": "1.0",
     "states": "0.9",
     "impact": "0.9",
+    "strategy": "0.9",
     "otaf": "0.8",
     "otaf-portfolio": "0.8",
     "news": "0.8",
