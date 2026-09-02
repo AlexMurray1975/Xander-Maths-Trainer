@@ -3,8 +3,11 @@
 
 Pages live in _src/pages/*.html and carry a short HTML-comment front matter
 block (title / description / slug). Shared chrome lives in _src/partials/.
-Output is plain static HTML written to this directory. There is no runtime
-build step and no dependencies beyond the Python standard library.
+Output is plain static HTML written to public/, which holds the deployable
+site and nothing else: no sources, no build scripts, no internal documentation.
+That separation is what a host is pointed at, so anything not in public/ cannot
+be served by accident. There is no runtime build step and no dependencies
+beyond the Python standard library.
 
     python3 build.py
 """
@@ -15,6 +18,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
+PUB = ROOT / "public"
 SRC = ROOT / "_src"
 PAGES = SRC / "pages"
 PARTIALS = SRC / "partials"
@@ -66,6 +70,7 @@ def main():
     if not sources:
         sys.exit("No pages found in %s" % PAGES)
 
+    PUB.mkdir(exist_ok=True)
     built = []
     for path in sources:
         meta, body = front_matter(path.read_text(encoding="utf-8"))
@@ -89,8 +94,8 @@ def main():
             marker = ' aria-current="page"' if key == section else ""
             page_header = page_header.replace("{{cur_%s}}" % key, marker)
 
-        out = page_head + page_header + "\n" + fill_logos(body.strip(), ROOT) + "\n\n" + footer
-        (ROOT / (name + ".html")).write_text(out, encoding="utf-8")
+        out = page_head + page_header + "\n" + fill_logos(body.strip(), PUB) + "\n\n" + footer
+        (PUB / (name + ".html")).write_text(out, encoding="utf-8")
         built.append(name + ".html")
 
     print("Built %d pages: %s" % (len(built), ", ".join(built)))

@@ -3,12 +3,18 @@
 A static, dependency-free redesign of outriggerimpact.com, built from the
 Outrigger Impact Fund pre-marketing presentation (2025).
 
-Eight pages, no framework, no build step at runtime, no third-party requests.
-Drop the folder on any static host and it works.
+Ten pages, no framework, no build step at runtime, no third-party requests.
+Drop `public/` on any static host and it works.
 
 ---
 
 ## Contents
+
+The deployable site is `public/`. Paths below, and everywhere else in this file,
+are written relative to it: `assets/css/site.css` is
+`public/assets/css/site.css` on disk. Everything outside `public/` — `_src/`,
+the build scripts, `preview.html`, this file and `CLAIMS.md` — is working
+material and is never served.
 
 | Page | What it covers |
 |---|---|
@@ -202,8 +208,8 @@ twice.
 ## Editing the site
 
 Shared chrome (head, header, footer) lives once in `_src/partials/`. Page bodies
-live in `_src/pages/`. A ~50-line script assembles them into the static HTML at
-the top level:
+live in `_src/pages/`. A ~50-line script assembles them into static HTML in
+`public/`:
 
 ```
 python3 build.py
@@ -230,11 +236,37 @@ the map, the table and the KPI list all follow.
 
 ## Deploying
 
-Any static host: Netlify, Vercel, Cloudflare Pages, GitHub Pages, S3. Upload the
-contents of this directory (`_src/` and `build.py` are harmless to include, but
-can be omitted). Point the domain at it and set `404.html` as the error page.
+**`public/` is the site. Everything outside it is not.** Sources, build scripts,
+the single-file preview and the internal documentation all sit in the parent
+directory, so a host pointed at `public/` cannot serve them even by mistake.
+That separation is structural rather than a matter of ignore-files or routing
+rules, because the thing being kept off the web — `CLAIMS.md`, which records
+what is unverified, unlicensed or awaiting a decision — is exactly the file you
+do not want to discover on the live site.
 
-`.nojekyll` is present so GitHub Pages serves the directory as-is.
+Any static host: Vercel, Netlify, Cloudflare Pages, S3. Upload the contents of
+`public/`, point the domain at it, and set `404.html` as the error page.
+
+### Continuous deployment from Git
+
+Vercel or Netlify can watch the repository and redeploy on every push. Two
+settings matter:
+
+- **Root Directory:** `outrigger/public`. This is what keeps the sources and
+  the internal notes off the web, so it is not optional.
+- **Production Branch:** whichever branch carries the site. It defaults to the
+  repository's default branch, which may not be the one being worked on.
+
+`public/vercel.json` pins two behaviours. `cleanUrls: false` keeps `/states.html`
+resolving as written — every internal link carries the extension, and turning
+clean URLs on would put a redirect in front of all of them. And an
+`X-Robots-Tag: noindex, nofollow` header covers the whole deployment, which is
+right for a staging or review URL and covers assets as well as pages, unlike a
+meta tag.
+
+**Remove that header before launch.** The site otherwise ships the production
+`robots.txt`, which invites indexing and points at the real sitemap; leaving the
+header in place would quietly keep the launched site out of search results.
 
 ---
 
@@ -399,7 +431,7 @@ blocking, but all of them worth settling first.
 
 ## Single-file preview
 
-`python3 bundle.py` (after `build.py`) produces `preview.html`: all seven pages
+`python3 bundle.py` (after `build.py`) produces `preview.html`: all 9 routed pages
 in one self-contained file, with fonts, images, CSS and JS inlined and the
 navigation on hash routes. Useful for emailing a review copy or hosting a
 preview. It is not how the site deploys — deploy the folder for that.

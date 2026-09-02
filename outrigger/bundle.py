@@ -17,7 +17,8 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-OUT = ROOT / "preview.html"
+PUB = ROOT / "public"          # the deployable site; assets and pages live here
+OUT = ROOT / "preview.html"    # deliberately outside public/, so it is never served
 # Every page in _src/pages except 404, which has no route of its own. Derived
 # rather than listed, because a hand-kept list silently dropped otaf-portfolio
 # from the preview and left a link in it pointing at nothing.
@@ -27,7 +28,7 @@ PAGES = ["index"] + sorted(
 
 
 def data_uri(path):
-    p = ROOT / path
+    p = PUB / path
     mime = mimetypes.guess_type(p.name)[0] or "application/octet-stream"
     if p.suffix == ".woff2":
         mime = "font/woff2"
@@ -55,7 +56,7 @@ def route_links(html):
 
 
 def main():
-    css = (ROOT / "assets/css/fonts.css").read_text() + "\n" + (ROOT / "assets/css/site.css").read_text()
+    css = (PUB / "assets/css/fonts.css").read_text() + "\n" + (PUB / "assets/css/site.css").read_text()
 
     # Inline every asset the stylesheet references, not just the fonts: the dark
     # panels pull their ocean photographs from CSS, and those were previously
@@ -65,22 +66,22 @@ def main():
 
     bodies = {}
     for name in PAGES:
-        src = (ROOT / (name + ".html")).read_text()
+        src = (PUB / (name + ".html")).read_text()
         m = re.search(r"<main id=\"main\">(.*?)</main>", src, re.S)
         if not m:
             sys.exit("no <main> in %s.html" % name)
         bodies[name] = route_links(inline_assets(m.group(1)))
 
     header = re.search(r"<header class=\"hdr\">.*?</header>",
-                       (ROOT / "index.html").read_text(), re.S).group(0)
+                       (PUB / "index.html").read_text(), re.S).group(0)
     footer = re.search(r"<footer class=\"ftr\">.*?</footer>",
-                       (ROOT / "index.html").read_text(), re.S).group(0)
+                       (PUB / "index.html").read_text(), re.S).group(0)
     header = route_links(inline_assets(header)).replace(' aria-current="page"', "")
     footer = route_links(inline_assets(footer))
 
-    js = ((ROOT / "assets/js/data.js").read_text() + "\n" +
-          (ROOT / "assets/js/land.js").read_text() + "\n" +
-          (ROOT / "assets/js/site.js").read_text())
+    js = ((PUB / "assets/js/data.js").read_text() + "\n" +
+          (PUB / "assets/js/land.js").read_text() + "\n" +
+          (PUB / "assets/js/site.js").read_text())
 
     pages_json = ",\n".join(
         '"%s": %s' % (n, __import__("json").dumps(bodies[n])) for n in PAGES)
@@ -124,7 +125,7 @@ var OI_PAGES = {%s};
 <meta name="description" content="Driving resilience in Big Ocean States: a preview of the Outrigger Impact Fund website.">
 <style>
 %s
-/* Preview shell only: this file bundles all seven pages into one document and
+/* Preview shell only: this file bundles every routed page into one document and
    swaps between them on a hash route. The deployed site is ordinary multi-page HTML. */
 .preview-note{position:fixed;left:50%%;bottom:14px;transform:translateX(-50%%);z-index:120;
   background:rgba(4,24,43,.92);color:#fff;border-radius:999px;padding:8px 18px;
@@ -140,7 +141,7 @@ var OI_PAGES = {%s};
 %s
 <main id="main"></main>
 %s
-<div class="preview-note" id="pnote">Single-file preview · all seven pages
+<div class="preview-note" id="pnote">Single-file preview · 9 pages
   <button type="button" onclick="document.getElementById('pnote').remove()" aria-label="Dismiss">Dismiss</button>
 </div>
 
