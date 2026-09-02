@@ -382,6 +382,14 @@ em.mark { font-style: normal; color: var(--brand); }
 .on-dark .rows > li { border-color: var(--line-dk); }
 .rows--cols > li { grid-template-columns: minmax(0, 240px) minmax(0, 1fr); gap: 12px 40px; align-items: start; }
 
+/* .rows sets its paragraphs at 14px in --muted, which suits a compact list of
+   metadata. Where the rows carry argument rather than annotation, that is the
+   smallest prose on the site in its palest colour; --prose restores body size
+   and body colour. */
+.rows--prose > li { padding: 26px 0; }
+.rows--prose > li p { font-size: 16.5px; line-height: 1.62; color: var(--ink); max-width: 62ch; }
+.on-dark .rows--prose > li p { color: rgba(255,255,255,.78); }
+
 /* A list of names only, with no second column. .rows--cols would squeeze each
    one into its 240px label track and wrap it, leaving the rest of the row
    empty; these flow into as many columns as the width allows. */
