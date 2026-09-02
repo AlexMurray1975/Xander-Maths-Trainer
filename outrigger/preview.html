@@ -763,10 +763,13 @@ em.mark { font-style: normal; color: var(--brand); }
   padding: clamp(24px, 3vw, 36px) 0 4px;
   border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
 }
+/* Weight 400 and the headings' tracking, so the quote is set exactly as a
+   heading is. The family was already --display; only the lighter cut and a
+   slightly tighter track set it apart. */
 .pullquote p {
-  font-family: var(--display); font-weight: 300;
+  font-family: var(--display); font-weight: 400;
   font-size: clamp(1.25rem, 2.1vw, 1.7rem); line-height: 1.34;
-  letter-spacing: -.012em; color: var(--ink);
+  letter-spacing: -.008em; color: var(--ink);
 }
 .pullquote p::before { content: "\201C"; }
 .pullquote p::after  { content: "\201D"; }
