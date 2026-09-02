@@ -381,6 +381,20 @@ em.mark { font-style: normal; color: var(--brand); }
 .rows > li:last-child { border-bottom: 1px solid var(--line); }
 .on-dark .rows > li { border-color: var(--line-dk); }
 .rows--cols > li { grid-template-columns: minmax(0, 240px) minmax(0, 1fr); gap: 12px 40px; align-items: start; }
+
+/* A list of names only, with no second column. .rows--cols would squeeze each
+   one into its 240px label track and wrap it, leaving the rest of the row
+   empty; these flow into as many columns as the width allows. */
+/* Three columns, not auto-fit: there are six names, and auto-fit resolves to
+   four at full width, which leaves the second row half empty. Three and two
+   both divide six exactly. */
+.namelist { list-style: none; display: grid; gap: 0 clamp(24px, 4vw, 56px);
+  grid-template-columns: repeat(3, minmax(0, 1fr)); }
+@media (max-width: 900px) { .namelist { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 620px) { .namelist { grid-template-columns: 1fr; } }
+.namelist > li { padding: 15px 0; border-top: 1px solid var(--line); }
+.namelist .h3 { margin: 0; }
+.on-dark .namelist > li { border-color: var(--line-dk); }
 @media (max-width: 700px) { .rows--cols > li { grid-template-columns: 1fr; } }
 
 /* Grant cards ,  the OTAF panel on the home page. Link cards, so the whole
