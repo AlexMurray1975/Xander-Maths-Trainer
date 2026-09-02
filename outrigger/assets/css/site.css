@@ -487,6 +487,26 @@ em.mark { font-style: normal; color: var(--brand); }
 .map-tip dt { color: var(--muted); }
 .map-tip dd { margin: 0; text-align: right; font-variant-numeric: tabular-nums; font-weight: 500; }
 .map-legend { display: flex; flex-wrap: wrap; gap: 18px; align-items: center; font-size: 12.5px; color: rgba(255,255,255,.72); }
+
+/* The caption under the map. It was four stacked paragraphs of near-identical
+   weight, which read as leftover text rather than as a key to the drawing. The
+   one sentence a reader needs in order to interpret the circles now leads, the
+   interaction hint sits beside it, and the method and the provenance separate
+   into two columns at a readable measure. */
+.mapcap { margin-top: 18px; }
+.mapcap__lead {
+  font-size: 15px; line-height: 1.5; color: #fff; max-width: 56ch; margin: 0;
+}
+.mapcap__hint {
+  margin: 6px 0 0; font: 400 12.5px/1.6 var(--sans); color: rgba(255,255,255,.55);
+}
+.mapcap__notes {
+  margin-top: 26px; padding-top: 22px; border-top: 1px solid var(--line-dk);
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 22px clamp(32px, 5vw, 72px);
+}
+.mapcap__notes .note { max-width: 58ch; }
+
 .map-legend span { display: inline-flex; align-items: center; gap: 8px; }
 .map-legend i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
 

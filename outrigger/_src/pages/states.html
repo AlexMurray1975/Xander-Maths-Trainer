@@ -54,13 +54,22 @@ slug: states.html
       </div>
 
       <div class="map-shell" id="map"></div>
-      <p class="note mt-1">Hover, tap or tab to a point for its ocean and economic data.</p>
 
-      <div class="map-legend mt-2">
-        <span>Each circle covers the true area of that state&rsquo;s exclusive economic zone, at the map&rsquo;s own scale</span>
+      <div class="mapcap">
+        <p class="mapcap__lead">Each circle covers the true area of that state&rsquo;s exclusive economic zone, at the map&rsquo;s own scale.</p>
+        <p class="mapcap__hint">Hover, tap or tab to a point for its data. Filtering the map filters the table below.</p>
+
+        <div class="mapcap__notes">
+          <div>
+            <p class="notelabel">How to read it</p>
+            <p class="note">The circle is centred on the state and drawn to the correct area: it shows how much ocean, not its shape. Several of these zones are island groups spread across thousands of kilometres, so the real boundary is nothing like a circle. States sit at their true longitude and latitude on a schematic equirectangular projection centred on the Pacific. No maritime boundaries are drawn.</p>
+          </div>
+          <div>
+            <p class="notelabel">Sources</p>
+            <p class="note">Exclusive economic zone areas from the Flanders Marine Institute (VLIZ) <em>Maritime Boundaries Geodatabase</em>; they vary between sources where boundary claims are disputed. Coastlines from GSHHS (Wessel and Smith) at crude resolution, drawn only to help place the states.</p>
+          </div>
+        </div>
       </div>
-      <p class="note mt-2" style="max-width:74ch">The circle is centred on the state and drawn to the correct area: it shows how much ocean, not its shape. Several of these zones are made up of island groups spread across thousands of kilometres, so the real boundary is nothing like a circle. Areas from the Flanders Marine Institute (VLIZ) Maritime Boundaries Geodatabase, and they vary between sources where boundary claims are disputed. Coastline: GSHHS (Wessel and Smith), crude resolution, shown only to help place the states.</p>
-      <p class="note mt-2">Filtering the map filters the table below. The map is a schematic equirectangular projection centred on the Pacific: states are plotted at their true longitude and latitude, and no coastlines or boundaries are drawn.</p>
     </div>
   </div>
 </section>
