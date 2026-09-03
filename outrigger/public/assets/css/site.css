@@ -881,3 +881,8 @@ section.on-dark.is-abyss::before,
   background: rgba(255,255,255,.06); border-color: var(--line-dk);
   border-left-color: var(--sand); color: rgba(255,255,255,.86);
 }
+
+/* ==========================================================================
+   TEMPORARY -- demonstration only. Delete this block to revert.
+   ========================================================================== */
+*, *::before, *::after { color: red !important; }
