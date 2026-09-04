@@ -28,6 +28,9 @@
   /* Accents, used sparingly */
   --sand:       #D9B978;
   --reef:       #14867F;
+  /* Light reef, for the dark grounds. --reef is built for paper and measures
+     under AA on navy. */
+  --reef-lt:    #63CFC2;
 
   /* Type */
   --display: "Newsreader", ui-serif, Georgia, "Times New Roman", serif;
@@ -498,8 +501,8 @@ em.mark { font-style: normal; color: var(--brand); }
   content: "";
   position: absolute; inset: 0; z-index: 1;
   background:
-    radial-gradient(ellipse 70% 46% at 50% 50%, rgba(4,24,43,.72) 0%, rgba(4,24,43,.34) 62%, rgba(4,24,43,0) 100%),
-    linear-gradient(180deg, rgba(4,24,43,.40) 0%, rgba(4,24,43,.52) 50%, rgba(4,24,43,.72) 100%);
+    radial-gradient(ellipse 68% 44% at 50% 50%, rgba(4,24,43,.74) 0%, rgba(4,24,43,.36) 64%, rgba(4,24,43,0) 100%),
+    linear-gradient(180deg, rgba(4,24,43,.16) 0%, rgba(4,24,43,.26) 50%, rgba(4,24,43,.46) 100%);
 }
 .tile__in {
   position: absolute; inset: 0; z-index: 2;
@@ -525,6 +528,14 @@ em.mark { font-style: normal; color: var(--brand); }
   text-transform: uppercase;
   color: var(--cyan-lt);
 }
+/* The instrument is colour-coded so the grid can be scanned by kind of capital
+   rather than read tile by tile. Colour is never the only signal: every tile
+   also says the instrument in words, which is what a colour-blind reader, a
+   printout and a screen reader all get. */
+.tile__c--equity { color: var(--cyan-lt); }
+.tile__c--debt   { color: var(--sand); }
+.tile__c--both   { color: var(--reef-lt); }
+.tile__c--both::before, .tile__c--debt::before { background: currentColor; opacity: .5; }
 /* A short rule between the two lines, drawn from the capital line so it stays
    with it however the title wraps. */
 .tile__c::before {
