@@ -519,13 +519,14 @@
 
   /* ---------------- Contact form ---------------- */
   /* The address the enquiry form falls back to while no form endpoint is
-     configured. It is deliberately a single shared inbox and defined once:
-     the individual partners' addresses were previously hard-coded here and in
-     the status message, so removing them from the visible page would have left
-     them in the JavaScript and in every mailto the form opened.
+     configured. A single shared inbox, confirmed by the client, and defined
+     once: the individual partners' addresses were previously hard-coded here
+     and in the status message, so removing them from the visible page would
+     have left them in the JavaScript and in every mailto the form opened.
 
-     CONFIRM THIS INBOX EXISTS before launch. Better still, set an `action` on
-     the form and no address is published anywhere at all. */
+     This is the design-mode arrangement. Set an `action` on the form before
+     launch and no address is published anywhere at all, which is the outcome
+     the partners actually asked for. */
   var OI_ENQUIRIES = 'enquiries@outriggerimpact.com';
 
   function form() {

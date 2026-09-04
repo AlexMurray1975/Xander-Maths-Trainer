@@ -297,6 +297,14 @@ When any figure in this register changes, update it here first, then the site.
    3.29m (§10). Confirm what the asterisk on Vanuatu denotes.
 8. Decide whether the LGPL coastline data is acceptable, or should be
    regenerated from public-domain Natural Earth (§11).
+9. Give the enquiry form a real endpoint before launch. It currently falls back
+   to opening the visitor's mail client at enquiries@outriggerimpact.com, which
+   is the agreed design-mode arrangement; an endpoint means no address is
+   published on the site at all. Simon Dent's and Jeremy Milward's addresses
+   were removed at their request, including from the JSON-LD block in the
+   shared head, which carried one on every page. otaf@outriggerimpact.com
+   remains inside the reproduced GEF release, by decision, because the release
+   is published as issued.
 
 ---
 
