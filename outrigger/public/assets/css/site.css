@@ -175,6 +175,19 @@ table { border-collapse: collapse; width: 100%; }
    equal weight. */
 .note { font: 400 12.5px/1.6 var(--sans); color: var(--muted); }
 .on-dark .note { color: rgba(255,255,255,.6); }
+/* A footnote set to the full width of the wrap rather than to a reading
+   measure. Sources and qualifications are apparatus, not prose: at 84ch this
+   one ran to five lines and read as a paragraph the eye had to take on. Across
+   the page it is two lines and scans as what it is. Contrast is unchanged
+   deliberately: the way to make a note quieter is width and separation, not a
+   paler grey that fails AA. */
+.note--foot {
+  max-width: none;
+  margin-top: clamp(28px, 4vw, 44px);
+  padding-top: 16px;
+  border-top: 1px solid var(--line);
+}
+.on-dark .note--foot { border-top-color: var(--line-dk); }
 .notelabel {
   margin: 0 0 12px;
   font: 500 11.5px/1.4 var(--geo);

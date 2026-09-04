@@ -198,6 +198,20 @@ It sits on the strategy page rather than the home page, set below body text at
 the caption scale, which is the difference between evidence supporting an
 argument and a market-sizing pitch.
 
+**The closing note was later shortened**, from five lines to two, and set across
+the full width as a footnote rather than to a reading measure. Two clauses came
+off it: that third-party figures are reproduced as those sources state them and
+are not Outrigger's own estimates, and that nothing there forecasts the return
+on any investment. Both are covered by the footer, which appears on every page
+and already says that market and country statistics are drawn from the sources
+named alongside them, that nothing on these pages is an offer, invitation,
+recommendation or inducement, and that the fund's terms and target returns are
+not published on the website at all. Neither clause was asked for by Robert
+Quinn; both were added here as belt and braces. What remains local to the page
+is the source list, the pointer to the per-line attribution, and the statement
+that forecasts are projections rather than results, which is the one worth
+keeping beside the forecasts themselves.
+
 **Still open: the owner.** Each figure has a source and a date; nobody inside
 Outrigger is yet named as responsible for re-checking them as they age. Several
 are forecasts to 2030–2032 and will need review well before then.
