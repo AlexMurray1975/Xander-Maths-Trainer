@@ -405,6 +405,12 @@ em.mark { font-style: normal; color: var(--brand); }
 .rows > li:last-child { border-bottom: 1px solid var(--line); }
 .on-dark .rows > li { border-color: var(--line-dk); }
 .rows--cols > li { grid-template-columns: minmax(0, 240px) minmax(0, 1fr); gap: 12px 40px; align-items: start; }
+/* The label takes the first column and everything after it stacks in the
+   second. Without this a row is only safe with exactly two children: a third
+   wraps onto a new line and lands back under the label, which is where a
+   second paragraph of body copy ended up. */
+.rows--cols > li > :first-child { grid-column: 1; }
+.rows--cols > li > :not(:first-child) { grid-column: 2; }
 
 /* .rows sets its paragraphs at 14px in --muted, which suits a compact list of
    metadata. Where the rows carry argument rather than annotation, that is the
