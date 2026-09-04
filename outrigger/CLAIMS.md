@@ -402,68 +402,47 @@ should be marked `ap` with a note, like Comoros.
 
 ---
 
-## 11 · Photography
+## 11 · Imagery
 
-Slots 01–14 of the photography brief were supplied on 31 August 2026 and are in
-place: the water column behind the sea panels, the home hero, the documentary
-band, the banners for Where We Invest, Impact, OTAF, Team, the grant portfolio,
-the news card and Contact, and a photograph for each of the four grantee case
-studies. All five team portraits have been replaced with a matched set.
+**The images are generated, not photographed.** Confirmed by the client,
+4 September 2026. That closes the questions this section previously carried:
+there are no photographers to credit, no stock licences to buy, and no
+third-party rights to clear.
 
-**A correction to the photography brief.** It said the existing 360×360
-portraits were "half what a modern screen needs". That was wrong: the site
-renders them at 96×96, so 360 already covered a 3× display with room to spare.
-The replacements were worth making for consistency — the originals were shot at
-different distances and exposures and several went flat under the greyscale
-filter — but not for resolution. The brief has been corrected.
+It opens a different one, which is not about rights but about accuracy.
 
-**One slot short.** The news index borrows the Contact photograph, because no
-image was briefed for it — every other section page has its own. The press
-release page takes the atoll that already belongs to that story, which is
-correct and needs nothing further. The 404 page keeps a flat gradient
-deliberately. If a photograph is wanted for the news index, that is one more
-slot to brief.
+**Several images are captioned as documentary records of named real
+organisations.** The alt text and captions currently read:
 
-**Photography is otherwise complete.** Every slot is filled and every image was
-measured against the template it sits in. Three things remain, and all three
-block launch: the credit lines, the subject releases, and the ABALOBI catch
-board.
+| File | Caption |
+|---|---|
+| `grants/sargas.jpg` | "Harvested sargassum feeding into the digester at **the SarGas plant in Grenada**" |
+| `grants/abalobi.jpg` | "A fisher recording a catch on **ABALOBI's MONITOR platform** aboard a vessel **off South Africa**" |
+| `grants/positive-change.jpg` | "Members of **the cooperative** working seaweed lines in **Western Province, Solomon Islands**" |
+| `grants/inversa.jpg` | "A fisher landing a net of invasive lionfish **off the Belize barrier reef**" |
 
-**Identifiable people appear in four of them**, and each needs a written release
-before launch — not the photographer's licence, which is a separate thing, but
-the subject's own consent to appear on a fund's website. The Positive Change for
-Marine Life photograph is the sharpest case: five cooperative members, faces
-clear, in a frame that illustrates the project's inclusion target. It is the
-strongest image on the site and the one that most needs papering. INVERSA and
-SarGas show a single worker each, faces largely obscured. ABALOBI shows one
-clearly.
+Each names a real grantee, a real facility or a real place. A generated image
+presented as a photograph of a named company's operations is a statement of
+fact that is not true, and the firm making it is an Appointed Representative,
+so the fair, clear and not misleading standard applies to it. The ABALOBI image
+is the sharpest case: it carries a legible catch board reading "BOTTOM TRAWL"
+with a skipper, a vessel name and coordinates, which if generated are invented
+vessel records shown as a real record on a real platform.
 
-**One supplied photograph needs a decision before launch.** The ABALOBI image
-on the grant portfolio page carries a legible catch board. Three things on it:
-the gear type reads **BOTTOM TRAWL**, which sits badly beside a case study about
-small-scale fisheries on the website of a fund whose primary contribution is
-SDG 14; a named skipper, vessel number and exact coordinates are readable, which
-is third-party personal and commercial data; and the coordinates are off South
-Africa, where ABALOBI is established, rather than in the five island states this
-grant extends the platform to. The caption states the location honestly. The
-first point is the one that matters: it is the kind of detail that gets
-screenshotted. Ask ABALOBI for an alternative frame. Cropping the board out is
-possible but leaves a near-square image, because the board is half the
-composition.
+**Two ways to resolve it, and it is the manager's choice:**
 
-**Credit lines are outstanding.** Nothing here can be published until each
-image's photographer and library are recorded and the licence confirmed for
-website use — a fund's corporate site is a more commercial setting than the
-impact report the same libraries were used for. Add them to this section as
-they arrive, and put the colophon on the page in whatever form the licence
-requires.
+1. **Caption them honestly.** Keep the images and label them as illustrations,
+   removing the named company, facility and location from the caption. Cheapest,
+   and defensible, but a fund's evidence page illustrated rather than
+   documented is weaker.
+2. **Replace them with real photographs** of the four projects, obtained from
+   the grantees. Slower, needs their consent, and much stronger: the grant
+   portfolio is the page where evidence matters most.
 
-Every image was measured before it went in. Text over each one holds at or
-above the 4.5:1 threshold for normal text; the sea-panel photograph was cropped
-by its top fifth because the surface caustics there reached p99 luminance .87,
-which no text survives.
-
----
+**The five team portraits need a separate answer.** If those are generated too,
+they are synthetic likenesses of five named, real individuals published as
+their photographs. That is a question about those five people rather than about
+the site, and each should agree to it. Awaiting confirmation.
 
 ## 12 · Third-party datasets and their terms
 
