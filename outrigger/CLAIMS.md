@@ -545,6 +545,13 @@ Robert Quinn's decision, and still live in PR26 and in two places on the site.
 - **The four investment models** (DECK25v3 p6), above the three instruments on
   the strategy page. Descriptive of how a deal is built; carries no terms.
 - **The nine project types** (DECK25v3 p2 and p11, CASES25 p2), anonymised.
+  A standing note under the grid, saying the pipeline was indicative rather than
+  a portfolio and that nothing on the page was an offer, was removed as
+  redundant: the footer carries the offer/invitation wording on every page, and
+  the standfirst says these are opportunities Outrigger *is currently
+  assessing*. The dependency is worth recording, because it is the kind of thing
+  a later copy edit breaks silently: **if that standfirst is ever reworded away
+  from "assessing", the pipeline-not-portfolio point has to be restated.**
 
 ### What was deliberately not taken
 
