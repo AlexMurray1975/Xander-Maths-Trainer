@@ -65,6 +65,31 @@ def write_sitemap(names, out):
     out.write_text("\n".join(lines) + "\n", encoding="utf-8")
 
 LOGO_DIR = "assets/img/partners"
+TILE_DIR = "assets/img/pipeline"
+
+
+def fill_tiles(text, root):
+    """Expand {{tile:slug}} into an <img> when the file exists, or nothing.
+
+    Same idea as fill_logos: an image drops into assets/img/pipeline/<slug>.jpg
+    and appears on the next build with no markup change. Until then the tile
+    falls back to its own gradient, which is why this emits nothing rather than
+    an <img> pointing at a file that is not there. Nine broken-image icons in a
+    grid is worse than nine plain tiles.
+
+    The images are decorative: the project type and the instrument are set in
+    text on top of each tile, so alt is empty by design.
+    """
+    def repl(m):
+        slug = m.group(1)
+        for ext in (".jpg", ".webp", ".png"):
+            f = root / TILE_DIR / (slug + ext)
+            if f.exists():
+                return ('<img src="%s/%s%s" alt="" loading="lazy" '
+                        'width="900" height="675">' % (TILE_DIR, slug, ext))
+        return ""
+
+    return re.sub(r"\{\{tile:([a-z0-9-]+)\}\}", repl, text)
 
 
 def fill_logos(text, root):
@@ -157,7 +182,7 @@ def main():
             marker = ' aria-current="page"' if key == section else ""
             page_header = page_header.replace("{{cur_%s}}" % key, marker)
 
-        out = page_head + page_header + "\n" + fill_logos(body.strip(), PUB) + "\n\n" + footer
+        out = page_head + page_header + "\n" + fill_tiles(fill_logos(body.strip(), PUB), PUB) + "\n\n" + footer
         if name == "404":
             out = absolutise(out)
         (PUB / (name + ".html")).write_text(out, encoding="utf-8")
