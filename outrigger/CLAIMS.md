@@ -283,6 +283,18 @@ logos or the public/restricted boundary go back through the approval process.
 
 When any figure in this register changes, update it here first, then the site.
 
+**Order of precedence between sources.** Where the documents disagree, the more
+recent and more public document wins:
+
+1. **The press releases** (PR26, 28 July 2026; the GEF/OTAF release, 21 April
+   2026). These are published, and Outrigger is on the record.
+2. **The investor presentation** (DECK25).
+3. **The Impact Strategy** (v2.1, July 2024).
+
+The impact report sits alongside these as the impact record; where it conflicts
+with a release, the release governs what the site says. This rule was set by the
+client and resolves several entries below.
+
 **Open items, in priority order.**
 
 1. Reconcile the press release figures with the impact report figures (§1).
@@ -297,7 +309,15 @@ When any figure in this register changes, update it here first, then the site.
    3.29m (§10). Confirm what the asterisk on Vanuatu denotes.
 8. Decide whether the LGPL coastline data is acceptable, or should be
    regenerated from public-domain Natural Earth (§11).
-9. Give the enquiry form a real endpoint before launch. It currently falls back
+9. Settle the indicator count against DECK25. The Impact Strategy carries
+   **twelve** KPIs (1-12, with 12a and 12b as sub-indicators of inclusion). The
+   site says fourteen, and its KPI explorer holds fourteen: the strategy's
+   twelve, plus a Climate adaptation KPI the strategy does not have (there,
+   climate adaptation is a cross-cutting theme with no indicator of its own),
+   plus 12a and 12b counted separately. Under the precedence rule DECK25
+   outranks the strategy document, so the site is left as it stands until the
+   deck is checked. If the deck says twelve, five places on the site change.
+10. Give the enquiry form a real endpoint before launch. It currently falls back
    to opening the visitor's mail client at enquiries@outriggerimpact.com, which
    is the agreed design-mode arrangement; an endpoint means no address is
    published on the site at all. Simon Dent's and Jeremy Milward's addresses
@@ -307,6 +327,16 @@ When any figure in this register changes, update it here first, then the site.
    is published as issued.
 
 ---
+
+## 9a · Settled against external sources, September 2026
+
+| Question | Finding |
+|---|---|
+| Do SIDS steward 30% of the world's ocean, or 16% of global EEZ area? | **30% stands.** The Impact Strategy contradicts itself: p4 says "over 16% of the global EEZ area", pp19 and 26 say "roughly 30% of all oceans and seas". Checked externally: UN OHRLLS, UN DESA, IISD and the GEF all state that SIDS steward or manage as much as 30% of the world's ocean through their EEZs, and that those zones average 28 times their land area. The site's 30% is correct and is the standard figure. The 16% measures a different thing and should not be used. |
+| Seven SDGs or five? | **Seven, per PR26**: 1, 5, 6, 10, 13, 14, 15. The Impact Strategy commits to five (14, 13, 15, 7, 5), but it predates the release by two years and the release governs. The site already says seven and needs no change. |
+| Does the fund invest in five sectors or six? | **Six.** No conflict after all: the fund invests across six sectors, and the GEF release lists OTAF's **five grant priority areas**, which exclude ocean-based renewable energy. Two different things. The earlier flag is withdrawn. |
+| Why does ORRAA appear in the OTAF backers block but not in the GEF release? | The Impact Strategy names ORRAA's Project Portfolio Pipeline as a source of pipeline (KPI 9). The relationship is real; the release simply lists funders. |
+| Source for "eleven times less finance" | Wilkinson et al., **ODI (2023)**, cited in the Impact Strategy at pp4 and 24. The fuller figure is seven times less than least developed countries and eleven times less than lower-middle-income countries, in both cases excluding SIDS. Now cited on the page. |
 
 ## 10 · The EEZ figures, corrected
 
