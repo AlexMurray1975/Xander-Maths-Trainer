@@ -129,6 +129,23 @@ def absolutise(html):
         html)
 
 
+def strip_comments(html):
+    """Remove HTML comments from a built page.
+
+    The source files carry a running commentary: why a section exists, what was
+    deliberately left off it, which figures disagree with each other, what still
+    needs the principal's sign-off. That is worth keeping in _src/, where whoever
+    maintains this next will read it. It has no business on the live site, where
+    it is one View Source away from any visitor and reads as an internal memo
+    about a regulated fund's own disclosure decisions.
+
+    Doctype is not a comment and is untouched. No conditional comments are used
+    anywhere in this site, and nothing in the output depends on a comment
+    surviving, so the removal is unconditional.
+    """
+    return re.sub(r"<!--(?!\[if).*?-->", "", html, flags=re.S)
+
+
 def front_matter(text):
     """Pull the leading <!-- key: value --> block off a page source."""
     m = re.match(r"\s*<!--(.*?)-->\s*", text, re.S)
@@ -183,6 +200,7 @@ def main():
             page_header = page_header.replace("{{cur_%s}}" % key, marker)
 
         out = page_head + page_header + "\n" + fill_tiles(fill_logos(body.strip(), PUB), PUB) + "\n\n" + footer
+        out = strip_comments(out)
         if name == "404":
             out = absolutise(out)
         (PUB / (name + ".html")).write_text(out, encoding="utf-8")
