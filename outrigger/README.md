@@ -114,6 +114,23 @@ the report's figures and the report's labels. `news-first-close.html` is
 untouched — it reproduces the release as issued, and says so. Reconciling the
 two is a decision for the manager; see `CLAIMS.md` §1.
 
+## Dropping in images
+
+Two image slots fill themselves from the filesystem, so a picture can be added
+with no markup change:
+
+- **Partner logos** — `public/assets/img/partners/<slug>.svg|png|jpg`. Until a
+  file exists the build renders a typographic wordmark instead.
+- **Pipeline tiles** — `public/assets/img/pipeline/<slug>.jpg|webp|png`, one per
+  project type on the strategy page: `sanitary-landfill`, `waste-processing`,
+  `alternative-materials`, `marine-protected-areas`, `wave-desalination`,
+  `ecotourism`, `fleet-electrification`, `aquaculture`, `ocean-energy`. Until a
+  file exists the tile falls back to its own gradient, which is deliberate:
+  nine broken-image icons in a grid is worse than nine plain tiles.
+
+Tile images are 4:3, decorative, and sit under a scrim that darkens the centre
+where the type is. Run the contrast check again once real photographs are in.
+
 ## The October 2025 deck and case studies
 
 Two further documents arrived in September 2026: version 3 of the pre-marketing
