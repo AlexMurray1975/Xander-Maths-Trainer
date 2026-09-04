@@ -309,15 +309,17 @@ client and resolves several entries below.
    3.29m (§10). Confirm what the asterisk on Vanuatu denotes.
 8. Decide whether the LGPL coastline data is acceptable, or should be
    regenerated from public-domain Natural Earth (§11).
-9. Settle the indicator count against DECK25. The Impact Strategy carries
-   **twelve** KPIs (1-12, with 12a and 12b as sub-indicators of inclusion). The
-   site says fourteen, and its KPI explorer holds fourteen: the strategy's
-   twelve, plus a Climate adaptation KPI the strategy does not have (there,
-   climate adaptation is a cross-cutting theme with no indicator of its own),
-   plus 12a and 12b counted separately. Under the precedence rule DECK25
-   outranks the strategy document, so the site is left as it stands until the
-   deck is checked. If the deck says twelve, five places on the site change.
-10. Give the enquiry form a real endpoint before launch. It currently falls back
+9. **CLOSED.** The indicator count is fourteen. DECK25 states it outright,
+   "Outrigger will Measure Impact Across 14 Indicators Tailored to SIDS", and
+   lists KPI 1 to 14, including KPI 2, Climate Resilience, number of people
+   with improved climate resilience, which the Impact Strategy does not carry.
+   The deck outranks the strategy document. The site is correct and unchanged.
+10. **Correct the ocean share, including in PR26.** See §1a: the site and the
+   published release both say SIDS steward around 30% of the world's ocean.
+   The figure is roughly 7%, or c.17% of global EEZ area. This is a published
+   claim by an FCA Appointed Representative and engages ESG 4.3.1, so it is
+   for the manager and Robert Quinn to settle, not a website edit.
+11. Give the enquiry form a real endpoint before launch. It currently falls back
    to opening the visitor's mail client at enquiries@outriggerimpact.com, which
    is the agreed design-mode arrangement; an endpoint means no address is
    published on the site at all. Simon Dent's and Jeremy Milward's addresses
@@ -332,7 +334,7 @@ client and resolves several entries below.
 
 | Question | Finding |
 |---|---|
-| Do SIDS steward 30% of the world's ocean, or 16% of global EEZ area? | **30% stands.** The Impact Strategy contradicts itself: p4 says "over 16% of the global EEZ area", pp19 and 26 say "roughly 30% of all oceans and seas". Checked externally: UN OHRLLS, UN DESA, IISD and the GEF all state that SIDS steward or manage as much as 30% of the world's ocean through their EEZs, and that those zones average 28 times their land area. The site's 30% is correct and is the standard figure. The 16% measures a different thing and should not be used. |
+| Do SIDS steward 30% of the world's ocean, or 16% of global EEZ area? | **16% of global EEZ area is right; 30% of the ocean is wrong, and this register said otherwise for one day.** The first answer treated consistent repetition across UN pages as verification and did not do the arithmetic. The arithmetic is decisive, and the data is already in this repository. Summing the VLIZ figures in `data.js` gives **25.4 million km²** across the 35 states. Global EEZ area is about 151 million km², so these states hold **c.17%** of it. The whole ocean is about 361 million km², so they hold **c.7%** of that, not 30%. For 30% to hold, SIDS would need roughly three quarters of all EEZ area on earth. **The claim is overstated by about four times, and it is in PR26 as well as on the site.** See §1a. |
 | Seven SDGs or five? | **Seven, per PR26**: 1, 5, 6, 10, 13, 14, 15. The Impact Strategy commits to five (14, 13, 15, 7, 5), but it predates the release by two years and the release governs. The site already says seven and needs no change. |
 | Does the fund invest in five sectors or six? | **Six.** No conflict after all: the fund invests across six sectors, and the GEF release lists OTAF's **five grant priority areas**, which exclude ocean-based renewable energy. Two different things. The earlier flag is withdrawn. |
 | Why does ORRAA appear in the OTAF backers block but not in the GEF release? | The Impact Strategy names ORRAA's Project Portfolio Pipeline as a source of pipeline (KPI 9). The relationship is real; the release simply lists funders. |
