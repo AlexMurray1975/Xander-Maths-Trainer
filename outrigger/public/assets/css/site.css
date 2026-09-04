@@ -30,7 +30,7 @@
   --reef:       #14867F;
   /* Light reef, for the dark grounds. --reef is built for paper and measures
      under AA on navy. */
-  --reef-lt:    #63CFC2;
+  --reef-lt:    #92DDD4;
 
   /* Type */
   --display: "Newsreader", ui-serif, Georgia, "Times New Roman", serif;
@@ -506,15 +506,24 @@ em.mark { font-style: normal; color: var(--brand); }
   z-index: 0;
 }
 /* Two layers: a radial that darkens the middle, where the type sits, and a
-   linear that keeps the whole tile in the same family as the sea panels. The
-   radial is what makes the text safe over a photograph with a bright sky in it,
-   rather than only over the fallback gradient. Contrast must still be measured
-   again once real images are in place. */
+   linear that keeps the whole tile in the same family as the sea panels.
+
+   These values are fitted to the nine real photographs, not guessed. Measured
+   against synthetic near-white stand-ins the earlier, much lighter radial
+   looked fine; against the actual images two tiles failed AA on the light-reef
+   capital line, and even the pure-white titles cleared only 5.68:1 on the
+   brightest tile. The radial was raised until the worst case is 5.30:1, which
+   keeps roughly 18% of headroom over the 4.5 floor while leaving the edges of
+   each photograph bright. Anything stronger buys margin nobody sees and costs
+   the brightness the images were commissioned for.
+
+   If the images are ever replaced, measure again: the fallback gradient will
+   pass whatever these values are, so a passing check on it proves nothing. */
 .tile::after {
   content: "";
   position: absolute; inset: 0; z-index: 1;
   background:
-    radial-gradient(ellipse 68% 44% at 50% 50%, rgba(4,24,43,.74) 0%, rgba(4,24,43,.36) 64%, rgba(4,24,43,0) 100%),
+    radial-gradient(ellipse 72% 48% at 50% 50%, rgba(4,24,43,.78) 0%, rgba(4,24,43,.42) 62%, rgba(4,24,43,0) 100%),
     linear-gradient(180deg, rgba(4,24,43,.16) 0%, rgba(4,24,43,.26) 50%, rgba(4,24,43,.46) 100%);
 }
 .tile__in {
