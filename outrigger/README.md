@@ -114,6 +114,23 @@ the report's figures and the report's labels. `news-first-close.html` is
 untouched — it reproduces the release as issued, and says so. Reconciling the
 two is a decision for the manager; see `CLAIMS.md` §1.
 
+## The October 2025 deck and case studies
+
+Two further documents arrived in September 2026: version 3 of the pre-marketing
+presentation, and a set of eleven pipeline case studies. Both pre-date the first
+close, so the press release governs where they conflict. `CLAIMS.md` §13 records
+what was taken from them and what was not.
+
+Three things worth knowing without reading that section. **The deck's appendix
+table is still row-shifted** — Fiji's EEZ sits on the Dominican Republic and
+Fiji is given Grenada's figure. The site was corrected in August 2026; the deck
+was not, so the error is going to investors. **The 30% ocean claim now has an
+attribution**, to the UK SIDS Strategy 2023, which changes how it can be fixed
+without making it true. And **the case studies name eleven counterparties**,
+most of them in discussion rather than committed, with per-deal ticket sizes and
+in one case a coupon. None of that is on the site: the pipeline is published by
+project type and instrument only.
+
 The grant portfolio is publishable where the fund proposition is not, because
 OTAF makes grants rather than offering investments — nothing is offered and no
 one is invited to engage in investment activity, so FSMA s.21 is not engaged.

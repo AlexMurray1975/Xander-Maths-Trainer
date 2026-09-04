@@ -98,9 +98,11 @@
   }
 
   /* ---------------- Number formatting ---------------- */
-  /* The 20-state investment window is fund-allocation detail, so it is shown
-     only on a page that opts in with data-show-window="yes" on <body>.
-     No public page does. */
+  /* The twenty states the fund opens in first. Shown only on a page that opts
+     in with data-show-window="yes" on <body>, which is states.html alone.
+     Copy deliberately avoids the phrase "investment window": the fund's
+     investment period is a term of the offer and is not published, and the two
+     senses of the word would be read as one. */
   function showWindow() { return document.body.dataset.showWindow === 'yes'; }
 
   var fmt = {
@@ -239,12 +241,19 @@
         'class': 'map-dot' + (s.w && showWindow() ? ' is-window' : ''),
         'data-region': s.r, tabindex: '0', role: 'button',
         'aria-label': s.n + '. Exclusive economic zone ' + fmt.eez(s) +
-                      '. Population ' + fmt.int(s.pop) + '.'
+                      '. Population ' + fmt.int(s.pop) + '.' +
+                      (s.w && showWindow() ? ' Among the first twenty states.' : '')
       });
       g.appendChild(svgEl('ellipse', {
         'class': 'eez', cx: x, cy: y,
         rx: (ax[0] * K).toFixed(2), ry: (ax[1] * K).toFixed(2)
       }));
+      // A ring, not a colour change: the three region colours already carry
+      // meaning on this map and a fourth would read as a fourth region. Drawn
+      // before the core so the core sits on top of it.
+      if (s.w && showWindow()) {
+        g.appendChild(svgEl('circle', { 'class': 'ring', cx: x, cy: y, r: 4.4 }));
+      }
       g.appendChild(svgEl('circle', { 'class': 'core', cx: x, cy: y, r: 1.9 }));
       // The discs overlap heavily in the Caribbean and the western Pacific, so
       // they are transparent to the pointer and this is the only hit target.
@@ -342,7 +351,7 @@
       '<dt>GDP growth</dt><dd>' + fmt.pct(s.gr) + '</dd>' +
       '</dl>' +
       (s.note ? '<div class="map-tip__note">' + esc(s.note) + '</div>' : '') +
-      (s.w && showWindow() ? '<div class="small" style="margin-top:8px">Initial investment window</div>' : '');
+      (s.w && showWindow() ? '<div class="small" style="margin-top:8px">Among the first twenty</div>' : '');
     t.style.left = (fx * 100) + '%';
     t.style.top  = (fy * 100) + '%';
     t.classList.add('is-on');
@@ -381,7 +390,7 @@
     var cls = { Pacific: 'tag--pac', Caribbean: 'tag--car', AIS: 'tag--ais' };
     tb.innerHTML = rows.map(function (s) {
       return '<tr data-region="' + s.r + '" data-name="' + esc(s.n.toLowerCase()) + '">' +
-        '<td>' + esc(s.n) + (s.w && showWindow() ? ' <span class="tag">Window</span>' : '') + '</td>' +
+        '<td>' + esc(s.n) + (s.w && showWindow() ? ' <span class="tag">First twenty</span>' : '') + '</td>' +
         '<td><span class="tag ' + cls[s.r] + '">' + (s.r === 'AIS' ? 'AIS' : s.r) + '</span></td>' +
         '<td class="num">' + fmt.eezN(s) + (s.note ? ' <abbr class="qual" title="' + esc(s.note) + '">*</abbr>' : '') + '</td>' +
         '<td class="num">' + fmt.int(s.pop) + '</td>' +

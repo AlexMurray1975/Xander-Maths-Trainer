@@ -22,6 +22,12 @@ Two source documents are referred to throughout:
   First Close*, London, 28 July 2026.
 - **DECK25** — Outrigger Impact Fund pre-marketing presentation, 2025,
   including the World Bank 2024 indicators reproduced in its appendix.
+- **DECK25v3** — Outrigger Impact Fund, *Driving Resilience in Big Ocean States*,
+  pre-marketing presentation, October 2025 (version 3 of DECK25). Supersedes
+  DECK25 where the two differ, and is itself superseded by PR26.
+- **CASES25** — Outrigger Impact Fund, *Case Studies*, October 2025. An
+  indicative pipeline of eleven named counterparties with per-deal terms. See
+  §13; almost none of it is publishable.
 - **REPORT26** — Outrigger Impact, *Impact Report 2026*. Note that this document
   is itself a financial promotion, approved by Robert Quinn Advisory and marked
   as exclusively intended for Professional Clients and Eligible Counterparties.
@@ -169,17 +175,32 @@ of the junior tranche"* and state the limitation alongside it.
 ## 5 · Sector and market statistics
 
 The six-sector market data — CAGRs, market sizes to 2030–2032, sector growth
-rates — **has been removed from the site.** It was on the home page and is now
-nowhere.
-
-Two reasons. It read as a pitch deck embedded in a web page, and every figure
+rates — was removed from the site in an earlier pass. It had been on the home
+page, where it read as a pitch deck embedded in a web page, and every figure
 carried a substantiation and maintenance burden disproportionate to its
 persuasive value: an LP does not need convincing that marine electrification is
 a real market.
 
-If any of it is reinstated, each figure needs a named source, a date and an
-owner, and belongs in the investor materials rather than on the website. The
-original figures are in DECK25 slide 7.
+The condition set here for reinstating any of it was that each figure carry a
+named source, a date and an owner.
+
+**It has now been reinstated on those terms, on the strategy page.** DECK25v3
+p7 gives the same six sectors with sources and years, and each sector now
+carries one `.evidence` line naming them: Consegic Business Intelligence 2025,
+Statista Research Department 2025, UN Environment 2019, Global Market Insights
+2023, UNDP 2025, ESMAP 2020, Shahbandeh 2025, World Bank 2017, UNEA 2024, Field
+2021, WTTC 2025 and UN 2021. The closing note states that these are the
+sources' own figures rather than Outrigger's estimates, that forecasts are
+projections rather than results, and that nothing there forecasts the return on
+any investment.
+
+It sits on the strategy page rather than the home page, set below body text at
+the caption scale, which is the difference between evidence supporting an
+argument and a market-sizing pitch.
+
+**Still open: the owner.** Each figure has a source and a date; nobody inside
+Outrigger is yet named as responsible for re-checking them as they age. Several
+are forecasts to 2030–2032 and will need review well before then.
 
 ---
 
@@ -327,6 +348,18 @@ client and resolves several entries below.
    shared head, which carried one on every page. otaf@outriggerimpact.com
    remains inside the reproduced GEF release, by decision, because the release
    is published as issued.
+12. **Tell Simon the deck's appendix table is still wrong.** DECK25v3 p21
+   carries the row shift that puts Fiji's EEZ on the Dominican Republic and
+   gives Fiji Grenada's figure. It was corrected on the website in August 2026;
+   version 3 of the deck still has it, so it is going to investors (§13).
+13. Attribute or correct the 30% ocean claim now that DECK25v3 names its source
+   as the UK SIDS Strategy 2023 (§13). Related to item 10, not a substitute
+   for it.
+14. Confirm the membership of the twenty states the fund opens in first, which
+   is marked in bold in DECK25v3 and could not be read back from the text
+   (§13).
+15. Confirm with Robert Quinn that the "at least 80% into ODA-eligible
+   countries" commitment belongs on a public page (§13).
 
 ---
 
@@ -464,5 +497,91 @@ cited, and it is — on the states page, beside both the table and the map.
 Someone should confirm the current terms of use for a commercial website and
 that the citation is in the form VLIZ asks for, including the database version
 and year, which is not yet recorded here.
+
+---
+
+## 13 · The October 2025 documents, and what was taken from them
+
+Two documents arrived in September 2026: DECK25v3 and CASES25. Both pre-date
+the 28 July 2026 first close, so PR26 governs wherever they conflict.
+
+### Three errors in the documents themselves
+
+**1. The appendix table in DECK25v3 is still row-shifted.** Page 21 gives Fiji
+an EEZ of 25,571 km², identical to Grenada's on the line below, which is the
+tell. Fiji's real figure (1,289,978 km²) has been assigned to the Dominican
+Republic, whose own EEZ is roughly 350,000 km², and Dominica's has landed on
+Comoros. This is the same fault found in the earlier deck in August 2026 and
+corrected in `assets/js/data.js`; **version 3 still carries it**, so the error
+is going to investors. The website is correct. The deck is not.
+
+**2. Kiribati now has three different values across the fund's own documents.**
+DECK25v3 p3 says 3.29m km²; its own appendix on p21 says 3,330,220; VLIZ gives
+3,440,220, which is what the site uses. The deck contradicts itself between
+page 3 and page 21. Recorded in §10; unchanged by this.
+
+**3. The 30% ocean claim now has an attribution.** DECK25v3 p3 credits it to
+the *UK SIDS Strategy, 2023*. That does not make it right — the arithmetic in
+§10 stands, at roughly 17% of global EEZ and 7% of the ocean — but it changes
+the available remedies. Outrigger can attribute the claim to the source rather
+than assert it in its own voice, which is a materially different position under
+ESG 4.3.1 from restating someone else's figure as fact. Still the manager's and
+Robert Quinn's decision, and still live in PR26 and in two places on the site.
+
+### What was taken onto the site
+
+- **Sector market data with named sources** (DECK25v3 p7), added as an
+  `.evidence` line under each of the six sectors on the strategy page. The
+  sector evidence was previously attributed only to the Impact Strategy; each
+  market figure now carries its own source and year. Attributed third-party
+  data is defensible under ESG 4.3.1 in a way that restated data is not, and
+  the closing note says plainly that these are the sources' figures, that
+  forecasts are projections rather than results, and that none of it forecasts
+  a return.
+- **The twenty states the fund opens in first** (DECK25v3 p4). The data has
+  carried a `w:` flag since August and `site.js` has supported showing it; no
+  page had opted in. States.html now does, via `body:` front matter. The site
+  previously read as though all thirty-five states were equally in scope.
+- **The four investment models** (DECK25v3 p6), above the three instruments on
+  the strategy page. Descriptive of how a deal is built; carries no terms.
+- **The nine project types** (DECK25v3 p2 and p11, CASES25 p2), anonymised.
+
+### What was deliberately not taken
+
+- **The eleven named counterparties in CASES25.** Most are described as "in
+  discussions", one as holding an indicative term sheet. Naming them would be a
+  disclosure none has agreed to, a public record of deals that may not happen,
+  and a financial promotion, since the entries carry per-deal ticket sizes and
+  in one case a coupon. The pipeline is published by type and instrument only.
+- **The fund summary on DECK25v3 p18** in its entirety: target raise, first
+  close size, tranching, the 2%/1.85% management fee, the 6.0% and 18.0% gross
+  IRRs, the ten-year duration and the Luxembourg SCA SICAV-RAIF. This is the
+  material §4 exists to keep off the site.
+- **The regional percentage allocations and the floating allocation**
+  (DECK25v3 p4). Portfolio construction limits belong in fund documents.
+- **The fund status page** (DECK25v3 p9), superseded: it targets a Q4 2025 or
+  Q1 2026 first close at around $35m, and the close happened on 28 July 2026.
+- **The contact page** (DECK25v3 p16), which carries the two addresses removed
+  from the site at Simon Dent's and Jeremy Milward's request.
+
+### Two judgement calls for Robert Quinn
+
+1. **"At least 80% of the fund is to be deployed in ODA-eligible countries"**
+   is now on the states page. It reads as an impact commitment rather than a
+   term of the offer, which is why it was included, but it is a portfolio
+   construction commitment and someone should confirm it belongs on a public
+   page.
+2. **The phrase "investment window" was deliberately avoided.** DECK25v3 uses
+   it for the geography; the fund summary uses "investment period" for the
+   five-year term. The two would be read as one, and the second is not
+   published. The site says "the twenty states the fund opens in first"
+   instead, and the QA guard still fails a build that reintroduces the phrase.
+
+### One thing that could not be re-checked
+
+DECK25v3 p4 marks the twenty states in bold. Bold does not survive text
+extraction, so the membership of the twenty in `data.js` is still the list
+taken from the earlier deck and has not been verified against version 3.
+Someone should confirm it with Simon before launch.
 
 ---

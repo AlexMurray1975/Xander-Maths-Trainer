@@ -143,6 +143,13 @@ def main():
             "{{robots}}",
             '\n<meta name="robots" content="%s">' % robots if robots else "")
 
+        # `body:` in front matter adds attributes to <body>. Used by states.html
+        # to opt into the investment-window flag on the map and table; the data
+        # carries `w:` for every state but showing it is a per-page decision.
+        bodyattr = meta.get("body", "")
+        page_head = page_head.replace(
+            "{{bodyattr}}", " " + bodyattr if bodyattr else "")
+
         # Child pages mark their section's nav item (news-first-close -> news).
         section = meta.get("section", name.split("-")[0])
         page_header = header

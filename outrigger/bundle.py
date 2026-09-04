@@ -65,12 +65,19 @@ def main():
                  lambda m: "url(%s)" % data_uri("assets/" + m.group(1)), css)
 
     bodies = {}
+    battrs = {}
     for name in PAGES:
         src = (PUB / (name + ".html")).read_text()
         m = re.search(r"<main id=\"main\">(.*?)</main>", src, re.S)
         if not m:
             sys.exit("no <main> in %s.html" % name)
         bodies[name] = route_links(inline_assets(m.group(1)))
+        # Per-page <body> attributes are set by build.py from `body:` front
+        # matter and are lost here, because only <main> is carried over. The
+        # router reapplies them on each route: without this the preview silently
+        # drops anything they switch on, and the preview is what gets shared.
+        bm = re.search(r"<body([^>]*)>", src)
+        battrs[name] = (bm.group(1).strip() if bm else "")
 
     header = re.search(r"<header class=\"hdr\">.*?</header>",
                        (PUB / "index.html").read_text(), re.S).group(0)
@@ -83,19 +90,33 @@ def main():
           (PUB / "assets/js/land.js").read_text() + "\n" +
           (PUB / "assets/js/site.js").read_text())
 
+    _json = __import__("json")
     pages_json = ",\n".join(
-        '"%s": %s' % (n, __import__("json").dumps(bodies[n])) for n in PAGES)
+        '"%s": %s' % (n, _json.dumps(bodies[n])) for n in PAGES)
+    battrs_json = _json.dumps(battrs)
 
     router = """
 var OI_PAGES = {%s};
+var OI_BODYATTRS = %s;
 (function () {
   var host = document.getElementById('main');
+  /* Reapply the routed page's <body> attributes, and clear the previous
+     page's, so a flag set for one page does not persist across the route. */
+  function bodyAttrs(name) {
+    Object.keys(document.body.dataset).forEach(function (k) {
+      if (k.indexOf('oi') !== 0) delete document.body.dataset[k];
+    });
+    var s = OI_BODYATTRS[name] || '';
+    var re = /([a-zA-Z-]+)="([^"]*)"/g, m;
+    while ((m = re.exec(s))) document.body.setAttribute(m[1], m[2]);
+  }
   function current() {
     var h = location.hash.replace(/^#\\//, '');
     return OI_PAGES[h] ? h : 'index';
   }
   function show(frag) {
     var name = current();
+    bodyAttrs(name);
     host.innerHTML = OI_PAGES[name];
     document.querySelectorAll('.nav a').forEach(function (a) {
       var on = a.getAttribute('href') === '#/' + name;
@@ -118,7 +139,7 @@ var OI_PAGES = {%s};
   });
   show('');
 })();
-""" % pages_json
+""" % (pages_json, battrs_json)
 
     html = """<meta charset="utf-8">
 <title>Outrigger Impact</title>

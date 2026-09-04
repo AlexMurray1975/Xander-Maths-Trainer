@@ -407,6 +407,18 @@ em.mark { font-style: normal; color: var(--brand); }
 .rows h3 a:hover { color: var(--brand-dk); text-decoration: underline; text-underline-offset: 3px; }
 .on-dark .rows h3 a:hover { color: var(--cyan-lt); }
 .rows--prose > li p { font-size: 16.5px; line-height: 1.62; color: var(--ink); max-width: 62ch; }
+/* Market sizing with its citation, set below the body of a row. It needs the
+   class in the selector as well as the row: `.rows--prose > li p` alone
+   outranks .note, so a note class here is a claim the rendering contradicts. */
+.rows--prose > li p.evidence {
+  font: 400 12.5px/1.6 var(--sans);
+  color: var(--muted);
+  max-width: 74ch;
+  margin-top: 14px;
+}
+.rows--prose > li p.evidence b { font-weight: 500; color: var(--ink-2); }
+.on-dark .rows--prose > li p.evidence { color: rgba(255,255,255,.6); }
+.on-dark .rows--prose > li p.evidence b { color: rgba(255,255,255,.78); }
 .on-dark .rows--prose > li p { color: rgba(255,255,255,.78); }
 
 /* A list of names only, with no second column. .rows--cols would squeeze each
@@ -521,6 +533,11 @@ em.mark { font-style: normal; color: var(--brand); }
 .map-dot:hover ellipse.eez, .map-dot.is-active ellipse.eez { opacity: .46; stroke-opacity: 1; }
 .map-dot:focus-visible ellipse.eez { opacity: .46; stroke: #fff; stroke-opacity: 1; stroke-width: 1; }
 .map-dot.is-dim { opacity: .13; pointer-events: none; }
+/* One of the twenty states the fund opens in first. A ring rather than a colour
+   change: the three region colours already carry meaning on this map, and a
+   fourth would be read as a fourth region. */
+.map-dot circle.ring { fill: none; stroke: var(--cyan-lt); stroke-width: 1.1; stroke-opacity: .85; pointer-events: none; }
+.map-dot:hover circle.ring, .map-dot.is-active circle.ring { stroke: #fff; stroke-opacity: 1; }
 .map-tip {
   position: absolute; z-index: 5; pointer-events: none;
   background: #fff; color: var(--ink); border-radius: var(--r);
