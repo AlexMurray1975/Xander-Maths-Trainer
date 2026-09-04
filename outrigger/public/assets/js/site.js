@@ -491,7 +491,7 @@
         .catch(function () {
           if (status) {
             status.dataset.state = 'err';
-            status.textContent = 'Could not load this section. Please write to simon.dent@outriggerimpact.com and we will send the fund documentation directly.';
+            status.textContent = 'Could not load this section. Please use the enquiry form and we will send the fund documentation directly.';
           }
         });
     }
@@ -518,6 +518,16 @@
   }
 
   /* ---------------- Contact form ---------------- */
+  /* The address the enquiry form falls back to while no form endpoint is
+     configured. It is deliberately a single shared inbox and defined once:
+     the individual partners' addresses were previously hard-coded here and in
+     the status message, so removing them from the visible page would have left
+     them in the JavaScript and in every mailto the form opened.
+
+     CONFIRM THIS INBOX EXISTS before launch. Better still, set an `action` on
+     the form and no address is published anywhere at all. */
+  var OI_ENQUIRIES = 'enquiries@outriggerimpact.com';
+
   function form() {
     var f = $('#enquiry'); if (!f) return;
     var status = $('#form-status');
@@ -532,12 +542,12 @@
                     'Email: ' + (d.get('email') || ''),
                     'Interest: ' + (d.get('interest') || ''),
                     '', d.get('message') || ''].join('\n');
-        window.location.href = 'mailto:simon.dent@outriggerimpact.com' +
+        window.location.href = 'mailto:' + OI_ENQUIRIES +
           '?subject=' + encodeURIComponent('Website enquiry: ' + (d.get('interest') || 'General')) +
           '&body=' + encodeURIComponent(body);
         if (status) {
           status.dataset.state = 'ok';
-          status.textContent = 'Opening your email client. If nothing happens, write to simon.dent@outriggerimpact.com.';
+          status.textContent = 'Opening your email client. If nothing happens, please try again.';
         }
       }
     });
