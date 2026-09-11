@@ -97,6 +97,13 @@ whether the school office has to type anything twice. If it does, the project ha
 failed, because a second system that the office maintains by hand will fall out of date
 within a term and the parents will go back to email.
 
+A prior question is what happens to the existing parent portal, which the school
+already runs and links from the top of every page of its site. An application that sits
+alongside it gives parents two places to look and is worse than either; the honest
+options are that the app becomes the front end to the same data and the portal is
+retired for parents, or the app is not built. That is a decision for the school rather
+than a technical constraint, but it should be taken before anything is commissioned.
+
 The practical sequence is to read the calendar, the timetable, the year group and form
 allocations and the pupil record from the management system by API; to publish notices
 from wherever the school already writes them rather than in a new editor; and to write
@@ -126,17 +133,23 @@ browser.
 
 ## Design language
 
-The school was founded in 1876 and sits on Holland Park Avenue. The visual language
-follows from that rather than from a software convention: warm paper rather than white,
-navy ink, one school red drawn from the red and white check of the summer dress, fine
-hairline rules, a serif for headings and a clean sans for the interface, and generous
-space. Nothing is childish, because the reader is a parent, and nothing is corporate,
-because the subject is a small prep school. The application mark is a boater.
+The identity is the school's rather than an invention. A navy shield carrying an
+interlocking monogram, a wide letterspaced geometric sans for the wordmark, a slate
+blue utility strip above the crest, and a cool navy and white palette throughout. The
+app follows all four. The strip, which on the school's own site carries the parent
+portal and the dates page, here states the term, the week and the number of school days
+to the next holiday, so that the answer to the most frequently asked question in the
+school is present on every screen without being asked for.
 
-I was unable to reach the school's own website from the build environment, so the
-palette and typography are drawn from the school's known identity rather than sampled
-from its site. Aligning the two is a short piece of work once the actual brand values
-are to hand.
+Two deliberate departures. Poppins stands in for the wordmark face, which I have
+matched by eye rather than identified; substituting the school's licensed face is a
+one-line change. And red, which does not appear in the school's palette at all, is
+reserved here as a semantic colour for anything overdue, never as decoration, which is
+why the children's own colours are drawn from the navy and green range instead.
+
+The wider restraint is that nothing is childish, because the reader is a parent, and
+nothing is corporate, because the subject is a prep school of some three hundred
+children in its hundred and fiftieth year.
 
 ## What the prototype does not do
 

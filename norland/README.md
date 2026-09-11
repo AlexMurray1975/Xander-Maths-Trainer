@@ -37,9 +37,10 @@ and what each adult in the family is told about.
 - **Everything is generated from today's date.** Terms, weeks, menus, fixtures and
   notices are computed from the current date, so the prototype looks live whenever it
   is opened. Append `?date=YYYY-MM-DD` to walk through any day of the year.
-- **The house style is the school's, not a technology company's.** Warm paper, navy
-  ink, one school red, hairline rules, a serif for headings and a clean sans for the
-  interface.
+- **The house style is the school's, not a technology company's.** Navy shield crest,
+  a wide letterspaced geometric sans for headings and labels, a slate blue utility strip
+  carrying the term and the week, and a cool navy and white palette. Red appears only as
+  a semantic colour for anything overdue.
 
 ## Files
 

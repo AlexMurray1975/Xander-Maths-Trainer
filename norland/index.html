@@ -9,59 +9,63 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Norland Place">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#16243F">
+<meta name="theme-color" content="#44618A">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 /* ============================================================
    Norland Place Parents: a prototype
-   Design notes: a school founded in 1876 on Holland Park Avenue.
-   The visual language is restrained and institutional: warm paper,
-   navy ink, a single school red, hairline rules, a serif for
-   headings and a clean sans for the interface. Nothing childish.
+   Design notes: drawn from the school's own identity. Crest navy on a
+   cool white ground, a slate blue utility strip, and a wide letterspaced
+   geometric sans (Poppins, standing in for the school's wordmark face)
+   for headings and labels, with Inter carrying dense text. Red is kept
+   back as a semantic colour for anything overdue, not a brand accent.
+   Founded 1876; 2026 is the school's 150th year.
    ============================================================ */
 :root{
-  --paper:#F6F3ED;
-  --paper-2:#EFEAE1;
+  --paper:#F1F4F8;
+  --paper-2:#E4EAF1;
   --card:#FFFFFF;
-  --ink:#16243F;
-  --ink-2:#2B3B5B;
-  --muted:#6B7487;
-  --faint:#9AA1AE;
-  --line:#E1DACE;
-  --line-2:#EDE7DC;
-  --red:#9B2226;
-  --red-soft:#F3E4E3;
-  --gold:#A98B54;
-  --green:#3D6A52;
-  --green-soft:#E5EDE7;
-  --sky:#2F5D8A;
-  --sky-soft:#E4EBF3;
-  --plum:#6A4A6E;
-  --shadow:0 1px 2px rgba(22,36,63,.06), 0 6px 18px rgba(22,36,63,.05);
+  --ink:#1E3A5C;
+  --on-ink:#FFFFFF;
+  --ink-2:#33506F;
+  --muted:#657A94;
+  --faint:#93A3B6;
+  --line:#DAE2EB;
+  --line-2:#E9EEF4;
+  --slate:#44618A;
+  --red:#B0323A;
+  --red-soft:#F8E7E8;
+  --gold:#A8894F;
+  --green:#2F7D5E;
+  --green-soft:#E3F0EA;
+  --sky:#44618A;
+  --sky-soft:#E5EBF3;
+  --plum:#6A5A86;
+  --shadow:0 1px 2px rgba(30,58,92,.06), 0 6px 18px rgba(30,58,92,.06);
   --radius:14px;
-  --serif:'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --display:'Poppins', 'Avenir Next', 'Segoe UI', system-ui, sans-serif;
   --sans:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --paper:#12182A; --paper-2:#0D121F; --card:#1A2238; --ink:#F2EDE3; --ink-2:#DCD6CA;
-    --muted:#9AA3B6; --faint:#78829A; --line:#2C364F; --line-2:#232C42;
-    --red:#E0736F; --red-soft:#3A2226; --gold:#C8A667; --green:#7FB394; --green-soft:#1D2E27;
-    --sky:#82ADD8; --sky-soft:#1C2A3C; --plum:#B08CB6;
-    --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.25);
+    --paper:#0E1A2A; --paper-2:#091320; --card:#16253A; --ink:#E9EFF6; --on-ink:#0E1A2A; --ink-2:#C5D3E2;
+    --muted:#91A3B9; --faint:#6F819B; --line:#26374F; --line-2:#1D2C41; --slate:#2E4A73;
+    --red:#E4838A; --red-soft:#3A2127; --gold:#C6A468; --green:#6FB394; --green-soft:#152D25;
+    --sky:#8FAFD6; --sky-soft:#1A2A3E; --plum:#AE9BC9;
+    --shadow:0 1px 2px rgba(0,0,0,.34), 0 6px 18px rgba(0,0,0,.28);
   }
 }
 :root[data-theme="dark"]{
-  --paper:#12182A; --paper-2:#0D121F; --card:#1A2238; --ink:#F2EDE3; --ink-2:#DCD6CA;
-  --muted:#9AA3B6; --faint:#78829A; --line:#2C364F; --line-2:#232C42;
-  --red:#E0736F; --red-soft:#3A2226; --gold:#C8A667; --green:#7FB394; --green-soft:#1D2E27;
-  --sky:#82ADD8; --sky-soft:#1C2A3C; --plum:#B08CB6;
-  --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.25);
+  --paper:#0E1A2A; --paper-2:#091320; --card:#16253A; --ink:#E9EFF6; --on-ink:#0E1A2A; --ink-2:#C5D3E2;
+    --muted:#91A3B9; --faint:#6F819B; --line:#26374F; --line-2:#1D2C41; --slate:#2E4A73;
+    --red:#E4838A; --red-soft:#3A2127; --gold:#C6A468; --green:#6FB394; --green-soft:#152D25;
+    --sky:#8FAFD6; --sky-soft:#1A2A3E; --plum:#AE9BC9;
+    --shadow:0 1px 2px rgba(0,0,0,.34), 0 6px 18px rgba(0,0,0,.28);
 }
 
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
@@ -90,22 +94,27 @@ a{color:var(--sky);}
 .wrap{max-width:600px;margin:0 auto;padding:0 16px;}
 .topbar{
   position:sticky;top:0;z-index:40;
-  background:var(--ink);color:#F6F3ED;
-  padding-top:env(safe-area-inset-top);
-  border-bottom:1px solid rgba(255,255,255,.08);
+  background:var(--card);color:var(--ink);
+  border-bottom:1px solid var(--line);
 }
-.topbar .inner{max-width:600px;margin:0 auto;padding:12px 16px 11px;display:flex;align-items:center;gap:12px;}
-.crest{width:34px;height:34px;flex:0 0 34px;}
+/* the school's own header carries a slate strip above the crest; here it
+   states the term and the week, which is what parents ask most often */
+.utility{background:var(--slate);color:#fff;padding-top:env(safe-area-inset-top);}
+.utility .inner{max-width:600px;margin:0 auto;padding:6px 16px;display:flex;gap:14px;
+  font-family:var(--display);font-size:.61rem;letter-spacing:.16em;text-transform:uppercase;font-weight:400;}
+.utility .inner .r{margin-left:auto;opacity:.8;white-space:nowrap;}
+.topbar .inner{max-width:600px;margin:0 auto;padding:11px 16px 10px;display:flex;align-items:center;gap:11px;}
+.crest{width:36px;height:36px;flex:0 0 36px;color:var(--ink);}
 .wordmark{flex:1;min-width:0;}
-.wordmark .n{font-family:var(--serif);font-weight:600;font-size:1.02rem;letter-spacing:.2px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.wordmark .s{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(246,243,237,.62);margin-top:1px;}
+.wordmark .n{font-family:var(--display);font-weight:500;font-size:.9rem;letter-spacing:.15em;
+  text-transform:uppercase;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wordmark .s{font-family:var(--display);font-weight:300;font-size:.68rem;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--muted);margin-top:2px;}
 .iconbtn{
   width:36px;height:36px;border-radius:10px;display:grid;place-items:center;flex:0 0 36px;
-  color:rgba(246,243,237,.85);border:1px solid rgba(255,255,255,.14);
+  color:var(--ink);border:1px solid var(--line);
 }
-.iconbtn:hover{background:rgba(255,255,255,.08);}
-.iconbtn.dot{position:relative;}
-.iconbtn.dot::after{content:'';position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:0 0 0 2px var(--ink);}
+.iconbtn:hover{background:var(--paper-2);}
 
 /* ---------- Child filter ---------- */
 .chips{display:flex;gap:7px;overflow-x:auto;padding:12px 16px 2px;max-width:600px;margin:0 auto;scrollbar-width:none;}
@@ -115,20 +124,20 @@ a{color:var(--sky);}
   border-radius:999px;padding:6px 13px;font-size:.83rem;font-weight:500;white-space:nowrap;
   display:flex;align-items:center;gap:7px;
 }
-.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--on-ink);border-color:var(--ink);}
 .chip .pip{width:8px;height:8px;border-radius:50%;flex:0 0 8px;}
 
 /* ---------- Typography ---------- */
-h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:.1px;line-height:1.22;}
+h1,h2,h3{font-family:var(--display);font-weight:500;letter-spacing:-.2px;line-height:1.25;}
 .page-h{padding:16px 0 2px;}
-.page-h h1{font-size:1.6rem;}
+.page-h h1{font-size:1.5rem;}
 .page-h .sub{color:var(--muted);font-size:.86rem;margin-top:3px;}
 .rubric{
-  font-size:.69rem;letter-spacing:.15em;text-transform:uppercase;color:var(--faint);
-  font-weight:600;margin:22px 0 9px;display:flex;align-items:center;gap:10px;
+  font-family:var(--display);font-size:.67rem;letter-spacing:.17em;text-transform:uppercase;
+  color:var(--muted);font-weight:500;margin:22px 0 9px;display:flex;align-items:center;gap:10px;
 }
 .rubric::after{content:'';flex:1;height:1px;background:var(--line);}
-.serif{font-family:var(--serif);}
+.display{font-family:var(--display);}
 
 /* ---------- Cards ---------- */
 .card{
@@ -148,10 +157,10 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:.1px;line-heigh
 .child-band{display:flex;align-items:center;gap:11px;padding:13px 15px;border-bottom:1px solid var(--line-2);}
 .avatar{
   width:38px;height:38px;border-radius:50%;flex:0 0 38px;display:grid;place-items:center;
-  font-family:var(--serif);font-weight:600;font-size:1rem;color:#fff;letter-spacing:.3px;
+  font-family:var(--display);font-weight:600;font-size:1rem;color:#fff;letter-spacing:.3px;
 }
 .child-band .who{flex:1;min-width:0;}
-.child-band .who .nm{font-family:var(--serif);font-size:1.1rem;font-weight:600;}
+.child-band .who .nm{font-family:var(--display);font-size:1.1rem;font-weight:600;}
 .child-band .who .mt{font-size:.78rem;color:var(--muted);}
 .linkish{font-size:.78rem;color:var(--sky);font-weight:600;white-space:nowrap;}
 
@@ -202,10 +211,10 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:.1px;line-heigh
 .btn{
   display:inline-flex;align-items:center;justify-content:center;gap:8px;
   border-radius:10px;padding:11px 16px;font-size:.9rem;font-weight:600;
-  border:1px solid var(--ink);background:var(--ink);color:var(--paper);
+  border:1px solid var(--ink);background:var(--ink);color:var(--on-ink);
 }
 .btn.ghost{background:transparent;color:var(--ink);border-color:var(--line);}
-.btn.red{background:var(--red);border-color:var(--red);color:#fff;}
+.btn.red{background:var(--red);border-color:var(--red);color:var(--on-ink);}
 .btn.wide{width:100%;}
 .btn.sm{padding:8px 13px;font-size:.83rem;border-radius:9px;}
 .btn[disabled]{opacity:.45;}
@@ -221,7 +230,7 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:.1px;line-heigh
 /* date bar */
 .datebar{display:flex;align-items:center;gap:8px;margin:12px 0;}
 .datebar .nav{width:34px;height:34px;border:1px solid var(--line);border-radius:9px;display:grid;place-items:center;background:var(--card);color:var(--ink);flex:0 0 34px;}
-.datebar .lbl{flex:1;text-align:center;font-family:var(--serif);font-weight:600;font-size:1.02rem;}
+.datebar .lbl{flex:1;text-align:center;font-family:var(--display);font-weight:600;font-size:1.02rem;}
 .datebar .lbl small{display:block;font-family:var(--sans);font-weight:500;font-size:.72rem;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;}
 
 /* month grid */
@@ -234,7 +243,7 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:.1px;line-heigh
   justify-content:flex-start;padding-top:5px;gap:3px;font-size:.82rem;color:var(--ink);position:relative;
 }
 .month .cell.out{color:var(--faint);opacity:.5;}
-.month .cell.today{background:var(--ink);color:var(--paper);font-weight:700;}
+.month .cell.today{background:var(--ink);color:var(--on-ink);font-weight:600;}
 .month .cell.sel{box-shadow:inset 0 0 0 1.5px var(--ink);}
 .month .cell.hol{background:var(--paper-2);}
 .month .cell.hol .n{color:var(--faint);}
@@ -245,15 +254,15 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:.1px;line-heigh
 .weekgrid{display:flex;flex-direction:column;gap:10px;}
 .daycol{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
 .daycol .dh{padding:9px 14px;background:var(--paper-2);border-bottom:1px solid var(--line-2);display:flex;align-items:baseline;gap:8px;}
-.daycol .dh .d{font-family:var(--serif);font-weight:600;font-size:.98rem;}
+.daycol .dh .d{font-family:var(--display);font-weight:600;font-size:.98rem;}
 .daycol .dh .n{font-size:.76rem;color:var(--muted);}
 .daycol.is-today .dh{background:var(--ink);}
-.daycol.is-today .dh .d{color:var(--paper);}
-.daycol.is-today .dh .n{color:rgba(246,243,237,.7);}
+.daycol.is-today .dh .d{color:var(--on-ink);}
+.daycol.is-today .dh .n{color:var(--on-ink);opacity:.72;}
 
 /* empty */
 .empty{padding:26px 16px;text-align:center;color:var(--muted);font-size:.88rem;}
-.empty .big{font-family:var(--serif);font-size:1.05rem;color:var(--ink);margin-bottom:4px;}
+.empty .big{font-family:var(--display);font-size:1.05rem;color:var(--ink);margin-bottom:4px;}
 
 /* notices */
 .notice{display:flex;gap:11px;padding:13px 15px;border-bottom:1px solid var(--line-2);width:100%;text-align:left;align-items:flex-start;}
@@ -261,7 +270,7 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:.1px;line-heigh
 .notice .unread{width:7px;height:7px;border-radius:50%;background:var(--red);flex:0 0 7px;margin-top:7px;}
 .notice .unread.read{background:transparent;}
 .notice .bd{flex:1;min-width:0;}
-.notice .bd .t{font-family:var(--serif);font-size:1rem;font-weight:600;line-height:1.3;}
+.notice .bd .t{font-family:var(--display);font-size:1rem;font-weight:600;line-height:1.3;}
 .notice .bd .m{font-size:.79rem;color:var(--muted);margin-top:3px;}
 .notice .bd .x{font-size:.85rem;color:var(--ink-2);margin-top:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .notice .bd .tags{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap;}
@@ -318,11 +327,11 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:.1px;line-heigh
 }
 .tabbar .inner{max-width:600px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);}
 .tab{padding:8px 2px 7px;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--faint);position:relative;}
-.tab .lb{font-size:.64rem;font-weight:600;letter-spacing:.03em;}
+.tab .lb{font-family:var(--display);font-size:.63rem;font-weight:500;letter-spacing:.05em;}
 .tab[aria-current="page"]{color:var(--ink);}
 .tab .badge{
-  position:absolute;top:3px;right:50%;transform:translateX(19px);
-  min-width:16px;height:16px;border-radius:999px;background:var(--red);color:#fff;
+  font-family:var(--sans);position:absolute;top:3px;right:50%;transform:translateX(19px);
+  min-width:16px;height:16px;border-radius:999px;background:var(--red);color:var(--on-ink);
   font-size:.6rem;font-weight:700;display:grid;place-items:center;padding:0 4px;
 }
 
@@ -339,7 +348,7 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:.1px;line-heigh
   padding:9px 12px;font-size:.78rem;color:var(--muted);margin:12px 0;
 }
 .kicker{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-weight:700;}
-.big-num{font-family:var(--serif);font-size:1.9rem;font-weight:600;line-height:1;}
+.big-num{font-family:var(--display);font-size:1.9rem;font-weight:600;line-height:1;}
 .statgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--line-2);}
 .statgrid .s{background:var(--card);padding:13px 10px;text-align:center;}
 .statgrid .s .l{font-size:.66rem;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);font-weight:600;margin-top:5px;}
@@ -348,14 +357,14 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:.1px;line-heigh
 /* ---------- Desktop ---------- */
 @media (min-width:940px){
   body{padding-bottom:0;}
-  .topbar .inner{max-width:1080px;}
+  .topbar .inner,.utility .inner{max-width:1080px;}
   .shell{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:224px 1fr;gap:28px;padding:0 16px;align-items:start;}
   .wrap{max-width:none;padding:0;}
   .chips{max-width:none;padding:12px 0 2px;}
   .tabbar{display:none;}
   .siderail{position:sticky;top:84px;padding:18px 0 40px;display:flex;flex-direction:column;gap:2px;}
   .siderail .tab{flex-direction:row;justify-content:flex-start;gap:11px;padding:10px 13px;border-radius:10px;}
-  .siderail .tab .lb{font-size:.92rem;font-weight:500;letter-spacing:0;}
+  .siderail .tab .lb{font-family:var(--display);font-size:.9rem;font-weight:400;letter-spacing:.01em;}
   .siderail .tab[aria-current="page"]{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);}
   .siderail .tab .badge{position:static;transform:none;margin-left:auto;}
   .content{padding:0 0 60px;min-width:0;max-width:700px;}
@@ -369,13 +378,11 @@ h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:.1px;line-heigh
 <body>
 
 <header class="topbar">
+  <div class="utility"><div class="inner"><span id="ub-l"></span><span class="r" id="ub-r"></span></div></div>
   <div class="inner">
     <svg class="crest" viewBox="0 0 64 64" aria-hidden="true">
-      <circle cx="32" cy="32" r="30" fill="none" stroke="rgba(246,243,237,.45)" stroke-width="1.4"/>
-      <circle cx="32" cy="32" r="25.5" fill="none" stroke="rgba(246,243,237,.22)" stroke-width="1"/>
-      <ellipse cx="32" cy="37" rx="19" ry="5.4" fill="none" stroke="#F6F3ED" stroke-width="2"/>
-      <path d="M20.5 36.5v-8.2c0-3.4 5.1-6.1 11.5-6.1s11.5 2.7 11.5 6.1v8.2" fill="none" stroke="#F6F3ED" stroke-width="2"/>
-      <path d="M20.5 30.6c0 2.2 5.1 3.6 11.5 3.6s11.5-1.4 11.5-3.6" fill="none" stroke="#9B2226" stroke-width="2.6"/>
+      <path d="M11 7H53V33C53 45 43.5 52.5 32 57.5C20.5 52.5 11 45 11 33Z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/>
+      <text x="32" y="39.5" text-anchor="middle" font-family="Poppins, system-ui, sans-serif" font-size="19" font-weight="500" letter-spacing=".5" fill="currentColor">NP</text>
     </svg>
     <div class="wordmark">
       <div class="n">Norland Place</div>
@@ -511,13 +518,13 @@ function schoolDaysBetween(a, b) { let n = 0, x = new Date(a); while (x < b) { i
    Names and details are illustrative and editable under Family.
    ============================================================ */
 const DEFAULT_CHILDREN = [
-  { id: "c1", name: "Xander", year: 4, form: "4H", teacher: "Miss Hardy", house: "Holland", colour: "#2F5D8A",
+  { id: "c1", name: "Xander", year: 4, form: "4H", teacher: "Miss Hardy", house: "Holland", colour: "#2F5C8A",
     allergies: "None recorded", medical: "Inhaler held in the school office (blue, salbutamol)",
     permissions: { photos: true, walks: true, suncream: true, paracetamol: false },
     collection: "Collected at 3.45pm from the Holland Park Avenue gate",
     authorised: ["Alex Murray (father)", "Mrs S Nowak (nanny)", "Mrs J Murray (grandmother)"],
     merits: 46, rank: "2nd in form", instrument: "Cello", instrumentDay: "Tue", instrumentTime: "11:20" },
-  { id: "c2", name: "Freddie", year: 2, form: "2P", teacher: "Mrs Patel", house: "Norland", colour: "#9B2226",
+  { id: "c2", name: "Freddie", year: 2, form: "2P", teacher: "Mrs Patel", house: "Norland", colour: "#4E7359",
     allergies: "Peanuts. EpiPen held in the school office and with the class teacher",
     medical: "None other recorded",
     permissions: { photos: true, walks: true, suncream: true, paracetamol: true },
@@ -966,10 +973,10 @@ function viewToday() {
 
   h += `<div class="page-h"><h1>${dayLong(d)}</h1><div class="sub">${
     INSET.has(key(d)) ? "INSET day, school closed to pupils" :
-    t ? (inHalfTerm(d) ? `${t.name} · half term` :
-        isWeekend(d) ? `${t.name} · weekend` : `${t.name} · week ${termWeek(d)}`)
-      : "School holiday"
-  }${hol && isSchoolDay(d) ? ` · ${schoolDaysBetween(d, hol.date)} school days to ${hol.name}` : ""}</div></div>`;
+    t ? (inHalfTerm(d) ? "Half term" : isWeekend(d) ? "Not a school day"
+        : hol.name === "half term" ? `Half term begins ${dayLong(hol.date)}`
+        : `Term ends ${dayLong(addDays(hol.date, -1))}`)
+      : "School holiday"}</div></div>`;
 
   /* Things that need a parent */
   if (acts.length) {
@@ -987,7 +994,7 @@ function viewToday() {
 
   if (!isSchoolDay(d)) {
     const why = INSET.has(key(d)) ? "It is an INSET day, so school is closed to pupils." : !t ? "It is the school holidays." : inHalfTerm(d) ? "It is half term." : "It is the weekend.";
-    h += `<div class="card"><div class="card-pad"><div class="serif" style="font-size:1.1rem">No school today</div>
+    h += `<div class="card"><div class="card-pad"><div class="display" style="font-size:1.1rem">No school today</div>
       <p style="color:var(--muted);margin-top:5px;font-size:.9rem">${why} ${(() => {
         let n = new Date(d); for (let i = 0; i < 90; i++) { n = addDays(n, 1); if (isSchoolDay(n)) break; }
         return `Next school day is ${dayLong(n)}.`; })()}</p></div>
@@ -1223,7 +1230,7 @@ function viewSchool() {
     <button class="btn ghost sm" data-demo="Book Late Stay">Book Late Stay</button>
     <button class="btn ghost sm" data-demo="Message the form teacher">Message the form teacher</button>
     <button class="btn ghost sm" data-demo="Call the school office">Call the office</button></div></div>`;
-  h += `<div class="footnote">Norland Place School, 162–166 Holland Park Avenue, London W11. Founded 1876. This is an independent prototype and not an official school application; the content is illustrative.</div>`;
+  h += `<div class="footnote">Norland Place School, 162–166 Holland Park Avenue, London W11. Founded 1876, and in its 150th year. This is an independent prototype and not an official school application; the content is illustrative.</div>`;
   return h;
 }
 
@@ -1400,7 +1407,13 @@ function render() {
     route.name === "child" ? viewChild(route.arg) :
     route.name === "search" ? viewSearch(route.arg) : viewToday();
 
-  $("#wm-sub").textContent = route.name === "child" ? "Parents" : "Parents";
+  const ut = termFor(TODAY), uh = nextHoliday(TODAY);
+  $("#ub-l").textContent = INSET.has(key(TODAY)) ? "INSET day" :
+    ut ? (inHalfTerm(TODAY) ? `${ut.name} · half term` : `${ut.name}${termWeek(TODAY) ? ` · week ${termWeek(TODAY)}` : ""}`)
+       : `Holidays · ${AY_LABEL}`;
+  $("#ub-r").textContent = uh && isSchoolDay(TODAY)
+    ? `${schoolDaysBetween(TODAY, uh.date)} days to ${uh.name === "half term" ? "half term" : "the holidays"}`
+    : `Founded 1876`;
   if (route.name === "search") { const q = $("#q"); if (q) { q.focus(); q.setSelectionRange(q.value.length, q.value.length); } }
   window.scrollTo({ top: 0 });
 }
