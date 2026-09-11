@@ -1,9 +1,12 @@
 # Xander's Apps
 
-This repo holds two self-contained, installable, offline web apps for Xander:
+This repo holds three self-contained, installable, offline web apps:
 
 - **[Xander's Wizard Chess](chess/)** — a Harry Potter-style marble chess game (Gryffindor
   vs Slytherin), play the computer or a friend. See [`chess/`](chess/).
+- **[Norland Place Parents](norland/)** — a prototype parent application for the school:
+  what is on today, what to wear, what is after school, and the same for any day, week or
+  term. See [`norland/`](norland/) and its [design note](norland/DESIGN.md).
 - **Maths Trainer** — Year 3 maths practice (below), at the repo root.
 
 ---

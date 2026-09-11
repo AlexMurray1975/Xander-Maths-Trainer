@@ -1,0 +1,1457 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Norland Place Parents</title>
+<meta name="description" content="Everything a Norland Place parent needs, in one place: what is on today, what to wear, what is after school, and the same for any day, week or term.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Norland Place">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#16243F">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   Norland Place Parents: a prototype
+   Design notes: a school founded in 1876 on Holland Park Avenue.
+   The visual language is restrained and institutional: warm paper,
+   navy ink, a single school red, hairline rules, a serif for
+   headings and a clean sans for the interface. Nothing childish.
+   ============================================================ */
+:root{
+  --paper:#F6F3ED;
+  --paper-2:#EFEAE1;
+  --card:#FFFFFF;
+  --ink:#16243F;
+  --ink-2:#2B3B5B;
+  --muted:#6B7487;
+  --faint:#9AA1AE;
+  --line:#E1DACE;
+  --line-2:#EDE7DC;
+  --red:#9B2226;
+  --red-soft:#F3E4E3;
+  --gold:#A98B54;
+  --green:#3D6A52;
+  --green-soft:#E5EDE7;
+  --sky:#2F5D8A;
+  --sky-soft:#E4EBF3;
+  --plum:#6A4A6E;
+  --shadow:0 1px 2px rgba(22,36,63,.06), 0 6px 18px rgba(22,36,63,.05);
+  --radius:14px;
+  --serif:'Source Serif 4', Georgia, 'Times New Roman', serif;
+  --sans:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#12182A; --paper-2:#0D121F; --card:#1A2238; --ink:#F2EDE3; --ink-2:#DCD6CA;
+    --muted:#9AA3B6; --faint:#78829A; --line:#2C364F; --line-2:#232C42;
+    --red:#E0736F; --red-soft:#3A2226; --gold:#C8A667; --green:#7FB394; --green-soft:#1D2E27;
+    --sky:#82ADD8; --sky-soft:#1C2A3C; --plum:#B08CB6;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#12182A; --paper-2:#0D121F; --card:#1A2238; --ink:#F2EDE3; --ink-2:#DCD6CA;
+  --muted:#9AA3B6; --faint:#78829A; --line:#2C364F; --line-2:#232C42;
+  --red:#E0736F; --red-soft:#3A2226; --gold:#C8A667; --green:#7FB394; --green-soft:#1D2E27;
+  --sky:#82ADD8; --sky-soft:#1C2A3C; --plum:#B08CB6;
+  --shadow:0 1px 2px rgba(0,0,0,.3), 0 6px 18px rgba(0,0,0,.25);
+}
+
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+[hidden]{display:none!important;}
+/* these are spans used as blocks so that buttons may contain them */
+.child-band .who .nm,.child-band .who .mt,
+.row .v .note,.line .bd .t,.line .bd .m,
+.action-line .bd .t,.action-line .bd .m,
+.notice .bd .t,.notice .bd .m,.notice .bd .x,
+.idx .bd .t,.idx .bd .m,
+.statgrid .s .l,.month .cell .n{display:block;}
+html{-webkit-text-size-adjust:100%;}
+body{
+  font-family:var(--sans);
+  color:var(--ink);
+  background:var(--paper);
+  font-size:15px;line-height:1.5;
+  min-height:100vh;
+  padding-bottom:calc(74px + env(safe-area-inset-bottom));
+}
+button,input,select,textarea{font:inherit;color:inherit;}
+button{background:none;border:0;cursor:pointer;}
+a{color:var(--sky);}
+
+/* ---------- Shell ---------- */
+.wrap{max-width:600px;margin:0 auto;padding:0 16px;}
+.topbar{
+  position:sticky;top:0;z-index:40;
+  background:var(--ink);color:#F6F3ED;
+  padding-top:env(safe-area-inset-top);
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.topbar .inner{max-width:600px;margin:0 auto;padding:12px 16px 11px;display:flex;align-items:center;gap:12px;}
+.crest{width:34px;height:34px;flex:0 0 34px;}
+.wordmark{flex:1;min-width:0;}
+.wordmark .n{font-family:var(--serif);font-weight:600;font-size:1.02rem;letter-spacing:.2px;line-height:1.15;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wordmark .s{font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(246,243,237,.62);margin-top:1px;}
+.iconbtn{
+  width:36px;height:36px;border-radius:10px;display:grid;place-items:center;flex:0 0 36px;
+  color:rgba(246,243,237,.85);border:1px solid rgba(255,255,255,.14);
+}
+.iconbtn:hover{background:rgba(255,255,255,.08);}
+.iconbtn.dot{position:relative;}
+.iconbtn.dot::after{content:'';position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--red);box-shadow:0 0 0 2px var(--ink);}
+
+/* ---------- Child filter ---------- */
+.chips{display:flex;gap:7px;overflow-x:auto;padding:12px 16px 2px;max-width:600px;margin:0 auto;scrollbar-width:none;}
+.chips::-webkit-scrollbar{display:none;}
+.chip{
+  border:1px solid var(--line);background:var(--card);color:var(--ink);
+  border-radius:999px;padding:6px 13px;font-size:.83rem;font-weight:500;white-space:nowrap;
+  display:flex;align-items:center;gap:7px;
+}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink);}
+.chip .pip{width:8px;height:8px;border-radius:50%;flex:0 0 8px;}
+
+/* ---------- Typography ---------- */
+h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:.1px;line-height:1.22;}
+.page-h{padding:16px 0 2px;}
+.page-h h1{font-size:1.6rem;}
+.page-h .sub{color:var(--muted);font-size:.86rem;margin-top:3px;}
+.rubric{
+  font-size:.69rem;letter-spacing:.15em;text-transform:uppercase;color:var(--faint);
+  font-weight:600;margin:22px 0 9px;display:flex;align-items:center;gap:10px;
+}
+.rubric::after{content:'';flex:1;height:1px;background:var(--line);}
+.serif{font-family:var(--serif);}
+
+/* ---------- Cards ---------- */
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow);overflow:hidden;margin-bottom:12px;
+}
+.card.flat{box-shadow:none;}
+.card-pad{padding:14px 15px;}
+.card-head{
+  padding:12px 15px;border-bottom:1px solid var(--line-2);
+  display:flex;align-items:center;gap:10px;
+}
+.card-head h2{font-size:1.05rem;flex:1;min-width:0;}
+.card-head .tag{font-size:.7rem;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600;}
+
+/* child card header band */
+.child-band{display:flex;align-items:center;gap:11px;padding:13px 15px;border-bottom:1px solid var(--line-2);}
+.avatar{
+  width:38px;height:38px;border-radius:50%;flex:0 0 38px;display:grid;place-items:center;
+  font-family:var(--serif);font-weight:600;font-size:1rem;color:#fff;letter-spacing:.3px;
+}
+.child-band .who{flex:1;min-width:0;}
+.child-band .who .nm{font-family:var(--serif);font-size:1.1rem;font-weight:600;}
+.child-band .who .mt{font-size:.78rem;color:var(--muted);}
+.linkish{font-size:.78rem;color:var(--sky);font-weight:600;white-space:nowrap;}
+
+/* definition rows */
+.rows{display:flex;flex-direction:column;}
+.row{display:flex;gap:12px;padding:11px 15px;border-bottom:1px solid var(--line-2);align-items:flex-start;}
+.row:last-child{border-bottom:0;}
+.row .k{
+  flex:0 0 84px;font-size:.68rem;letter-spacing:.11em;text-transform:uppercase;
+  color:var(--faint);font-weight:600;padding-top:2px;
+}
+.row .v{flex:1;min-width:0;font-size:.92rem;}
+.row .v .note{color:var(--muted);font-size:.83rem;margin-top:2px;}
+.row .v strong{font-weight:600;}
+
+/* lists */
+.line{display:flex;gap:11px;padding:11px 15px;border-bottom:1px solid var(--line-2);align-items:flex-start;text-align:left;width:100%;}
+.line:last-child{border-bottom:0;}
+.line .tm{flex:0 0 52px;font-size:.78rem;color:var(--muted);font-variant-numeric:tabular-nums;font-weight:600;padding-top:1px;}
+.line .bd{flex:1;min-width:0;}
+.line .bd .t{font-size:.92rem;font-weight:500;}
+.line .bd .m{font-size:.8rem;color:var(--muted);margin-top:1px;}
+.line .rail{width:3px;border-radius:2px;align-self:stretch;flex:0 0 3px;}
+.line.tappable:active{background:var(--paper-2);}
+
+/* pills */
+.pill{
+  display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:2px 9px;
+  font-size:.7rem;font-weight:600;letter-spacing:.02em;white-space:nowrap;
+}
+.pill.red{background:var(--red-soft);color:var(--red);}
+.pill.green{background:var(--green-soft);color:var(--green);}
+.pill.sky{background:var(--sky-soft);color:var(--sky);}
+.pill.plain{background:var(--paper-2);color:var(--muted);}
+
+/* action strip */
+.action-card{border-color:var(--red);background:var(--card);}
+.action-card .card-head{background:var(--red-soft);border-bottom-color:transparent;}
+.action-card .card-head h2{color:var(--red);}
+.action-line{display:flex;gap:11px;align-items:center;padding:11px 15px;border-bottom:1px solid var(--line-2);width:100%;text-align:left;}
+.action-line:last-child{border-bottom:0;}
+.action-line .bd{flex:1;min-width:0;}
+.action-line .bd .t{font-size:.9rem;font-weight:500;}
+.action-line .bd .m{font-size:.78rem;color:var(--muted);margin-top:1px;}
+.chev{color:var(--faint);flex:0 0 auto;}
+
+/* buttons */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  border-radius:10px;padding:11px 16px;font-size:.9rem;font-weight:600;
+  border:1px solid var(--ink);background:var(--ink);color:var(--paper);
+}
+.btn.ghost{background:transparent;color:var(--ink);border-color:var(--line);}
+.btn.red{background:var(--red);border-color:var(--red);color:#fff;}
+.btn.wide{width:100%;}
+.btn.sm{padding:8px 13px;font-size:.83rem;border-radius:9px;}
+.btn[disabled]{opacity:.45;}
+.btnrow{display:flex;gap:8px;flex-wrap:wrap;padding:13px 15px;}
+
+/* segmented */
+.seg{display:flex;background:var(--paper-2);border-radius:10px;padding:3px;gap:2px;}
+.seg button{
+  flex:1;padding:7px 4px;border-radius:8px;font-size:.82rem;font-weight:600;color:var(--muted);
+}
+.seg button[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 2px rgba(22,36,63,.12);}
+
+/* date bar */
+.datebar{display:flex;align-items:center;gap:8px;margin:12px 0;}
+.datebar .nav{width:34px;height:34px;border:1px solid var(--line);border-radius:9px;display:grid;place-items:center;background:var(--card);color:var(--ink);flex:0 0 34px;}
+.datebar .lbl{flex:1;text-align:center;font-family:var(--serif);font-weight:600;font-size:1.02rem;}
+.datebar .lbl small{display:block;font-family:var(--sans);font-weight:500;font-size:.72rem;color:var(--muted);letter-spacing:.04em;text-transform:uppercase;}
+
+/* month grid */
+.month{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:9px;box-shadow:var(--shadow);}
+.month .dow{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-bottom:4px;}
+.month .dow span{text-align:center;font-size:.64rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:600;}
+.month .grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+.month .cell{
+  aspect-ratio:1/1.12;border-radius:9px;display:flex;flex-direction:column;align-items:center;
+  justify-content:flex-start;padding-top:5px;gap:3px;font-size:.82rem;color:var(--ink);position:relative;
+}
+.month .cell.out{color:var(--faint);opacity:.5;}
+.month .cell.today{background:var(--ink);color:var(--paper);font-weight:700;}
+.month .cell.sel{box-shadow:inset 0 0 0 1.5px var(--ink);}
+.month .cell.hol{background:var(--paper-2);}
+.month .cell.hol .n{color:var(--faint);}
+.month .dots{display:flex;gap:2px;height:5px;}
+.month .dots i{width:4px;height:4px;border-radius:50%;display:block;}
+
+/* week columns (desktop) */
+.weekgrid{display:flex;flex-direction:column;gap:10px;}
+.daycol{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;}
+.daycol .dh{padding:9px 14px;background:var(--paper-2);border-bottom:1px solid var(--line-2);display:flex;align-items:baseline;gap:8px;}
+.daycol .dh .d{font-family:var(--serif);font-weight:600;font-size:.98rem;}
+.daycol .dh .n{font-size:.76rem;color:var(--muted);}
+.daycol.is-today .dh{background:var(--ink);}
+.daycol.is-today .dh .d{color:var(--paper);}
+.daycol.is-today .dh .n{color:rgba(246,243,237,.7);}
+
+/* empty */
+.empty{padding:26px 16px;text-align:center;color:var(--muted);font-size:.88rem;}
+.empty .big{font-family:var(--serif);font-size:1.05rem;color:var(--ink);margin-bottom:4px;}
+
+/* notices */
+.notice{display:flex;gap:11px;padding:13px 15px;border-bottom:1px solid var(--line-2);width:100%;text-align:left;align-items:flex-start;}
+.notice:last-child{border-bottom:0;}
+.notice .unread{width:7px;height:7px;border-radius:50%;background:var(--red);flex:0 0 7px;margin-top:7px;}
+.notice .unread.read{background:transparent;}
+.notice .bd{flex:1;min-width:0;}
+.notice .bd .t{font-family:var(--serif);font-size:1rem;font-weight:600;line-height:1.3;}
+.notice .bd .m{font-size:.79rem;color:var(--muted);margin-top:3px;}
+.notice .bd .x{font-size:.85rem;color:var(--ink-2);margin-top:5px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.notice .bd .tags{display:flex;gap:5px;margin-top:7px;flex-wrap:wrap;}
+
+/* school index */
+.idx{display:flex;gap:12px;padding:13px 15px;border-bottom:1px solid var(--line-2);width:100%;text-align:left;align-items:center;}
+.idx:last-child{border-bottom:0;}
+.idx .ic{width:30px;height:30px;border-radius:8px;background:var(--paper-2);display:grid;place-items:center;flex:0 0 30px;font-size:.95rem;}
+.idx .bd{flex:1;min-width:0;}
+.idx .bd .t{font-size:.94rem;font-weight:500;}
+.idx .bd .m{font-size:.78rem;color:var(--muted);margin-top:1px;}
+
+/* prose */
+.prose{padding:2px 15px 15px;font-size:.93rem;color:var(--ink-2);}
+.prose p{margin:11px 0;}
+.prose h3{font-size:1rem;margin:18px 0 6px;color:var(--ink);}
+.prose ul{margin:10px 0 10px 18px;}
+.prose li{margin:5px 0;}
+.prose table{width:100%;border-collapse:collapse;margin:12px 0;font-size:.88rem;}
+.prose th,.prose td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--line-2);vertical-align:top;}
+.prose th{font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);font-weight:600;}
+.tablewrap{overflow-x:auto;}
+
+/* toggles */
+.tog{width:44px;height:26px;border-radius:999px;background:var(--line);position:relative;flex:0 0 44px;transition:background .15s;}
+.tog::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .15s;}
+.tog[aria-pressed="true"]{background:var(--green);}
+.tog[aria-pressed="true"]::after{transform:translateX(18px);}
+
+/* sheet */
+.scrim{position:fixed;inset:0;background:rgba(15,22,38,.42);z-index:60;opacity:0;transition:opacity .18s;}
+.scrim.on{opacity:1;}
+.sheet{
+  position:fixed;left:0;right:0;bottom:0;z-index:61;background:var(--paper);
+  border-radius:18px 18px 0 0;max-height:92vh;display:flex;flex-direction:column;
+  transform:translateY(100%);transition:transform .22s cubic-bezier(.32,.72,0,1);
+  box-shadow:0 -8px 40px rgba(15,22,38,.22);
+}
+.sheet.on{transform:translateY(0);}
+.sheet .grab{width:36px;height:4px;border-radius:2px;background:var(--line);margin:9px auto 0;flex:0 0 auto;}
+.sheet .sh{padding:10px 16px 10px;display:flex;align-items:flex-start;gap:10px;border-bottom:1px solid var(--line);}
+.sheet .sh h2{flex:1;font-size:1.2rem;}
+.sheet .sb{overflow-y:auto;-webkit-overflow-scrolling:touch;padding:0 0 calc(20px + env(safe-area-inset-bottom));}
+.sheet .sb .wrap{padding:0 16px;}
+.closebtn{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;background:var(--paper-2);color:var(--muted);flex:0 0 30px;}
+
+/* tabbar */
+.tabbar{
+  position:fixed;left:0;right:0;bottom:0;z-index:50;
+  background:color-mix(in srgb, var(--card) 92%, transparent);
+  -webkit-backdrop-filter:saturate(180%) blur(14px);backdrop-filter:saturate(180%) blur(14px);
+  border-top:1px solid var(--line);
+  padding-bottom:env(safe-area-inset-bottom);
+}
+.tabbar .inner{max-width:600px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);}
+.tab{padding:8px 2px 7px;display:flex;flex-direction:column;align-items:center;gap:3px;color:var(--faint);position:relative;}
+.tab .lb{font-size:.64rem;font-weight:600;letter-spacing:.03em;}
+.tab[aria-current="page"]{color:var(--ink);}
+.tab .badge{
+  position:absolute;top:3px;right:50%;transform:translateX(19px);
+  min-width:16px;height:16px;border-radius:999px;background:var(--red);color:#fff;
+  font-size:.6rem;font-weight:700;display:grid;place-items:center;padding:0 4px;
+}
+
+/* search */
+.searchbox{display:flex;align-items:center;gap:9px;background:var(--card);border:1px solid var(--line);border-radius:11px;padding:9px 12px;margin:12px 0;}
+.searchbox input{flex:1;border:0;outline:0;background:transparent;font-size:.92rem;}
+.searchbox input::placeholder{color:var(--faint);}
+
+/* misc */
+.hairline{height:1px;background:var(--line);margin:18px 0;}
+.footnote{font-size:.76rem;color:var(--faint);padding:4px 2px 26px;line-height:1.55;}
+.protobar{
+  background:var(--paper-2);border:1px dashed var(--line);border-radius:10px;
+  padding:9px 12px;font-size:.78rem;color:var(--muted);margin:12px 0;
+}
+.kicker{font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);font-weight:700;}
+.big-num{font-family:var(--serif);font-size:1.9rem;font-weight:600;line-height:1;}
+.statgrid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1px;background:var(--line-2);}
+.statgrid .s{background:var(--card);padding:13px 10px;text-align:center;}
+.statgrid .s .l{font-size:.66rem;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);font-weight:600;margin-top:5px;}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
+
+/* ---------- Desktop ---------- */
+@media (min-width:940px){
+  body{padding-bottom:0;}
+  .topbar .inner{max-width:1080px;}
+  .shell{max-width:1080px;margin:0 auto;display:grid;grid-template-columns:224px 1fr;gap:28px;padding:0 16px;align-items:start;}
+  .wrap{max-width:none;padding:0;}
+  .chips{max-width:none;padding:12px 0 2px;}
+  .tabbar{display:none;}
+  .siderail{position:sticky;top:84px;padding:18px 0 40px;display:flex;flex-direction:column;gap:2px;}
+  .siderail .tab{flex-direction:row;justify-content:flex-start;gap:11px;padding:10px 13px;border-radius:10px;}
+  .siderail .tab .lb{font-size:.92rem;font-weight:500;letter-spacing:0;}
+  .siderail .tab[aria-current="page"]{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);}
+  .siderail .tab .badge{position:static;transform:none;margin-left:auto;}
+  .content{padding:0 0 60px;min-width:0;max-width:700px;}
+  .weekgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;align-items:start;}
+  .sheet{left:50%;right:auto;transform:translate(-50%,100%);width:min(620px,94vw);border-radius:18px;bottom:3vh;max-height:88vh;}
+  .sheet.on{transform:translate(-50%,0);}
+}
+@media (max-width:939px){ .siderail{display:none;} }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="inner">
+    <svg class="crest" viewBox="0 0 64 64" aria-hidden="true">
+      <circle cx="32" cy="32" r="30" fill="none" stroke="rgba(246,243,237,.45)" stroke-width="1.4"/>
+      <circle cx="32" cy="32" r="25.5" fill="none" stroke="rgba(246,243,237,.22)" stroke-width="1"/>
+      <ellipse cx="32" cy="37" rx="19" ry="5.4" fill="none" stroke="#F6F3ED" stroke-width="2"/>
+      <path d="M20.5 36.5v-8.2c0-3.4 5.1-6.1 11.5-6.1s11.5 2.7 11.5 6.1v8.2" fill="none" stroke="#F6F3ED" stroke-width="2"/>
+      <path d="M20.5 30.6c0 2.2 5.1 3.6 11.5 3.6s11.5-1.4 11.5-3.6" fill="none" stroke="#9B2226" stroke-width="2.6"/>
+    </svg>
+    <div class="wordmark">
+      <div class="n">Norland Place</div>
+      <div class="s" id="wm-sub">Parents</div>
+    </div>
+    <button class="iconbtn" id="btn-search" aria-label="Search">
+      <svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="8.8" cy="8.8" r="5.6"/><path d="M13.2 13.2 17 17"/></svg>
+    </button>
+  </div>
+</header>
+
+<div class="shell">
+  <nav class="siderail" id="siderail" aria-label="Sections"></nav>
+  <div class="content">
+    <div id="chipbar"></div>
+    <main id="view" class="wrap"></main>
+  </div>
+</div>
+
+<nav class="tabbar" aria-label="Sections"><div class="inner" id="tabbar"></div></nav>
+
+<div class="scrim" id="scrim" hidden></div>
+<section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" hidden>
+  <div class="grab"></div>
+  <div class="sh"><h2 id="sheet-title"></h2><button class="closebtn" id="sheet-close" aria-label="Close">
+    <svg width="14" height="14" viewBox="0 0 14 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2L2 12"/></svg>
+  </button></div>
+  <div class="sb" id="sheet-body"></div>
+</section>
+
+<script>
+"use strict";
+/* ============================================================
+   1. Utilities
+   ============================================================ */
+const $ = (s, r = document) => r.querySelector(s);
+const pad = n => String(n).padStart(2, "0");
+const key = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+const startOfWeek = d => addDays(d, -((d.getDay() + 6) % 7));           // Monday
+const sameDay = (a, b) => key(a) === key(b);
+const DOW = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+const DAYNAMES = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+const dayLong = d => `${DAYNAMES[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()]}`;
+const dayShort = d => `${DOW[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()].slice(0, 3)}`;
+const isWeekend = d => d.getDay() === 0 || d.getDay() === 6;
+
+/* "Today" may be overridden with ?date=YYYY-MM-DD so the prototype can be walked
+   through any point in the year. */
+function resolveToday() {
+  const q = new URLSearchParams(location.search).get("date");
+  if (q && /^\d{4}-\d{2}-\d{2}$/.test(q)) { const [y, m, dd] = q.split("-").map(Number); return new Date(y, m - 1, dd); }
+  const n = new Date(); return new Date(n.getFullYear(), n.getMonth(), n.getDate());
+}
+const TODAY = resolveToday();
+
+/* ============================================================
+   2. Term calendar
+   Dates are generated from the academic year so the prototype stays
+   live whenever it is opened. Illustrative, not the school's own.
+   ============================================================ */
+function nthDow(y, m, dow, n) {             // n-th given weekday of a month (1-based)
+  const d = new Date(y, m, 1);
+  d.setDate(1 + ((dow - d.getDay() + 7) % 7) + (n - 1) * 7);
+  return d;
+}
+function lastDow(y, m, dow) {
+  const d = new Date(y, m + 1, 0);
+  d.setDate(d.getDate() - ((d.getDay() - dow + 7) % 7));
+  return d;
+}
+function academicYear(d) { return d.getMonth() >= 7 ? d.getFullYear() : d.getFullYear() - 1; }
+
+function buildTerms(ay) {
+  const mich = {
+    id: "michaelmas", name: "Michaelmas Term",
+    start: nthDow(ay, 8, 4, 1),                      // first Thursday of September
+    end:   nthDow(ay, 11, 5, 2),                     // second Friday of December
+    hStart: lastDow(ay, 9, 1),                       // last Monday of October
+  };
+  mich.hEnd = addDays(mich.hStart, 4);
+  const lent = {
+    id: "lent", name: "Lent Term",
+    start: (() => { const d = new Date(ay + 1, 0, 5); d.setDate(5 + ((2 - d.getDay() + 7) % 7)); return d; })(),
+    end:   lastDow(ay + 1, 2, 5),                    // last Friday of March
+    hStart: nthDow(ay + 1, 1, 1, 3),                 // third Monday of February
+  };
+  lent.hEnd = addDays(lent.hStart, 4);
+  const summ = {
+    id: "summer", name: "Summer Term",
+    start: nthDow(ay + 1, 3, 2, 3),                  // third Tuesday of April
+    end:   nthDow(ay + 1, 6, 3, 1),                  // first Wednesday of July
+    hStart: lastDow(ay + 1, 4, 1),                   // last Monday of May
+  };
+  summ.hEnd = addDays(summ.hStart, 4);
+  return [mich, lent, summ];
+}
+const AY = academicYear(TODAY);
+const TERMS = buildTerms(AY);
+const AY_LABEL = `${AY}/${String(AY + 1).slice(2)}`;
+
+function termFor(d) {
+  for (const t of TERMS) if (d >= t.start && d <= t.end) return t;
+  return null;
+}
+function inHalfTerm(d) { const t = termFor(d); return !!t && d >= t.hStart && d <= t.hEnd; }
+function isSchoolDay(d) { const t = termFor(d); return !!t && !isWeekend(d) && !inHalfTerm(d) && !INSET.has(key(d)); }
+
+/* Week index within a term, skipping the half-term week. */
+function termWeek(d) {
+  const t = termFor(d); if (!t) return null;
+  const a = startOfWeek(t.start), b = startOfWeek(d);
+  let w = Math.round((b - a) / 604800000) + 1;
+  if (b > startOfWeek(t.hStart)) w -= 1;
+  return w;
+}
+/* Two INSET days: the two weekdays before each Michaelmas and Lent term start. */
+const INSET = new Set(TERMS.flatMap(t => t.id === "summer" ? [] : [key(addDays(t.start, -1)), key(addDays(t.start, -2))]
+  .filter(k => { const p = new Date(k); return !isWeekend(p); })));
+
+function nextHoliday(d) {
+  const t = termFor(d);
+  if (!t) return null;
+  if (d < t.hStart) return { name: "half term", date: t.hStart };
+  return { name: "the end of term", date: addDays(t.end, 1) };
+}
+function schoolDaysBetween(a, b) { let n = 0, x = new Date(a); while (x < b) { if (isSchoolDay(x)) n++; x = addDays(x, 1); } return n; }
+
+/* ============================================================
+   3. The family
+   Names and details are illustrative and editable under Family.
+   ============================================================ */
+const DEFAULT_CHILDREN = [
+  { id: "c1", name: "Xander", year: 4, form: "4H", teacher: "Miss Hardy", house: "Holland", colour: "#2F5D8A",
+    allergies: "None recorded", medical: "Inhaler held in the school office (blue, salbutamol)",
+    permissions: { photos: true, walks: true, suncream: true, paracetamol: false },
+    collection: "Collected at 3.45pm from the Holland Park Avenue gate",
+    authorised: ["Alex Murray (father)", "Mrs S Nowak (nanny)", "Mrs J Murray (grandmother)"],
+    merits: 46, rank: "2nd in form", instrument: "Cello", instrumentDay: "Tue", instrumentTime: "11:20" },
+  { id: "c2", name: "Freddie", year: 2, form: "2P", teacher: "Mrs Patel", house: "Norland", colour: "#9B2226",
+    allergies: "Peanuts. EpiPen held in the school office and with the class teacher",
+    medical: "None other recorded",
+    permissions: { photos: true, walks: true, suncream: true, paracetamol: true },
+    collection: "Collected at 3.15pm from the Lower School door",
+    authorised: ["Alex Murray (father)", "Mrs S Nowak (nanny)"],
+    merits: 61, rank: "top third", instrument: "Violin", instrumentDay: "Thu", instrumentTime: "09:40" }
+];
+
+/* ============================================================
+   4. Weekly pattern by year group
+   kit tokens drive the derived "what to wear" answer.
+   ============================================================ */
+const PATTERN = {
+  4: {
+    Mon: { lessons: [["08:20","Registration"],["08:40","Whole school assembly"],["09:05","English"],["10:05","Mathematics"],["11:05","Break"],["11:25","Science"],["12:25","Lunch"],["13:20","French"],["14:20","History"],["15:20","End of day"]],
+           kit: [], bring: ["Reading record", "Library book to change"], prep: "Mathematics: long multiplication, one side" },
+    Tue: { lessons: [["08:20","Registration"],["08:40","Form time"],["09:00","Mathematics"],["10:00","English"],["11:00","Break"],["11:20","Cello lesson (withdrawn from Geography)"],["12:25","Lunch"],["13:20","Games: rugby"],["15:00","Geography"],["15:20","End of day"]],
+           kit: ["games"], bring: ["Cello", "Gum shield"], prep: "English: comprehension, Chapter 4" },
+    Wed: { lessons: [["08:20","Registration"],["08:40","Hymn practice"],["09:05","Swimming (Kensington Leisure Centre)"],["10:45","Mathematics"],["11:45","Art"],["12:25","Lunch"],["13:20","English"],["14:20","Computing"],["15:20","End of day"]],
+           kit: ["swim"], bring: ["Swimming kit", "Towel and cap"], prep: "None, it is a swimming day" },
+    Thu: { lessons: [["08:20","Registration"],["08:40","Form time"],["09:00","English"],["10:00","Science"],["11:00","Break"],["11:20","Mathematics"],["12:25","Lunch"],["13:20","Games: fixtures"],["15:20","End of day"]],
+           kit: ["games"], bring: ["Full games kit", "Water bottle"], prep: "Spellings for Friday" },
+    Fri: { lessons: [["08:20","Registration"],["08:40","Celebration assembly"],["09:05","Spelling test"],["09:40","Mathematics"],["10:40","Break"],["11:00","Music"],["12:00","Lunch"],["13:00","Design & Technology"],["14:15","Form time and reading"],["15:20","End of day"]],
+           kit: [], bring: ["Reading record"], prep: "Weekend reading, twenty minutes a night" }
+  },
+  2: {
+    Mon: { lessons: [["08:20","Registration"],["08:40","Whole school assembly"],["09:00","Phonics and reading"],["10:00","Mathematics"],["10:45","Break"],["11:05","Topic: The Great Fire"],["12:05","Lunch"],["13:10","Physical Education (indoor)"],["14:10","Story and handwriting"],["15:00","End of day"]],
+           kit: ["pe"], bring: ["Book bag"], prep: "Reading, ten minutes" },
+    Tue: { lessons: [["08:20","Registration"],["08:40","Form time"],["09:00","Mathematics"],["10:00","English"],["10:45","Break"],["11:05","Science"],["12:05","Lunch"],["13:10","Art"],["14:10","French"],["15:00","End of day"]],
+           kit: [], bring: ["Book bag", "Painting shirt"], prep: "Number bonds to 20" },
+    Wed: { lessons: [["08:20","Registration"],["08:40","Hymn practice"],["09:00","English"],["10:00","Mathematics"],["10:45","Break"],["11:05","Music"],["12:05","Lunch"],["13:10","Games in Holland Park"],["15:00","End of day"]],
+           kit: ["games", "outdoor"], bring: ["Games kit", "Trainers"], prep: "Reading, ten minutes" },
+    Thu: { lessons: [["08:20","Registration"],["08:40","Form time"],["09:00","Violin lesson (withdrawn from English)"],["09:40","English"],["10:45","Break"],["11:05","Mathematics"],["12:05","Lunch"],["13:10","Topic"],["14:10","Library"],["15:00","End of day"]],
+           kit: [], bring: ["Violin", "Library book"], prep: "Spellings for Friday" },
+    Fri: { lessons: [["08:20","Registration"],["08:40","Celebration assembly"],["09:05","Spelling test"],["09:35","English"],["10:35","Break"],["10:55","Forest School (Holland Park)"],["12:05","Lunch"],["13:10","Mathematics"],["14:10","Golden time"],["15:00","End of day"]],
+           kit: ["forest"], bring: ["Wellingtons", "Old clothes in a named bag"], prep: "None, it is Golden time" }
+  }
+};
+const dayCode = d => DOW[d.getDay()];
+const patternFor = (child, d) => (PATTERN[child.year] || PATTERN[4])[dayCode(d)] || null;
+
+/* ---- Clubs: weekday -> after-school activity, by child ---- */
+const CLUBS = {
+  c1: { Mon: { name: "Chess Club", end: "16:45", where: "The Library", who: "Mr Abbott" },
+        Wed: { name: "Choir", end: "16:30", where: "The Hall", who: "Mrs Lindqvist" },
+        Thu: { name: "Late Stay: supervised prep", end: "17:30", where: "Year 4 classroom", who: "Duty staff" } },
+  c2: { Tue: { name: "Ballet", end: "16:15", where: "The Studio", who: "Miss Everett" },
+        Thu: { name: "Art Club", end: "16:15", where: "The Art Room", who: "Mrs Okonjo" } }
+};
+
+/* ---- Fixtures for Year 4 on Thursdays ---- */
+const OPPONENTS = [
+  ["Pembridge Hall", "Away", "Holland Park pitches"], ["Wetherby Prep", "Home", "Holland Park pitches"],
+  ["Thomas's Kensington", "Away", "Barn Elms"], ["Falkner House", "Home", "Holland Park pitches"],
+  ["Hill House", "Away", "Duke of York's"], ["Bassett House", "Home", "Holland Park pitches"]
+];
+const SPORT_BY_TERM = { michaelmas: "Rugby", lent: "Football", summer: "Cricket" };
+
+/* ---- Lunch: a three-week rotation ---- */
+const MENUS = [
+  [ { main: "Roast chicken, thyme gravy", veg: "Butternut and sage risotto", side: "Roast potatoes, green beans", pud: "Apple crumble and custard" },
+    { main: "Beef lasagne", veg: "Spinach and ricotta cannelloni", side: "Garlic bread, tomato salad", pud: "Fresh fruit and yoghurt" },
+    { main: "Cottage pie", veg: "Lentil shepherd's pie", side: "Buttered carrots, peas", pud: "Chocolate sponge" },
+    { main: "Chicken korma and rice", veg: "Chickpea and spinach curry", side: "Naan, cucumber raita", pud: "Fruit salad" },
+    { main: "Fish and chips", veg: "Vegetable goujons", side: "Mushy peas, tartare sauce", pud: "Jam roly-poly" } ],
+  [ { main: "Sausages and mash", veg: "Glamorgan sausages", side: "Onion gravy, broccoli", pud: "Fruit and yoghurt" },
+    { main: "Chicken pie", veg: "Leek and potato pie", side: "New potatoes, sweetcorn", pud: "Lemon drizzle cake" },
+    { main: "Spaghetti bolognese", veg: "Mushroom ragù", side: "Parmesan, green salad", pud: "Fresh fruit" },
+    { main: "Roast pork, apple sauce", veg: "Stuffed peppers", side: "Roast potatoes, red cabbage", pud: "Bread and butter pudding" },
+    { main: "Battered fish", veg: "Macaroni cheese", side: "Chips, garden peas", pud: "Flapjack and fruit" } ],
+  [ { main: "Beef stew and dumplings", veg: "Root vegetable casserole", side: "Mashed potato, kale", pud: "Rice pudding and jam" },
+    { main: "Chicken fajitas", veg: "Bean and pepper fajitas", side: "Rice, salsa, salad", pud: "Fresh fruit" },
+    { main: "Toad in the hole", veg: "Vegetable toad in the hole", side: "Onion gravy, carrots", pud: "Sticky toffee pudding" },
+    { main: "Thai green chicken curry", veg: "Tofu green curry", side: "Jasmine rice, pak choi", pud: "Fruit and yoghurt" },
+    { main: "Fish goujons", veg: "Quorn nuggets", side: "Chips, baked beans", pud: "Chocolate crackle" } ]
+];
+function lunchFor(d) {
+  const w = termWeek(d); if (!w || isWeekend(d)) return null;
+  return MENUS[(w - 1) % 3][(d.getDay() - 1) % 5];
+}
+
+/* ============================================================
+   5. Events: whole-school and year-group, keyed to term week
+   ============================================================ */
+const TERM_EVENTS = {
+  michaelmas: [
+    { w: 1, d: "Fri", t: "New Parents' Reception", type: "parents", time: "18:30", where: "The Hall", note: "Drinks with the Head and form teachers." },
+    { w: 2, d: "Thu", t: "School photographs", type: "school", note: "Full uniform with blazers and boaters. No games kit; games kit may be brought in a bag." },
+    { w: 2, d: "Tue", t: "Clubs begin", type: "clubs", note: "Autumn clubs start. Sign-up closes the preceding Friday." },
+    { w: 3, d: "Wed", t: "Year 4 trip to the Science Museum", type: "trip", time: "09:00", where: "Depart from Holland Park Avenue", years: [4], note: "Packed lunch provided by the school kitchen. Full winter uniform, sensible shoes, no bags." },
+    { w: 3, d: "Fri", t: "Harvest Festival", type: "school", time: "09:15", where: "St James's Norlands", note: "Parents welcome. Donations of dry goods to the school office." },
+    { w: 4, d: "Tue", t: "Year 2 Parents' Evening", type: "parents", time: "16:00", years: [2], note: "Ten-minute appointments. Book through the app." },
+    { w: 4, d: "Thu", t: "Year 4 Parents' Evening", type: "parents", time: "16:00", years: [4], note: "Ten-minute appointments. Book through the app." },
+    { w: 5, d: "Wed", t: "Open Morning", type: "school", time: "09:30", note: "Prospective families in school. Pupils in full uniform please." },
+    { w: 5, d: "Fri", t: "Mufti Day for the school charity", type: "school", note: "Own clothes. Suggested donation £2, paid through the app." },
+    { w: 6, d: "Thu", t: "Individual Music Assessments", type: "music", note: "Instrumental pupils only. Instruments to be brought in." },
+    { w: 7, d: "Wed", t: "Lower School Nativity rehearsal begins", type: "music", years: [2] },
+    { w: 8, d: "Tue", t: "Autumn Concert", type: "music", time: "18:00", where: "The Hall", note: "Concert dress: white shirt, school tie, dark skirt or trousers." },
+    { w: 9, d: "Fri", t: "Christmas Fair", type: "parents", time: "15:30", note: "Run by the Parents' Association. Volunteers welcome." },
+    { w: 10, d: "Wed", t: "Lower School Nativity", type: "music", time: "14:00", years: [2], where: "The Hall" },
+    { w: 11, d: "Tue", t: "Carol Service", type: "school", time: "18:00", where: "St James's Norlands", note: "Whole school. Full winter uniform." },
+    { w: 11, d: "Fri", t: "End of Michaelmas Term", type: "term", time: "12:00", note: "School finishes at midday. No Late Stay." }
+  ],
+  lent: [
+    { w: 1, d: "Tue", t: "Spring clubs begin", type: "clubs" },
+    { w: 2, d: "Thu", t: "Year 4 trip to the British Museum", type: "trip", time: "09:15", years: [4], note: "Packed lunch provided. Full winter uniform." },
+    { w: 3, d: "Fri", t: "Chinese New Year assembly", type: "school", time: "09:00" },
+    { w: 4, d: "Wed", t: "Lower School Poetry Recital", type: "music", time: "14:00", years: [2] },
+    { w: 5, d: "Thu", t: "Parent Coffee Morning on e-safety", type: "parents", time: "08:45", where: "The Library" },
+    { w: 6, d: "Tue", t: "Shrove Tuesday pancake races", type: "school", note: "Games kit all day." },
+    { w: 7, d: "Fri", t: "World Book Day", type: "school", note: "Dress as a character from a book. Nothing bought specially, please." },
+    { w: 8, d: "Wed", t: "Spring Concert", type: "music", time: "18:00", where: "The Hall", note: "Concert dress." },
+    { w: 9, d: "Thu", t: "Year 4 Assessments week begins", type: "academic", years: [4] },
+    { w: 10, d: "Fri", t: "Easter Service", type: "school", time: "09:15", where: "St James's Norlands" },
+    { w: 11, d: "Fri", t: "End of Lent Term", type: "term", time: "12:00", note: "School finishes at midday." }
+  ],
+  summer: [
+    { w: 1, d: "Tue", t: "Summer clubs begin", type: "clubs" },
+    { w: 2, d: "Wed", t: "Summer uniform from today", type: "school", note: "Summer dresses, short-sleeved shirts and boaters." },
+    { w: 3, d: "Thu", t: "Year 4 trip to Kew Gardens", type: "trip", time: "09:00", years: [4] },
+    { w: 4, d: "Fri", t: "Lower School Sports Morning", type: "sport", time: "09:30", where: "Holland Park", years: [2] },
+    { w: 5, d: "Wed", t: "Art Exhibition", type: "school", time: "16:00", where: "The Art Room" },
+    { w: 6, d: "Thu", t: "Swimming Gala", type: "sport", time: "14:00", where: "Kensington Leisure Centre" },
+    { w: 7, d: "Fri", t: "Sports Day", type: "sport", time: "09:30", where: "Barn Elms", note: "Whole school. Games kit, sun hat and sun cream applied before school." },
+    { w: 8, d: "Wed", t: "Summer Concert", type: "music", time: "18:00", where: "The Hall" },
+    { w: 9, d: "Thu", t: "Year 4 Production", type: "music", time: "18:00", years: [4], where: "The Hall" },
+    { w: 10, d: "Tue", t: "Moving-up morning", type: "academic", note: "Pupils spend the morning with next year's form teacher." },
+    { w: 10, d: "Fri", t: "Prize Giving", type: "school", time: "10:00", note: "Parents welcome. Full summer uniform." },
+    { w: 11, d: "Wed", t: "End of Summer Term", type: "term", time: "12:00", note: "School finishes at midday." }
+  ]
+};
+
+const TYPE_COLOUR = {
+  school: "var(--ink)", trip: "var(--green)", parents: "var(--plum)", sport: "var(--sky)",
+  music: "var(--gold)", clubs: "var(--sky)", academic: "var(--ink-2)", term: "var(--red)",
+  fixture: "var(--sky)", lesson: "var(--faint)", inset: "var(--red)", holiday: "var(--faint)"
+};
+const TYPE_LABEL = {
+  school: "Whole school", trip: "Trip", parents: "Parents", sport: "Sport", music: "Music",
+  clubs: "Clubs", academic: "Academic", term: "Term", fixture: "Fixture", inset: "INSET", holiday: "Holiday"
+};
+
+/* All events for a given date, already filtered to relevance for a child set. */
+function eventsFor(d, childIds) {
+  const out = [];
+  const k = key(d);
+  const t = termFor(d);
+  const kids = state.children.filter(c => childIds.includes(c.id));
+
+  if (INSET.has(k)) { out.push({ t: "INSET day, school closed to pupils", type: "inset", allDay: true, scope: "school" }); return out; }
+  if (!t) { out.push({ t: "School holiday", type: "holiday", allDay: true, scope: "school" }); return out; }
+  if (inHalfTerm(d)) { out.push({ t: "Half term", type: "holiday", allDay: true, scope: "school" }); return out; }
+  if (isWeekend(d)) return out;
+
+  const w = termWeek(d), dc = dayCode(d);
+  for (const e of (TERM_EVENTS[t.id] || [])) {
+    if (e.w !== w || e.d !== dc) continue;
+    if (e.years && !kids.some(c => e.years.includes(c.year))) continue;
+    out.push({ ...e, scope: e.years ? "year" : "school", years: e.years });
+  }
+  /* Thursday fixtures for Year 4 */
+  if (dc === "Thu" && kids.some(c => c.year === 4) && w >= 2) {
+    const o = OPPONENTS[(w + t.id.length) % OPPONENTS.length];
+    out.push({ t: `${SPORT_BY_TERM[t.id]} v ${o[0]}`, type: "fixture", time: "14:00", where: o[2],
+      note: `${o[1]} fixture. Return to school by 16:15. Full ${SPORT_BY_TERM[t.id].toLowerCase()} kit and a water bottle.`,
+      scope: "year", years: [4] });
+  }
+  /* After-school clubs */
+  for (const c of kids) {
+    const club = (CLUBS[c.id] || {})[dc];
+    if (club && w >= 2) out.push({ t: club.name, type: "clubs", time: club.end, where: club.where,
+      note: `Finishes at ${club.end}, collect from ${club.where}. Run by ${club.who}.`, scope: "child", child: c.id });
+  }
+  return out.sort((a, b) => (a.time || "08:00").localeCompare(b.time || "08:00"));
+}
+
+/* ============================================================
+   6. Derived uniform: the answer to "what do they wear today?"
+   ============================================================ */
+function uniformBase(d) {
+  const t = termFor(d);
+  if (!t) return "Summer uniform";
+  if (t.id === "michaelmas") return d < t.hStart ? "Summer uniform" : "Winter uniform";
+  if (t.id === "lent") return "Winter uniform";
+  return d < t.hStart ? "Winter uniform" : "Summer uniform";
+}
+const UNIFORM_DETAIL = {
+  "Summer uniform": "Red and white checked dress or grey shorts with a short-sleeved shirt and school tie. Straw boater to and from school. Grey socks, black shoes.",
+  "Winter uniform": "Grey pinafore or grey trousers, white shirt, school tie and navy jumper. Navy blazer and school cap or beret to and from school. Grey socks or tights, black shoes."
+};
+const KIT_TEXT = {
+  games: "Games kit: navy shorts or skort, school games shirt, navy socks, trainers or boots. Tracksuit in cold weather.",
+  swim:  "Swimming kit: costume or trunks, cap, towel, goggles, all named, in the school swim bag.",
+  pe:    "Indoor PE kit: white t-shirt, navy shorts, plimsolls. Worn under uniform, changed in class.",
+  forest:"Forest School clothes: old trousers, long sleeves and wellingtons in a named bag. Uniform worn to school.",
+  outdoor:"Games are outdoors in Holland Park. Send a tracksuit or fleece if it is cold."
+};
+
+function wearFor(child, d) {
+  if (!isSchoolDay(d)) return null;
+  const p = patternFor(child, d);
+  const base = uniformBase(d);
+  const overrides = [];
+  for (const e of eventsFor(d, [child.id])) {
+    if (/photograph/i.test(e.t)) overrides.push("School photographs today: full uniform with blazer. Games kit in a bag, not worn.");
+    if (/mufti/i.test(e.t)) overrides.push("Mufti Day: own clothes, sensible shoes. No uniform needed.");
+    if (/World Book Day/i.test(e.t)) overrides.push("World Book Day: dress as a book character instead of uniform.");
+    if (/Concert|Production|Carol/i.test(e.t)) overrides.push("Concert dress needed this evening: white shirt, school tie, dark skirt or trousers.");
+    if (/Sports Day|Sports Morning|pancake/i.test(e.t)) overrides.push("Games kit all day, plus a sun hat.");
+    if (/Carol Service|Prize Giving|Open Morning|Harvest|Easter Service/i.test(e.t)) overrides.push("Full uniform with blazer, inspected at registration.");
+  }
+  return { base, detail: UNIFORM_DETAIL[base], kit: (p?.kit || []).map(k => KIT_TEXT[k]).filter(Boolean), overrides };
+}
+
+/* ============================================================
+   7. Notices and the things that need a parent
+   ============================================================ */
+function daysAgo(n) { return addDays(TODAY, -n); }
+const NOTICES = [
+  { id: "n1", title: "Science Museum trip: consent required for Year 4", from: "Miss Hardy, Year 4", cat: "Consent", date: daysAgo(1), years: [4],
+    action: { kind: "consent", label: "Give consent", due: addDays(TODAY, 6) },
+    body: `<p>Year 4 will visit the Science Museum on the Wednesday of week three as part of the Forces and Magnets unit. We shall walk to Holland Park station and travel by Underground, returning to school by 3.00pm.</p>
+      <p>Pupils should wear full winter uniform with sensible shoes and should not bring a bag. The school kitchen will provide a packed lunch; please tell us below if your child has any dietary requirement we do not already hold.</p>
+      <p>There is no charge for this visit. Please give your consent through the app by the end of next week.</p>` },
+  { id: "n2", title: "Autumn swimming: coach contribution of £14", from: "The Bursary", cat: "Payment", date: daysAgo(2), years: [4],
+    action: { kind: "payment", label: "Pay £14", due: addDays(TODAY, 10) },
+    body: `<p>Year 4 swim at Kensington Leisure Centre each Wednesday morning this term. The coach contribution for the term is £14 per pupil, which will otherwise be added to the end of term bill.</p>
+      <p>Swimming kit should be in school every Wednesday, named throughout, including a cap.</p>` },
+  { id: "n3", title: "Parents' Evening appointments are open", from: "The School Office", cat: "Events", date: daysAgo(2),
+    action: { kind: "book", label: "Book a slot", due: addDays(TODAY, 4) },
+    body: `<p>Appointments for this term's Parents' Evenings are now open. Each appointment lasts ten minutes and is held in the form room.</p>
+      <p>If you have children in more than one year group we shall try to place your appointments close together; choose your first slot and the app will suggest a matching one.</p>` },
+  { id: "n4", title: "Head's letter on the term ahead", from: "The Head", cat: "Letters", date: daysAgo(4),
+    body: `<p>It has been a pleasure to welcome the children back. The building has had a thorough summer: the hall floor has been replaced, the library re-shelved, and the top corridor redecorated.</p>
+      <p>Two changes are worth noting. Registration now closes at 8.30am rather than 8.35am, and the Holland Park Avenue gate will be staffed from 8.05am. Second, Late Stay has been extended to 5.30pm on Tuesdays and Thursdays.</p>
+      <p>Term dates for the year are in the app under School, and the full calendar can be subscribed to so that it appears in your own diary.</p>` },
+  { id: "n5", title: "A reminder that the school is nut-free", from: "The School Nurse", cat: "Health", date: daysAgo(5), pinned: true,
+    body: `<p>We have several children with severe nut allergies. The school is nut-free: no nuts, nut butters, or products containing nuts may be brought into school, including in packed lunches for trips and in birthday treats.</p>
+      <p>If your child has an allergy, please check that the details we hold are correct under Family, and that any EpiPen in school is in date.</p>` },
+  { id: "n6", title: "Autumn clubs: places confirmed", from: "The School Office", cat: "Clubs", date: daysAgo(6),
+    body: `<p>Club places for the Autumn are now confirmed and appear against each child in the app. Where a club was oversubscribed, places have gone first to those who did not have a place last term.</p>
+      <p>Clubs begin in week two and run until the week before the end of term. Children not collected by the stated finishing time will go to Late Stay, which is charged at £12 an hour.</p>` },
+  { id: "n7", title: "Drop-off and the Holland Park Avenue gate", from: "The School Office", cat: "Letters", date: daysAgo(8),
+    body: `<p>We continue to have difficulties with cars stopping on Holland Park Avenue at drop-off. The Royal Borough has asked us to remind families that stopping on the red route between 8.00am and 9.30am carries a penalty and, more importantly, obscures the crossing.</p>
+      <p>Please use Norland Square or Royal Crescent and walk the last two minutes. Scooters may be left in the rack by the side door.</p>` },
+  { id: "n8", title: "Photographs on Thursday of next week", from: "The School Office", cat: "Events", date: daysAgo(9),
+    body: `<p>Individual and sibling photographs will be taken next Thursday. Children should be in full uniform with blazers; games kit may be brought in a bag and changed into afterwards.</p>
+      <p>Sibling photographs are taken first thing, so please have both children at the gate by 8.10am if you would like one.</p>` },
+  { id: "n9", title: "Flu vaccination consent: response needed", from: "The School Nurse", cat: "Consent", date: daysAgo(3),
+    action: { kind: "consent", label: "Respond", due: addDays(TODAY, 2) },
+    body: `<p>The NHS school-age immunisation team will attend next month to offer the nasal flu vaccination to all year groups. A response is needed for every child, whether or not you wish them to have it.</p>
+      <p>The information leaflet is attached. Please respond through the app; we cannot accept verbal consent.</p>` },
+  { id: "n10", title: "Lost property is overflowing", from: "The School Office", cat: "Letters", date: daysAgo(12),
+    body: `<p>Lost property is in the basement corridor and is open to parents at drop-off and pick-up on Fridays. Unnamed items left at the end of term go to the Parents' Association second-hand sale.</p>
+      <p>Name tapes are available from the office at £8 for a hundred, added to the termly bill.</p>` }
+];
+
+function relevantNotices() {
+  const ids = activeChildIds();
+  const yrs = state.children.filter(c => ids.includes(c.id)).map(c => c.year);
+  return NOTICES.filter(n => !n.years || n.years.some(y => yrs.includes(y)))
+    .sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || b.date - a.date);
+}
+const actionOpen = n => !!n.action && !state.done[n.id];
+function openActions() { return relevantNotices().filter(actionOpen).sort((a, b) => a.action.due - b.action.due); }
+
+/* ============================================================
+   8. The school reference section
+   ============================================================ */
+const SCHOOL = [
+  { k: "day", ic: "🕗", t: "The school day", m: "Gates, registration, lunch, collection", body: () => `
+    <div class="tablewrap"><table>
+      <tr><th>Time</th><th>What happens</th></tr>
+      <tr><td>08:05</td><td>Holland Park Avenue gate staffed. Early drop-off from this time.</td></tr>
+      <tr><td>08:20</td><td>Registration in form rooms.</td></tr>
+      <tr><td>08:30</td><td>Registers close. Arrivals after this time are recorded as late and must sign in at the office.</td></tr>
+      <tr><td>08:40</td><td>Assembly, hymn practice or form time.</td></tr>
+      <tr><td>12:05–12:25</td><td>Lunch, staggered by year group.</td></tr>
+      <tr><td>15:00</td><td>End of day, Reception to Year 2. Collection from the Lower School door.</td></tr>
+      <tr><td>15:20</td><td>End of day, Years 3 to 6. Collection from the main gate.</td></tr>
+      <tr><td>15:45–16:45</td><td>Clubs, by arrangement.</td></tr>
+      <tr><td>to 17:30</td><td>Late Stay, Tuesday and Thursday to 5.30pm, otherwise to 4.45pm.</td></tr>
+    </table></div>
+    <p>Breakfast Club runs from 7.45am in the dining room and is charged at £9 including breakfast. Both may be booked through the app up to 3.00pm on the day.</p>` },
+
+  { k: "terms", ic: "📅", t: "Term dates", m: `Academic year ${AY_LABEL}`, body: () => {
+      const f = d => `${DOW[d.getDay()]} ${d.getDate()} ${MONTHS[d.getMonth()].slice(0, 3)} ${d.getFullYear()}`;
+      return `<div class="tablewrap"><table><tr><th>Term</th><th>Begins</th><th>Half term</th><th>Ends</th></tr>` +
+        TERMS.map(t => `<tr><td><strong>${t.name}</strong></td><td>${f(t.start)}</td><td>${f(t.hStart)} to ${f(t.hEnd)}</td><td>${f(t.end)}</td></tr>`).join("") +
+        `</table></div><p>Terms end at midday. INSET days fall on the two weekdays before the start of the Michaelmas and Lent terms; the school is closed to pupils on those days.</p>
+        <p>The whole calendar can be subscribed to from the Diary, so that it keeps itself up to date in your own diary rather than being copied across by hand.</p>`; } },
+
+  { k: "uniform", ic: "🎓", t: "Uniform and kit", m: "What is worn, and when", body: () => `
+    <p><strong>Today the school is in ${uniformBase(TODAY).toLowerCase()}.</strong> Summer uniform is worn from the start of the Michaelmas term until October half term, and from the May half term to the end of the Summer term. Winter uniform is worn in between.</p>
+    <h3>Summer uniform</h3><p>${UNIFORM_DETAIL["Summer uniform"]}</p>
+    <h3>Winter uniform</h3><p>${UNIFORM_DETAIL["Winter uniform"]}</p>
+    <h3>Games and swimming</h3><p>${KIT_TEXT.games}</p><p>${KIT_TEXT.swim}</p><p>${KIT_TEXT.pe}</p>
+    <h3>Where to buy</h3><p>The uniform supplier holds the full list and delivers to school twice a term. Second-hand uniform, which is in good order and a great deal cheaper, is sold by the Parents' Association at the start of each term and by appointment through the office.</p>
+    <h3>Naming</h3><p>Everything is to be named, including boaters, caps, water bottles and swimming caps. Name tapes are available from the office at £8 for a hundred.</p>` },
+
+  { k: "lunch", ic: "🍽", t: "Lunch menus", m: "This week and the rotation", body: () => {
+      const mon = startOfWeek(TODAY), w = termWeek(TODAY);
+      let r = `<p>Lunch is cooked on the premises and runs on a three-week rotation. The school is nut-free. Children who need a special diet are catered for; tell the office and it will be recorded against the child.</p>`;
+      if (!w) { r += `<p>Menus resume when term does.</p>`; return r; }
+      r += `<h3>This week, week ${((w - 1) % 3) + 1} of the rotation</h3><div class="tablewrap"><table><tr><th>Day</th><th>Main</th><th>Vegetarian</th><th>Pudding</th></tr>`;
+      for (let i = 0; i < 5; i++) { const d = addDays(mon, i), m = lunchFor(d); if (!m) continue;
+        r += `<tr><td>${DOW[d.getDay()]}${sameDay(d, TODAY) ? " <span class='pill sky'>today</span>" : ""}</td><td>${m.main}</td><td>${m.veg}</td><td>${m.pud}</td></tr>`; }
+      return r + `</table></div>`; } },
+
+  { k: "clubs", ic: "🎭", t: "Clubs and activities", m: "What runs, when, and what it costs", body: () => `
+    <p>Clubs run from the second week of each term to the week before the end of it. Places are allocated the week before term begins and confirmed in the app; where a club is oversubscribed, priority goes to children who did not have a place the previous term.</p>
+    <div class="tablewrap"><table><tr><th>Club</th><th>Day</th><th>Years</th><th>Term charge</th></tr>
+      <tr><td>Chess</td><td>Monday, to 4.45pm</td><td>3 to 6</td><td>£70</td></tr>
+      <tr><td>Ballet</td><td>Tuesday, to 4.15pm</td><td>R to 2</td><td>£95</td></tr>
+      <tr><td>Choir</td><td>Wednesday, to 4.30pm</td><td>3 to 6</td><td>Free</td></tr>
+      <tr><td>Art Club</td><td>Thursday, to 4.15pm</td><td>1 to 4</td><td>£80</td></tr>
+      <tr><td>Judo</td><td>Thursday, to 4.45pm</td><td>2 to 6</td><td>£90</td></tr>
+      <tr><td>Coding</td><td>Friday, to 4.30pm</td><td>4 to 6</td><td>£85</td></tr></table></div>
+    <p>Instrumental lessons are arranged separately with the Director of Music and are taken during the school day on a rotating timetable, so that the same lesson is not missed twice.</p>` },
+
+  { k: "sport", ic: "🏉", t: "Sport and fixtures", m: "Teams, fixtures, results, kit", body: () => {
+      const t = termFor(TODAY);
+      const sport = t ? SPORT_BY_TERM[t.id] : "Cricket";
+      return `<p>The major game this term is ${sport.toLowerCase()}. Games take place in Holland Park and at Barn Elms; the school travels by coach and returns before the end of the school day unless a fixture is away and late, in which case parents are told in advance through the app.</p>
+      <h3>Fixtures</h3><p>Year 4 fixtures are on Thursday afternoons from week two. Each fixture appears in the Diary against your child, with the venue, the kit needed and the expected time back at school. Results are posted the same evening.</p>
+      <h3>Kit</h3><p>${KIT_TEXT.games} A gum shield is compulsory for rugby and the school cannot allow a child to play without one.</p>
+      <h3>Selection</h3><p>Every child in Years 3 to 6 plays at least one competitive fixture a term. Teams are published on the Monday before a fixture.</p>`; } },
+
+  { k: "absence", ic: "📋", t: "Absence, lateness and appointments", m: "How to report, and by when", body: () => `
+    <p>Absence should be reported before 8.15am on the day, through the app or by telephone to the school office. Where a child is absent for more than one day, please report each day.</p>
+    <p>Medical and dental appointments should, where possible, be made outside school hours. Where they cannot be, tell the office in advance and collect your child from reception; they must be signed out and back in.</p>
+    <p>Requests for leave of absence in term time are made in writing to the Head and are granted only in exceptional circumstances. Family holidays are not an exceptional circumstance.</p>
+    <p>A child who is sick or has diarrhoea must stay at home for forty-eight hours after the last episode.</p>` },
+
+  { k: "contacts", ic: "☎️", t: "Contacts and staff", m: "Who to speak to about what", body: () => `
+    <div class="tablewrap"><table><tr><th>Matter</th><th>Who</th></tr>
+      <tr><td>Anything about your child day to day</td><td>The form teacher, in the first instance</td></tr>
+      <tr><td>Absence, lateness, collection changes</td><td>The School Office</td></tr>
+      <tr><td>Fees, bills, extras</td><td>The Bursary</td></tr>
+      <tr><td>Medical matters, medication in school</td><td>The School Nurse</td></tr>
+      <tr><td>Safeguarding concerns</td><td>The Designated Safeguarding Lead</td></tr>
+      <tr><td>Learning support</td><td>The SENDCo</td></tr>
+      <tr><td>Music lessons and instruments</td><td>The Director of Music</td></tr>
+      <tr><td>Sport, fixtures, teams</td><td>The Head of Games</td></tr>
+      <tr><td>Admissions and siblings</td><td>The Registrar</td></tr></table></div>
+    <p>The school office is open from 8.00am to 4.30pm on school days. Messages left after 2.30pm may not reach a classroom before the end of the day, so changes to collection arrangements should be made through the app, which alerts the office immediately.</p>` },
+
+  { k: "pay", ic: "💳", t: "Fees, bills and extras", m: "Termly account and how to pay", body: () => `
+    <p>Fees are billed termly and are due before the first day of term. Extras, which include clubs, instrumental lessons, coaches, Late Stay and Breakfast Club, are billed in arrears on the same account.</p>
+    <p>Small charges raised during the term, such as a trip contribution or a mufti day donation, can be settled in the app as they arise or left to fall on to the termly bill.</p>
+    <p>A term's notice in writing to the Bursar is required before a child is withdrawn, failing which a term's fees are payable.</p>` },
+
+  { k: "care", ic: "🌅", t: "Breakfast Club and Late Stay", m: "Wraparound care and booking", body: () => `
+    <p>Breakfast Club runs from 7.45am to 8.15am in the dining room, and includes a cooked breakfast. Late Stay runs to 4.45pm, and to 5.30pm on Tuesdays and Thursdays, with supervised prep for Years 3 and above.</p>
+    <p>Both can be booked in the app until 3.00pm on the day. Breakfast Club is £9 a session; Late Stay is £12 an hour, charged in half-hours after the first.</p>
+    <p>A child who has not been collected fifteen minutes after the end of a club goes automatically to Late Stay and is charged accordingly. This is a safeguarding requirement rather than an inconvenience to anyone.</p>` },
+
+  { k: "health", ic: "⚕️", t: "Health, medication and allergies", m: "The nurse, EpiPens, and what we hold", body: () => `
+    <p>The school is nut-free. Several children carry EpiPens, which are held both in the office and with the class teacher, and the staff are trained annually in their use.</p>
+    <p>Medication can only be given in school where a medication form has been completed and the medicine is in its original packaging and in date. Paracetamol is given only where a parent has given standing consent, which you can set or withdraw under Family.</p>
+    <p>Please check each term that the medical details we hold for your child are correct. They appear under Family, and anything changed there is sent to the nurse.</p>` },
+
+  { k: "travel", ic: "🚸", t: "Getting to school", m: "Drop-off, parking, scooters", body: () => `
+    <p>The school sits on Holland Park Avenue, which is a red route. Cars may not stop on it between 8.00am and 9.30am, and doing so obscures the crossing that the children use. Please set down in Norland Square or Royal Crescent and walk the last two minutes.</p>
+    <p>Holland Park station is a three-minute walk and Shepherd's Bush a little further. Scooters and bicycles may be left in the rack by the side door; helmets are expected and scooters are to be pushed, not ridden, on the pavement outside the school.</p>` },
+
+  { k: "pa", ic: "🤝", t: "Parents' Association and class reps", m: "Who they are, what they run", body: () => `
+    <p>Every form has two class representatives, who welcome new families, organise the occasional drinks, and pass on to the office anything that a number of parents are finding difficult. Their names appear against each child under Family.</p>
+    <p>The Parents' Association runs the Christmas Fair, the second-hand uniform sale and the summer party, and raises money for a charity chosen by the children each year.</p>` },
+
+  { k: "policies", ic: "📎", t: "Policies and key documents", m: "Safeguarding, behaviour, SEND, complaints", body: () => `
+    <p>The policies below are the ones parents most often need. All are available in full in the app and on the school's website.</p>
+    <ul><li>Safeguarding and Child Protection</li><li>Behaviour, Rewards and Sanctions</li><li>Anti-Bullying</li><li>SEND and Learning Support</li><li>Supporting Pupils with Medical Conditions</li><li>First Aid</li><li>Online Safety and Acceptable Use</li><li>Complaints</li><li>Privacy Notice for Parents and Pupils</li><li>Terms and Conditions of Admission</li></ul>
+    <p>The complaints procedure has three stages: an informal approach to the form teacher or the relevant member of staff, a formal written complaint to the Head, and a panel hearing. Most matters are resolved at the first stage and quickly.</p>` },
+
+  { k: "lost", ic: "🧣", t: "Lost property", m: "Where it is and when it is open", body: () => `
+    <p>Lost property is kept in the basement corridor and is open to parents at drop-off and pick-up on Fridays, and at any time by asking at the office.</p>
+    <p>Named items are returned to the child's form room within the day. Unnamed items left at the end of term go to the Parents' Association second-hand sale. Boaters, blazers and games kit are the most frequently lost and the most expensive to replace, which is an argument for name tapes.</p>` }
+];
+
+/* ============================================================
+   9. State
+   ============================================================ */
+const STORE = "npp.v1";
+function load() { try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch { return {}; } }
+function save() {
+  try { localStorage.setItem(STORE, JSON.stringify({ read: state.read, done: state.done, prefs: state.prefs, names: state.children.map(c => c.name) })); } catch {}
+}
+const saved = load();
+const state = {
+  tab: "today",
+  child: "all",
+  date: new Date(TODAY),
+  diaryMode: "week",
+  read: saved.read || {},
+  done: saved.done || {},
+  prefs: saved.prefs || { notices: true, diary: true, sport: true, brief: true, quiet: true },
+  children: DEFAULT_CHILDREN.map((c, i) => ({ ...c, name: (saved.names && saved.names[i]) || c.name })),
+  sheet: null
+};
+function activeChildIds() { return state.child === "all" ? state.children.map(c => c.id) : [state.child]; }
+const childById = id => state.children.find(c => c.id === id);
+const initials = c => c.name.trim()[0].toUpperCase();
+
+/* ============================================================
+   10. Small view helpers
+   ============================================================ */
+const ICONS = {
+  today: '<svg width="21" height="21" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="3" y="4.5" width="16" height="15" rx="2.6"/><path d="M3 9h16M7.5 2.5v4M14.5 2.5v4"/><circle cx="11" cy="14" r="1.9" fill="currentColor" stroke="none"/></svg>',
+  diary: '<svg width="21" height="21" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><rect x="3" y="4.5" width="16" height="15" rx="2.6"/><path d="M3 9h16M7.5 2.5v4M14.5 2.5v4M7 12.5h3M7 16h6M13.5 12.5h1.5"/></svg>',
+  notices: '<svg width="21" height="21" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3.5h9l4 4v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-14a1 1 0 0 1 1-1Z"/><path d="M13.5 3.5v4.5H18M7.5 12h7M7.5 15.5h4.5"/></svg>',
+  school: '<svg width="21" height="21" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M11 3 20 7.5 11 12 2 7.5 11 3Z"/><path d="M5.5 9.8v5.4c0 1.6 2.5 2.9 5.5 2.9s5.5-1.3 5.5-2.9V9.8"/><path d="M19.4 8v5"/></svg>',
+  family: '<svg width="21" height="21" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="8" cy="7.5" r="3.2"/><path d="M2.6 18.5c0-3 2.4-5.2 5.4-5.2s5.4 2.2 5.4 5.2"/><circle cx="16" cy="9" r="2.5"/><path d="M14 18.5c0-2.6 1.4-4.3 3.6-4.3 1.4 0 2.4.7 2.9 1.8"/></svg>',
+  chev: '<svg class="chev" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m6 3.5 5 4.5-5 4.5"/></svg>'
+};
+const TABS = [
+  { k: "today", l: "Today" }, { k: "diary", l: "Diary" }, { k: "notices", l: "Notices" },
+  { k: "school", l: "School" }, { k: "family", l: "Family" }
+];
+
+function chip(c) {
+  return `<button class="chip" data-child="${c.id}" aria-pressed="${state.child === c.id}">
+    <span class="pip" style="background:${c.colour}"></span>${esc(c.name)}</button>`;
+}
+function cardEvent(e, opts = {}) {
+  const col = TYPE_COLOUR[e.type] || "var(--faint)";
+  const who = e.child ? childById(e.child) : null;
+  const meta = [e.where, who ? who.name : (e.years ? `Year ${e.years.join(" & ")}` : (e.scope === "school" ? "Whole school" : ""))]
+    .filter(Boolean).join(" · ");
+  return `<button class="line tappable" data-ev="${esc(e.t)}|${key(opts.date || state.date)}">
+    <span class="rail" style="background:${col}"></span>
+    <span class="tm">${e.time || (e.allDay ? "all day" : "–")}</span>
+    <span class="bd"><span class="t">${esc(e.t)}</span>${meta ? `<span class="m">${esc(meta)}</span>` : ""}</span>
+    ${ICONS.chev}</button>`;
+}
+
+/* ============================================================
+   11. Views
+   ============================================================ */
+function viewToday() {
+  const d = TODAY, t = termFor(d), ids = activeChildIds();
+  const kids = state.children.filter(c => ids.includes(c.id));
+  const acts = openActions();
+  const hol = nextHoliday(d);
+  let h = "";
+
+  h += `<div class="page-h"><h1>${dayLong(d)}</h1><div class="sub">${
+    INSET.has(key(d)) ? "INSET day, school closed to pupils" :
+    t ? (inHalfTerm(d) ? `${t.name} · half term` :
+        isWeekend(d) ? `${t.name} · weekend` : `${t.name} · week ${termWeek(d)}`)
+      : "School holiday"
+  }${hol && isSchoolDay(d) ? ` · ${schoolDaysBetween(d, hol.date)} school days to ${hol.name}` : ""}</div></div>`;
+
+  /* Things that need a parent */
+  if (acts.length) {
+    h += `<div class="card action-card"><div class="card-head"><h2>${acts.length} thing${acts.length > 1 ? "s need" : " needs"} you</h2></div>`;
+    h += acts.map(n => {
+      const days = Math.round((n.action.due - d) / 86400000);
+      const late = days < 0;
+      return `<button class="action-line" data-notice="${n.id}">
+        <span class="pill ${late ? "red" : days <= 2 ? "red" : "plain"}">${late ? "overdue" : days === 0 ? "today" : `${days}d`}</span>
+        <span class="bd"><span class="t">${esc(n.title)}</span><span class="m">${esc(n.from)} · ${n.action.label}</span></span>
+        ${ICONS.chev}</button>`;
+    }).join("");
+    h += `</div>`;
+  }
+
+  if (!isSchoolDay(d)) {
+    const why = INSET.has(key(d)) ? "It is an INSET day, so school is closed to pupils." : !t ? "It is the school holidays." : inHalfTerm(d) ? "It is half term." : "It is the weekend.";
+    h += `<div class="card"><div class="card-pad"><div class="serif" style="font-size:1.1rem">No school today</div>
+      <p style="color:var(--muted);margin-top:5px;font-size:.9rem">${why} ${(() => {
+        let n = new Date(d); for (let i = 0; i < 90; i++) { n = addDays(n, 1); if (isSchoolDay(n)) break; }
+        return `Next school day is ${dayLong(n)}.`; })()}</p></div>
+      <div class="btnrow"><button class="btn ghost sm" data-goto="diary">Look at the diary</button></div></div>`;
+  }
+
+  /* One card per child */
+  for (const c of kids) {
+    const p = patternFor(c, d);
+    const ev = eventsFor(d, [c.id]);
+    const wear = wearFor(c, d);
+    const club = ev.find(e => e.type === "clubs");
+    const lunch = lunchFor(d);
+    const highlights = ev.filter(e => e.type !== "clubs");
+
+    h += `<div class="card"><div class="child-band">
+      <span class="avatar" style="background:${c.colour}">${initials(c)}</span>
+      <span class="who"><span class="nm">${esc(c.name)}</span><span class="mt">Year ${c.year} · ${esc(c.form)} · ${esc(c.teacher)}</span></span>
+      <button class="linkish" data-childview="${c.id}">Their week ›</button></div>`;
+
+    if (!isSchoolDay(d)) {
+      h += `<div class="card-pad" style="color:var(--muted);font-size:.9rem">Nothing at school today.</div></div>`;
+      continue;
+    }
+    h += `<div class="rows">`;
+    h += `<div class="row"><span class="k">Wearing</span><span class="v"><strong>${wear.base}</strong>
+      ${wear.kit.length ? `<span class="note">${wear.kit.map(esc).join("<br>")}</span>` : ""}
+      ${wear.overrides.length ? `<span class="note" style="color:var(--red)">${wear.overrides.map(esc).join("<br>")}</span>` : ""}</span></div>`;
+
+    h += `<div class="row"><span class="k">On today</span><span class="v">${
+      highlights.length ? highlights.map(e => `<strong>${esc(e.t)}</strong>${e.time ? ` at ${e.time}` : ""}${e.where ? `, ${esc(e.where)}` : ""}`).join("<br>")
+        : "A normal timetable."}${
+      p ? `<span class="note">${esc(p.lessons.slice(1, 5).map(l => l[1]).join(" · "))}</span>` : ""}</span></div>`;
+
+    if (p && p.bring.length) h += `<div class="row"><span class="k">Bring</span><span class="v">${p.bring.map(esc).join(", ")}</span></div>`;
+    if (lunch) h += `<div class="row"><span class="k">Lunch</span><span class="v">${esc(lunch.main)}<span class="note">Vegetarian: ${esc(lunch.veg)} · ${esc(lunch.pud)}</span></span></div>`;
+
+    h += `<div class="row"><span class="k">After school</span><span class="v">${
+      club ? `<strong>${esc(club.t)}</strong> until ${club.time}<span class="note">Collect from ${esc(club.where)}. ${esc(c.collection.replace(/^Collected at [0-9.:apm]+ from the /, "Otherwise collected from the "))}</span>`
+        : `${esc(c.collection)}`}</span></div>`;
+
+    if (p && p.prep) h += `<div class="row"><span class="k">Prep</span><span class="v">${esc(p.prep)}</span></div>`;
+    h += `</div></div>`;
+  }
+
+  /* Whole-school notes and tomorrow */
+  const school = eventsFor(d, ids).filter(e => e.scope === "school");
+  if (isSchoolDay(d) && school.length) {
+    h += `<div class="rubric">Across the school</div><div class="card">${school.map(e => cardEvent(e, { date: d })).join("")}</div>`;
+  }
+
+  let n = addDays(d, 1); let guard = 0;
+  while (!isSchoolDay(n) && guard++ < 120) n = addDays(n, 1);
+  const nEv = eventsFor(n, ids);
+  h += `<div class="rubric">${sameDay(n, addDays(d, 1)) ? "Tomorrow" : dayLong(n)}</div><div class="card">`;
+  h += `<div class="card-pad" style="font-size:.9rem">${
+    kids.map(c => { const w = wearFor(c, n), pp = patternFor(c, n);
+      return `<div style="margin-bottom:8px"><strong>${esc(c.name)}:</strong> ${esc(w ? w.base : "–")}${
+        w && w.kit.length ? `, plus kit` : ""}${pp && pp.bring.length ? `. Bring ${esc(pp.bring.join(", ").toLowerCase())}` : ""}.</div>`; }).join("")
+  }${nEv.filter(e => e.scope !== "child").length ? `<div style="color:var(--muted);margin-top:4px">${nEv.filter(e => e.scope !== "child").map(e => esc(e.t)).join(" · ")}</div>` : ""}</div></div>`;
+
+  h += `<div class="protobar">A prototype. Dates, menus, notices and names are illustrative and generated from today's date, so the app looks live whenever it is opened. Add <code>?date=YYYY-MM-DD</code> to the address to walk through any day of the year.</div>`;
+  return h;
+}
+
+/* ---------- Diary ---------- */
+function viewDiary() {
+  const ids = activeChildIds();
+  let h = `<div class="page-h"><h1>Diary</h1><div class="sub">${
+    state.child === "all" ? "Both children and the whole school" : `${esc(childById(state.child).name)} only`}</div></div>`;
+  h += `<div class="seg" role="group">${["day", "week", "month"].map(m =>
+    `<button data-mode="${m}" aria-pressed="${state.diaryMode === m}">${m[0].toUpperCase() + m.slice(1)}</button>`).join("")}</div>`;
+
+  const d = state.date;
+  const lbl = state.diaryMode === "month" ? `${MONTHS[d.getMonth()]} ${d.getFullYear()}`
+    : state.diaryMode === "week" ? `Week of ${dayShort(startOfWeek(d))}` : dayLong(d);
+  const t = termFor(d);
+  const sub = t ? (inHalfTerm(d) ? `${t.name} · half term` : `${t.name}${termWeek(d) ? ` · week ${termWeek(d)}` : ""}`) : "Holidays";
+  h += `<div class="datebar">
+    <button class="nav" data-step="-1" aria-label="Previous"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10 3.5-5 4.5 5 4.5"/></svg></button>
+    <div class="lbl">${esc(lbl)}<small>${esc(sub)}</small></div>
+    <button class="nav" data-step="1" aria-label="Next"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 3.5 5 4.5-5 4.5"/></svg></button></div>`;
+
+  if (state.diaryMode === "day") h += dayPanel(d, ids, true);
+  else if (state.diaryMode === "week") {
+    const mon = startOfWeek(d);
+    h += `<div class="weekgrid">`;
+    for (let i = 0; i < 5; i++) {
+      const x = addDays(mon, i), ev = eventsFor(x, ids);
+      h += `<div class="daycol${sameDay(x, TODAY) ? " is-today" : ""}"><div class="dh">
+        <span class="d">${DAYNAMES[x.getDay()]}</span><span class="n">${x.getDate()} ${MONTHS[x.getMonth()].slice(0, 3)}</span></div>`;
+      h += ev.length ? ev.map(e => cardEvent(e, { date: x })).join("")
+        : `<div class="empty" style="padding:14px">A normal school day.</div>`;
+      h += `</div>`;
+    }
+    h += `</div>`;
+    h += `<div class="rubric">Kit for the week</div><div class="card"><div class="rows">`;
+    for (const c of state.children.filter(c => ids.includes(c.id))) {
+      const items = [];
+      for (let i = 0; i < 5; i++) { const x = addDays(mon, i), p = patternFor(c, x);
+        if (isSchoolDay(x) && p && (p.kit.length || p.bring.length)) items.push(`${DOW[x.getDay()]}: ${p.bring.join(", ") || p.kit.join(", ")}`); }
+      h += `<div class="row"><span class="k">${esc(c.name)}</span><span class="v" style="font-size:.87rem">${items.length ? items.map(esc).join("<br>") : "Nothing beyond uniform."}</span></div>`;
+    }
+    h += `</div></div>`;
+  } else h += monthPanel(d, ids);
+
+  h += `<div class="rubric">Keeping it in your own diary</div><div class="card"><div class="card-pad" style="font-size:.9rem;color:var(--ink-2)">
+    <p>Subscribe once and the school calendar keeps itself up to date in Apple Calendar, Outlook or Google, filtered to your children only. Changes made by the school appear in your diary without anyone copying them across.</p></div>
+    <div class="btnrow"><button class="btn sm" data-demo="Calendar subscription">Subscribe to this calendar</button>
+    <button class="btn ghost sm" data-demo="Term dates download">Term dates only</button></div></div>`;
+  return h;
+}
+
+function dayPanel(d, ids, withLessons) {
+  const ev = eventsFor(d, ids);
+  let h = "";
+  if (!isSchoolDay(d)) {
+    const t = termFor(d);
+    h += `<div class="card"><div class="empty"><div class="big">${INSET.has(key(d)) ? "INSET day" : !t ? "School holiday" : inHalfTerm(d) ? "Half term" : "Not a school day"}</div>
+      ${!t ? "Term begins " + dayLong(TERMS.find(x => x.start > d)?.start || TERMS[0].start) : ""}</div></div>`;
+    return h;
+  }
+  h += `<div class="card">${ev.length ? ev.map(e => cardEvent(e, { date: d })).join("") : `<div class="empty">A normal school day. Nothing additional in the diary.</div>`}</div>`;
+  if (!withLessons) return h;
+  for (const c of state.children.filter(c => ids.includes(c.id))) {
+    const p = patternFor(c, d); if (!p) continue;
+    const w = wearFor(c, d);
+    h += `<div class="rubric">${esc(c.name)}'s day</div><div class="card">
+      <div class="row" style="border-bottom:1px solid var(--line-2)"><span class="k">Wearing</span><span class="v">${esc(w.base)}${w.kit.length ? `<span class="note">${w.kit.map(esc).join("<br>")}</span>` : ""}</span></div>`;
+    h += p.lessons.map(l => `<div class="line"><span class="tm">${l[0]}</span><span class="bd"><span class="t">${esc(l[1])}</span></span></div>`).join("");
+    h += `</div>`;
+  }
+  return h;
+}
+
+function monthPanel(d, ids) {
+  const first = new Date(d.getFullYear(), d.getMonth(), 1);
+  const gridStart = startOfWeek(first);
+  let cells = "";
+  for (let i = 0; i < 42; i++) {
+    const x = addDays(gridStart, i);
+    const out = x.getMonth() !== d.getMonth();
+    const ev = isSchoolDay(x) ? eventsFor(x, ids) : [];
+    const off = !isSchoolDay(x);
+    const dots = [...new Set(ev.filter(e => e.type !== "clubs").map(e => e.type))].slice(0, 3);
+    cells += `<button class="cell${out ? " out" : ""}${sameDay(x, TODAY) ? " today" : ""}${sameDay(x, state.date) && !sameDay(x, TODAY) ? " sel" : ""}${off && !out ? " hol" : ""}" data-day="${key(x)}">
+      <span class="n">${x.getDate()}</span><span class="dots">${dots.map(t => `<i style="background:${TYPE_COLOUR[t]}"></i>`).join("")}</span></button>`;
+    if (i >= 34 && addDays(gridStart, i + 1).getMonth() !== d.getMonth()) break;
+  }
+  let h = `<div class="month"><div class="dow">${["M","T","W","T","F","S","S"].map(x => `<span>${x}</span>`).join("")}</div><div class="grid">${cells}</div></div>`;
+  h += `<div class="rubric">${dayLong(state.date)}</div>` + dayPanel(state.date, ids, false);
+  return h;
+}
+
+/* ---------- A single child ---------- */
+function viewChild(id) {
+  const c = childById(id); if (!c) return viewToday();
+  const mon = startOfWeek(TODAY);
+  let h = `<div class="page-h"><h1>${esc(c.name)}</h1><div class="sub">Year ${c.year} · ${esc(c.form)} · ${esc(c.teacher)} · ${esc(c.house)} House</div></div>`;
+
+  h += `<div class="card"><div class="statgrid">
+    <div class="s"><div class="big-num">${c.merits}</div><div class="l">Merits this term</div></div>
+    <div class="s"><div class="big-num">${schoolDaysBetween(termFor(TODAY)?.start || TODAY, TODAY)}</div><div class="l">Days in term</div></div>
+    <div class="s"><div class="big-num">100%</div><div class="l">Attendance</div></div></div></div>`;
+
+  h += `<div class="rubric">This week</div><div class="card">`;
+  for (let i = 0; i < 5; i++) {
+    const x = addDays(mon, i), p = patternFor(c, x), ev = eventsFor(x, [c.id]);
+    const w = wearFor(c, x);
+    const bits = [w ? w.base.replace(" uniform", "") : "–", ...(p ? p.kit.map(k => k === "swim" ? "swimming" : k === "pe" ? "PE kit" : k === "forest" ? "Forest School" : "games kit") : [])];
+    h += `<button class="line tappable" data-jump="${key(x)}">
+      <span class="tm">${DOW[x.getDay()]}</span>
+      <span class="bd"><span class="t">${isSchoolDay(x) ? esc(bits.join(", ")) : "No school"}</span>
+      <span class="m">${ev.length ? esc(ev.map(e => e.t).join(" · ")) : p ? esc(p.lessons.slice(2, 5).map(l => l[1]).join(" · ")) : ""}</span></span>
+      ${ICONS.chev}</button>`;
+  }
+  h += `</div>`;
+
+  const clubs = CLUBS[c.id] || {};
+  h += `<div class="rubric">After school</div><div class="card"><div class="rows">${
+    Object.keys(clubs).length ? Object.entries(clubs).map(([d, cl]) =>
+      `<div class="row"><span class="k">${d}</span><span class="v"><strong>${esc(cl.name)}</strong> until ${cl.end}<span class="note">${esc(cl.where)} · ${esc(cl.who)}</span></span></div>`).join("")
+    : `<div class="row"><span class="v" style="color:var(--muted)">No clubs this term.</span></div>`}
+    <div class="row"><span class="k">Otherwise</span><span class="v">${esc(c.collection)}</span></div></div></div>`;
+
+  h += `<div class="rubric">Prep this week</div><div class="card"><div class="rows">${
+    [0,1,2,3,4].map(i => { const x = addDays(mon, i), p = patternFor(c, x);
+      return isSchoolDay(x) && p ? `<div class="row"><span class="k">${DOW[x.getDay()]}</span><span class="v">${esc(p.prep)}</span></div>` : ""; }).join("")}</div></div>`;
+
+  h += `<div class="rubric">Music and sport</div><div class="card"><div class="rows">
+    <div class="row"><span class="k">Instrument</span><span class="v">${esc(c.instrument)}<span class="note">${c.instrumentDay}sday at ${c.instrumentTime}, withdrawn from the lesson shown in the timetable</span></span></div>
+    <div class="row"><span class="k">Games</span><span class="v">${termFor(TODAY) ? SPORT_BY_TERM[termFor(TODAY).id] : "Cricket"}${c.year >= 3 ? ", with fixtures on Thursdays" : ", in Holland Park"}</span></div>
+    <div class="row"><span class="k">House</span><span class="v">${esc(c.house)} · ${esc(c.rank)}</span></div></div></div>`;
+
+  h += `<div class="btnrow" style="padding-left:0;padding-right:0"><button class="btn ghost" data-goto="diary">See the full diary</button>
+    <button class="btn ghost" data-demo="Report an absence">Report an absence</button></div>`;
+  return h;
+}
+
+/* ---------- Notices ---------- */
+function viewNotices() {
+  const list = relevantNotices();
+  const acts = openActions();
+  let h = `<div class="page-h"><h1>Notices</h1><div class="sub">${list.length} items${acts.length ? `, ${acts.length} needing a reply` : ", nothing outstanding"}</div></div>`;
+  if (acts.length) {
+    h += `<div class="card action-card"><div class="card-head"><h2>Needs you</h2></div>${acts.map(n =>
+      `<button class="action-line" data-notice="${n.id}"><span class="pill red">${n.action.label}</span>
+        <span class="bd"><span class="t">${esc(n.title)}</span><span class="m">by ${dayShort(n.action.due)}</span></span>${ICONS.chev}</button>`).join("")}</div>`;
+  }
+  h += `<div class="rubric">All notices</div><div class="card">`;
+  h += list.map(n => {
+    const read = !!state.read[n.id];
+    const txt = n.body.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim().slice(0, 150);
+    return `<button class="notice" data-notice="${n.id}"><span class="unread${read ? " read" : ""}"></span>
+      <span class="bd"><span class="t">${esc(n.title)}</span>
+      <span class="m">${esc(n.from)} · ${dayShort(n.date)}</span>
+      <span class="x">${esc(txt)}…</span>
+      <span class="tags"><span class="pill plain">${esc(n.cat)}</span>${n.years ? `<span class="pill sky">Year ${n.years.join(" & ")}</span>` : `<span class="pill plain">Whole school</span>`}${n.pinned ? `<span class="pill green">Keep</span>` : ""}${actionOpen(n) ? `<span class="pill red">${esc(n.action.label)}</span>` : n.action ? `<span class="pill green">Done</span>` : ""}</span></span></button>`;
+  }).join("");
+  h += `</div><div class="footnote">Notices are kept for the academic year and can be searched. Anything needing a reply stays at the top until it is dealt with, and is repeated on Today.</div>`;
+  return h;
+}
+
+/* ---------- School ---------- */
+function viewSchool() {
+  let h = `<div class="page-h"><h1>School</h1><div class="sub">Everything that does not change day to day</div></div>`;
+  h += `<div class="card">${SCHOOL.map(s =>
+    `<button class="idx" data-school="${s.k}"><span class="ic">${s.ic}</span>
+      <span class="bd"><span class="t">${esc(s.t)}</span><span class="m">${esc(s.m)}</span></span>${ICONS.chev}</button>`).join("")}</div>`;
+  h += `<div class="rubric">Quick actions</div><div class="card"><div class="btnrow">
+    <button class="btn sm" data-demo="Report an absence">Report an absence</button>
+    <button class="btn ghost sm" data-demo="Change collection arrangements">Change collection</button>
+    <button class="btn ghost sm" data-demo="Book Late Stay">Book Late Stay</button>
+    <button class="btn ghost sm" data-demo="Message the form teacher">Message the form teacher</button>
+    <button class="btn ghost sm" data-demo="Call the school office">Call the office</button></div></div>`;
+  h += `<div class="footnote">Norland Place School, 162–166 Holland Park Avenue, London W11. Founded 1876. This is an independent prototype and not an official school application; the content is illustrative.</div>`;
+  return h;
+}
+
+/* ---------- Family ---------- */
+function viewFamily() {
+  let h = `<div class="page-h"><h1>Family</h1><div class="sub">Who we hold, what they may do, and what you hear about</div></div>`;
+  for (const c of state.children) {
+    const p = c.permissions;
+    h += `<div class="card"><div class="child-band">
+      <span class="avatar" style="background:${c.colour}">${initials(c)}</span>
+      <span class="who"><span class="nm">${esc(c.name)}</span><span class="mt">Year ${c.year} · ${esc(c.form)} · ${esc(c.house)} House</span></span>
+      <button class="linkish" data-rename="${c.id}">Edit</button></div><div class="rows">
+      <div class="row"><span class="k">Form teacher</span><span class="v">${esc(c.teacher)}</span></div>
+      <div class="row"><span class="k">Allergies</span><span class="v">${esc(c.allergies)}</span></div>
+      <div class="row"><span class="k">Medical</span><span class="v">${esc(c.medical)}</span></div>
+      <div class="row"><span class="k">Collection</span><span class="v">${esc(c.collection)}<span class="note">Authorised: ${esc(c.authorised.join("; "))}</span></span></div>
+      <div class="row"><span class="k">Consents</span><span class="v">${
+        [["photos", "Photographs used by the school"], ["walks", "Local walks and Holland Park"],
+         ["suncream", "Sun cream applied by staff"], ["paracetamol", "Paracetamol if needed"]]
+        .map(([k, l]) => `${p[k] ? "✓" : "✕"} ${l}`).join("<br>")}</span></div></div>
+      <div class="btnrow"><button class="btn ghost sm" data-demo="Update medical details">Update medical details</button>
+      <button class="btn ghost sm" data-demo="Change consents">Change consents</button></div></div>`;
+  }
+
+  h += `<div class="rubric">What you are told about</div><div class="card"><div class="rows">${
+    [["notices", "Notices and letters", "Sent as they are published"],
+     ["diary", "Diary changes", "Only where something you were told has moved"],
+     ["sport", "Fixtures, teams and results", "Posted the evening of a fixture"],
+     ["brief", "The evening brief", "One message at 7pm: tomorrow's kit and anything to bring"],
+     ["quiet", "Quiet hours", "Nothing between 8pm and 7am unless urgent"]]
+    .map(([k, l, m]) => `<div class="row" style="align-items:center"><span class="v"><strong>${l}</strong><span class="note">${m}</span></span>
+      <button class="tog" data-pref="${k}" aria-pressed="${!!state.prefs[k]}" aria-label="${l}"></button></div>`).join("")}
+    </div></div>`;
+
+  h += `<div class="rubric">Us</div><div class="card"><div class="rows">
+    <div class="row"><span class="k">Parent</span><span class="v">Alex Murray<span class="note">First contact for both children. Receives everything.</span></span></div>
+    <div class="row"><span class="k">Second</span><span class="v">Second parent<span class="note">Receives notices and diary changes.</span></span></div>
+    <div class="row"><span class="k">Third party</span><span class="v">Mrs S Nowak (nanny)<span class="note">Receives collection and club information only. No academic reports.</span></span></div>
+    <div class="row"><span class="k">Class reps</span><span class="v">4H: Mrs Camilla Reid · 2P: Mr Tom Fairbairn</span></div></div>
+    <div class="btnrow"><button class="btn ghost sm" data-demo="Manage who receives what">Manage who receives what</button></div></div>`;
+
+  h += `<div class="rubric">About</div><div class="card"><div class="card-pad" style="font-size:.88rem;color:var(--ink-2)">
+    <p>A prototype of a parent application for Norland Place School, built to show what the day-to-day experience could be rather than to be connected to anything. Children's names and details are illustrative; use Edit above to put your own in.</p>
+    <p style="margin-bottom:0">In a real deployment this would read from the school's management system, hold no data of its own beyond a device token, and be covered by the school's privacy notice and a data protection impact assessment.</p></div>
+    <div class="btnrow"><button class="btn ghost sm" data-theme-toggle>Switch theme</button>
+    <button class="btn ghost sm" data-reset>Reset the prototype</button></div></div>`;
+  return h;
+}
+
+/* ---------- Search ---------- */
+function viewSearch(q) {
+  const term = (q || "").trim().toLowerCase();
+  let h = `<div class="page-h"><h1>Search</h1><div class="sub">Notices, the diary and the school information</div></div>`;
+  h += `<div class="searchbox"><svg width="16" height="16" viewBox="0 0 20 20" fill="none" stroke="var(--faint)" stroke-width="1.9" stroke-linecap="round"><circle cx="8.8" cy="8.8" r="5.6"/><path d="M13.2 13.2 17 17"/></svg>
+    <input id="q" placeholder="Boater, swimming, half term, Late Stay…" value="${esc(q || "")}" autocomplete="off"></div>`;
+  if (term.length < 2) { h += `<div class="empty">Type a word or two. Everything in the app is searchable, including menus and term dates.</div>`; return h; }
+
+  const nres = NOTICES.filter(n => (n.title + " " + n.from + " " + n.body).toLowerCase().includes(term));
+  const sres = SCHOOL.filter(s => (s.t + " " + s.m + " " + s.body()).toLowerCase().includes(term));
+  const eres = [];
+  for (const t of TERMS) for (const e of (TERM_EVENTS[t.id] || [])) if ((e.t + " " + (e.note || "")).toLowerCase().includes(term)) eres.push({ e, t });
+
+  if (!nres.length && !sres.length && !eres.length) h += `<div class="empty"><div class="big">Nothing found</div>Try a different word.</div>`;
+  if (sres.length) h += `<div class="rubric">School information</div><div class="card">${sres.map(s =>
+    `<button class="idx" data-school="${s.k}"><span class="ic">${s.ic}</span><span class="bd"><span class="t">${esc(s.t)}</span><span class="m">${esc(s.m)}</span></span>${ICONS.chev}</button>`).join("")}</div>`;
+  if (nres.length) h += `<div class="rubric">Notices</div><div class="card">${nres.map(n =>
+    `<button class="idx" data-notice="${n.id}"><span class="ic">✉️</span><span class="bd"><span class="t">${esc(n.title)}</span><span class="m">${esc(n.from)} · ${dayShort(n.date)}</span></span>${ICONS.chev}</button>`).join("")}</div>`;
+  if (eres.length) h += `<div class="rubric">In the calendar</div><div class="card">${eres.slice(0, 10).map(({ e, t }) =>
+    `<div class="line"><span class="rail" style="background:${TYPE_COLOUR[e.type]}"></span><span class="tm">${e.time || "–"}</span>
+      <span class="bd"><span class="t">${esc(e.t)}</span><span class="m">${t.name}, week ${e.w}, ${e.d}sday</span></span></div>`).join("")}</div>`;
+  return h;
+}
+
+/* ============================================================
+   12. Sheets
+   ============================================================ */
+function openSheet(title, html) {
+  $("#sheet-title").textContent = title;
+  $("#sheet-body").innerHTML = html;
+  $("#scrim").hidden = false; $("#sheet").hidden = false;
+  requestAnimationFrame(() => { $("#scrim").classList.add("on"); $("#sheet").classList.add("on"); });
+  document.body.style.overflow = "hidden";
+}
+function closeSheet() {
+  $("#scrim").classList.remove("on"); $("#sheet").classList.remove("on");
+  document.body.style.overflow = "";
+  setTimeout(() => { $("#scrim").hidden = true; $("#sheet").hidden = true; }, 200);
+}
+function noticeSheet(id) {
+  const n = NOTICES.find(x => x.id === id); if (!n) return;
+  state.read[n.id] = true; save();
+  const a = n.action, done = a && state.done[n.id];
+  let h = `<div class="wrap"><div style="padding:12px 0 4px;color:var(--muted);font-size:.82rem">${esc(n.from)} · ${dayLong(n.date)}</div>
+    <div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:4px"><span class="pill plain">${esc(n.cat)}</span>${
+      n.years ? `<span class="pill sky">Year ${n.years.join(" & ")}</span>` : `<span class="pill plain">Whole school</span>`}</div></div>
+    <div class="prose">${n.body}</div>`;
+  if (a) {
+    h += `<div class="wrap"><div class="card ${done ? "" : "action-card"}"><div class="card-pad">
+      ${done ? `<div class="pill green">Done</div><p style="margin-top:7px;font-size:.88rem;color:var(--muted)">Recorded on ${dayLong(TODAY)}. The office has been told.</p>`
+        : `<div style="font-size:.9rem;margin-bottom:9px">This needs a reply by <strong>${dayLong(a.due)}</strong>.</div>
+           <button class="btn red wide" data-doaction="${n.id}">${esc(a.label)}</button>`}
+      </div></div></div>`;
+  }
+  h += `<div class="wrap"><div class="btnrow" style="padding-left:0;padding-right:0">
+    <button class="btn ghost sm" data-demo="Reply to ${esc(n.from)}">Reply</button>
+    <button class="btn ghost sm" data-demo="Add to my diary">Add to my diary</button>
+    <button class="btn ghost sm" data-demo="Download the attachment">Attachment</button></div></div>`;
+  openSheet(n.title, h);
+}
+function schoolSheet(k) {
+  const s = SCHOOL.find(x => x.k === k); if (!s) return;
+  openSheet(s.t, `<div class="prose">${s.body()}</div>`);
+}
+function eventSheet(title, dk) {
+  const [y, m, dd] = dk.split("-").map(Number);
+  const d = new Date(y, m - 1, dd);
+  const e = eventsFor(d, activeChildIds()).find(x => x.t === title);
+  if (!e) return;
+  const who = e.child ? childById(e.child).name : e.years ? `Year ${e.years.join(" and ")}` : "The whole school";
+  let h = `<div class="wrap"><div class="card" style="margin-top:12px"><div class="rows">
+    <div class="row"><span class="k">When</span><span class="v">${dayLong(d)}${e.time ? ` at ${e.time}` : ""}</span></div>
+    ${e.where ? `<div class="row"><span class="k">Where</span><span class="v">${esc(e.where)}</span></div>` : ""}
+    <div class="row"><span class="k">Who</span><span class="v">${esc(who)}</span></div>
+    <div class="row"><span class="k">Type</span><span class="v">${TYPE_LABEL[e.type] || e.type}</span></div>
+    ${e.note ? `<div class="row"><span class="k">Note</span><span class="v">${esc(e.note)}</span></div>` : ""}
+  </div></div>`;
+  const kids = state.children.filter(c => activeChildIds().includes(c.id) && (!e.years || e.years.includes(c.year)) && (!e.child || e.child === c.id));
+  for (const c of kids) { const w = wearFor(c, d);
+    if (w) h += `<div class="rubric">${esc(c.name)} wears</div><div class="card"><div class="card-pad" style="font-size:.9rem">
+      <strong>${w.base}.</strong> ${esc(w.detail)}${w.kit.length ? `<div style="margin-top:7px;color:var(--muted)">${w.kit.map(esc).join("<br>")}</div>` : ""}
+      ${w.overrides.length ? `<div style="margin-top:7px;color:var(--red)">${w.overrides.map(esc).join("<br>")}</div>` : ""}</div></div>`; }
+  h += `<div class="btnrow" style="padding-left:0;padding-right:0"><button class="btn ghost sm" data-demo="Add to my diary">Add to my diary</button>
+    <button class="btn ghost sm" data-demo="Tell the office we cannot make it">Tell the office</button></div></div>`;
+  openSheet(title, h);
+}
+function demoSheet(what) {
+  openSheet(what, `<div class="prose"><p>This is a prototype, so nothing is sent anywhere. In a working application this would ${esc(what.toLowerCase())}, writing straight to the school's management system so that the office, the form teacher and the register all see the same thing at once.</p>
+    <p>The point of putting it here is that a parent should not have to decide whether something is an email, a telephone call or a form. It is one place, and the school decides where it goes.</p></div>
+    <div class="wrap"><div class="btnrow" style="padding-left:0;padding-right:0"><button class="btn wide" data-close>Close</button></div></div>`);
+}
+function renameSheet(id) {
+  const c = childById(id); if (!c) return;
+  openSheet(`Edit ${c.name}`, `<div class="prose"><p>The prototype ships with illustrative names. Put your own in and everything else follows.</p></div>
+    <div class="wrap"><div class="card"><div class="card-pad">
+      <label style="font-size:.7rem;letter-spacing:.11em;text-transform:uppercase;color:var(--faint);font-weight:600">First name</label>
+      <input id="rn" value="${esc(c.name)}" style="width:100%;margin-top:6px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--card);font-size:1rem">
+    </div><div class="btnrow"><button class="btn" data-saverename="${id}">Save</button><button class="btn ghost" data-close>Cancel</button></div></div></div>`);
+  setTimeout(() => $("#rn")?.focus(), 260);
+}
+
+/* ============================================================
+   13. Render and events
+   ============================================================ */
+let route = { name: "today", arg: null };
+function render() {
+  const acts = openActions().length;
+  const tabsHtml = TABS.map(t => `<button class="tab" data-tab="${t.k}" ${route.name === t.k ? 'aria-current="page"' : ""}>
+      ${ICONS[t.k]}<span class="lb">${t.l}</span>${t.k === "notices" && acts ? `<span class="badge">${acts}</span>` : ""}</button>`).join("");
+  $("#tabbar").innerHTML = tabsHtml;
+  $("#siderail").innerHTML = tabsHtml;
+
+  const showChips = ["today", "diary", "notices"].includes(route.name);
+  $("#chipbar").innerHTML = showChips ? `<div class="chips">
+      <button class="chip" data-child="all" aria-pressed="${state.child === "all"}">Both</button>
+      ${state.children.map(chip).join("")}</div>` : "";
+
+  const v = $("#view");
+  v.innerHTML =
+    route.name === "today" ? viewToday() :
+    route.name === "diary" ? viewDiary() :
+    route.name === "notices" ? viewNotices() :
+    route.name === "school" ? viewSchool() :
+    route.name === "family" ? viewFamily() :
+    route.name === "child" ? viewChild(route.arg) :
+    route.name === "search" ? viewSearch(route.arg) : viewToday();
+
+  $("#wm-sub").textContent = route.name === "child" ? "Parents" : "Parents";
+  if (route.name === "search") { const q = $("#q"); if (q) { q.focus(); q.setSelectionRange(q.value.length, q.value.length); } }
+  window.scrollTo({ top: 0 });
+}
+function go(name, arg) { route = { name, arg: arg ?? null }; render(); }
+
+document.addEventListener("click", ev => {
+  const el = t => ev.target.closest(t);
+  let n;
+  if ((n = el("[data-tab]"))) return go(n.dataset.tab);
+  if ((n = el("[data-goto]"))) return go(n.dataset.goto);
+  if ((n = el("[data-child]"))) { state.child = n.dataset.child; return render(); }
+  if ((n = el("[data-childview]"))) return go("child", n.dataset.childview);
+  if ((n = el("[data-mode]"))) { state.diaryMode = n.dataset.mode; return render(); }
+  if ((n = el("[data-step]"))) {
+    const s = Number(n.dataset.step);
+    state.date = state.diaryMode === "month" ? new Date(state.date.getFullYear(), state.date.getMonth() + s, 1)
+      : addDays(state.date, state.diaryMode === "week" ? 7 * s : s);
+    return render();
+  }
+  if ((n = el("[data-day]"))) { const [y, m, d] = n.dataset.day.split("-").map(Number); state.date = new Date(y, m - 1, d); return render(); }
+  if ((n = el("[data-jump]"))) { const [y, m, d] = n.dataset.jump.split("-").map(Number); state.date = new Date(y, m - 1, d); state.diaryMode = "day"; return go("diary"); }
+  if ((n = el("[data-notice]"))) return noticeSheet(n.dataset.notice);
+  if ((n = el("[data-school]"))) return schoolSheet(n.dataset.school);
+  if ((n = el("[data-ev]"))) { const [t, d] = n.dataset.ev.split("|"); return eventSheet(t, d); }
+  if ((n = el("[data-demo]"))) return demoSheet(n.dataset.demo);
+  if ((n = el("[data-doaction]"))) { state.done[n.dataset.doaction] = true; save(); closeSheet(); return setTimeout(render, 210); }
+  if ((n = el("[data-rename]"))) return renameSheet(n.dataset.rename);
+  if ((n = el("[data-saverename]"))) {
+    const v = ($("#rn")?.value || "").trim();
+    if (v) { childById(n.dataset.saverename).name = v; save(); }
+    closeSheet(); return setTimeout(render, 210);
+  }
+  if ((n = el("[data-pref]"))) { state.prefs[n.dataset.pref] = !state.prefs[n.dataset.pref]; save(); return render(); }
+  if (el("[data-theme-toggle]")) {
+    const cur = document.documentElement.getAttribute("data-theme");
+    const dark = cur ? cur === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+    document.documentElement.setAttribute("data-theme", dark ? "light" : "dark");
+    return;
+  }
+  if (el("[data-reset]")) { localStorage.removeItem(STORE); location.reload(); return; }
+  if (el("[data-close]") || el("#sheet-close") || el("#scrim")) return closeSheet();
+  if (el("#btn-search")) return go("search", "");
+});
+document.addEventListener("input", ev => {
+  if (ev.target.id === "q") { route.arg = ev.target.value; const v = $("#view"); const pos = ev.target.selectionStart;
+    v.innerHTML = viewSearch(route.arg); const q = $("#q"); if (q) { q.focus(); q.setSelectionRange(pos, pos); } }
+});
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeSheet(); });
+
+render();
+if ("serviceWorker" in navigator) navigator.serviceWorker.register("sw.js").catch(() => {});
+</script>
+</body>
+</html>
