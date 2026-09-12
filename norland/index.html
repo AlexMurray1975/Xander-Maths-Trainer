@@ -723,11 +723,15 @@ function eventsFor(d, childIds) {
   const k = key(d);
   const t = termFor(d);
   const kids = state.children.filter(c => childIds.includes(c.id));
+  /* anything taken from a school email stands whatever sort of day it is:
+     a fair on a Saturday is still a fair */
+  const mail = inboxEventsFor(d, childIds);
 
-  if (INSET.has(k)) { out.push({ t: "INSET day, school closed to pupils", type: "inset", allDay: true, scope: "school" }); return out; }
-  if (!t) { out.push({ t: "School holiday", type: "holiday", allDay: true, scope: "school" }); return out; }
-  if (inHalfTerm(d)) { out.push({ t: "Half term", type: "holiday", allDay: true, scope: "school" }); return out; }
-  if (isWeekend(d)) return out;
+  if (INSET.has(k)) { out.push({ t: "INSET day, school closed to pupils", type: "inset", allDay: true, scope: "school" }); return out.concat(mail); }
+  if (!t) { out.push({ t: "School holiday", type: "holiday", allDay: true, scope: "school" }); return out.concat(mail); }
+  if (inHalfTerm(d)) { out.push({ t: "Half term", type: "holiday", allDay: true, scope: "school" }); return out.concat(mail); }
+  if (isWeekend(d)) return mail;
+  out.push(...mail);
 
   const w = termWeek(d), dc = dayCode(d);
   for (const e of (TERM_EVENTS[t.id] || [])) {
@@ -1019,7 +1023,7 @@ const NOTICES = [
 function relevantNotices() {
   const ids = activeChildIds();
   const yrs = state.children.filter(c => ids.includes(c.id)).map(c => c.year);
-  return NOTICES.filter(n => !n.years || n.years.some(y => yrs.includes(y)))
+  return allNotices().filter(n => !n.years || n.years.some(y => yrs.includes(y)))
     .sort((a, b) => (b.pinned ? 1 : 0) - (a.pinned ? 1 : 0) || b.date - a.date);
 }
 const actionOpen = n => !!n.action && !state.done[n.id];
@@ -1052,6 +1056,7 @@ const SCHOOL = [
         <p>The whole calendar can be subscribed to from the Diary, so that it keeps itself up to date in your own diary rather than being copied across by hand.</p>`; } },
 
   { k: "kitlist", ic: "🧾", t: "Start of term kit list", m: "Tick off what you have, see what to buy", body: null },
+  { k: "inbox", ic: "✉️", t: "The school's emails", m: "Add the app to the distribution list", body: null },
   { k: "uniform", ic: "🎓", t: "Uniform and kit", m: "What is worn, and when", body: () => `
     <p><strong>Today the school is in ${uniformBase(TODAY).toLowerCase()}.</strong> Summer uniform is worn from the start of the Michaelmas term until October half term, and from the May half term to the end of the Summer term. Winter uniform is worn in between.</p>
     <h3>Summer uniform</h3><p>${UNIFORM_DETAIL["Summer uniform"]}</p>
@@ -1256,12 +1261,109 @@ async function askForAlerts() {
 }
 
 /* ============================================================
+   Ingestion from the school's own emails
+
+   The school changes nothing: it goes on emailing, and an address on its
+   distribution list feeds this. Mail is accepted only if it passes DKIM from
+   the school's domain, then a model turns the prose into typed records, and
+   nothing reaches the app until a parent has confirmed it. The original text
+   is kept against every item, so the answer can always be checked against
+   what the school actually wrote.
+   ============================================================ */
+const INBOX_ADDRESS = "norland.murray@parents.example";
+const INBOX_SENDERS = "norlandplace.com";
+
+const EXTRACT_SCHEMA = `{
+  "from": "who at the school sent it, as a person or an office",
+  "summary": "one plain sentence saying what the email is for",
+  "items": [{
+    "kind": "event | notice | consent | payment | kit | change | none",
+    "title": "short, specific, no more than eight words",
+    "date": "YYYY-MM-DD or null",
+    "time": "HH:MM in 24 hour or null",
+    "where": "place or empty",
+    "audience": "whole school, or the year groups named, e.g. Year 4",
+    "child": "Xander, Charlie, both or null",
+    "action": "consent | payment | reply | book | none",
+    "due": "YYYY-MM-DD or null",
+    "wear": "what to wear, if the email says, else empty",
+    "bring": ["things to bring, if the email says"],
+    "confidence": "high | medium | low",
+    "why": "one short clause on how you read it"
+  }]
+}`;
+
+function extractPrompt(text) {
+  const kids = state.children.map(c => `${c.name} is in Year ${c.year}`).join(" and ");
+  return `You are reading an email sent by a London prep school to parents, and turning it into records for a parent's app.
+
+Today is ${dayLong(TODAY)} ${TODAY.getFullYear()}. ${kids}. Resolve any relative date such as "next Thursday" against the date the email was sent, and if the sent date is not given, against today. If a date cannot be resolved with confidence, return it as null and set confidence to low rather than guessing.
+
+Return JSON exactly in this shape and nothing else:
+${EXTRACT_SCHEMA}
+
+Rules. One item per distinct thing the email asks of a parent or tells them is happening; an email that is purely courteous returns an empty items array. Use "change" where the email alters something previously announced, and say what it changed in "why". Set "child" only where the audience names a year group one of the children is in. Prefer fewer, more accurate items over more, and use low confidence freely: a parent will check anything you are unsure of, but cannot check what you did not flag.
+
+The email follows between the markers.
+---EMAIL---
+${text}
+---END---`;
+}
+
+let extracting = false;
+async function extractEmail(text) {
+  const sample = await window.claude?.use?.("sample");
+  if (!sample) return { error: "unavailable" };
+  try {
+    const out = await sample.json(extractPrompt(text), { modelTier: "default" });
+    if (!out || !Array.isArray(out.items)) return { error: "shape" };
+    return out;
+  } catch (e) {
+    return { error: (e && e.code) || "failed", message: e && e.message };
+  }
+}
+
+const inboxId = () => "e" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+function childIdFromHint(h) {
+  if (!h) return null;
+  const c = state.children.find(x => x.name.toLowerCase() === String(h).toLowerCase());
+  return c ? c.id : null;
+}
+
+/* Accepted items become part of the app's own content. */
+function inboxEventsFor(d, childIds) {
+  const k = key(d);
+  return state.inbox.filter(i => i.kind === "event" && i.date === k)
+    .filter(i => !i.childId || childIds.includes(i.childId))
+    .map(i => ({ t: i.title, type: "school", time: i.time || null, where: i.where || "",
+      note: [i.wear, (i.bring || []).join(", ")].filter(Boolean).join(" · ") || i.why || "",
+      scope: i.childId ? "child" : "school", child: i.childId || undefined, fromEmail: true }));
+}
+function inboxNotices() {
+  return state.inbox.filter(i => ["notice", "consent", "payment", "change", "kit"].includes(i.kind))
+    .map(i => ({
+      id: "inbox:" + i.id, title: i.title, from: i.from || "The school", fromEmail: true,
+      cat: i.kind === "consent" ? "Consent" : i.kind === "payment" ? "Payment" : i.kind === "change" ? "Change" : "Letters",
+      date: i.added ? new Date(i.added) : TODAY,
+      years: i.childId ? [childById(i.childId).year] : null,
+      action: i.action && i.action !== "none"
+        ? { kind: i.action, label: { consent: "Give consent", payment: "Pay", reply: "Reply", book: "Book" }[i.action] || "Respond",
+            due: i.due ? new Date(i.due + "T12:00") : addDays(TODAY, 7) } : null,
+      body: `<p><em>Taken from an email from the school.</em></p><p>${esc(i.why || "")}</p>` +
+            (i.wear ? `<p><strong>Wearing:</strong> ${esc(i.wear)}</p>` : "") +
+            ((i.bring || []).length ? `<p><strong>Bring:</strong> ${esc(i.bring.join(", "))}</p>` : "") +
+            `<h3>The original email</h3><p style="white-space:pre-wrap">${esc(i.source || "")}</p>`
+    }));
+}
+const allNotices = () => [...NOTICES, ...inboxNotices()];
+
+/* ============================================================
    9. State
    ============================================================ */
 const STORE = "npp.v2";
 function load() { try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch { return {}; } }
 function save() {
-  try { localStorage.setItem(STORE, JSON.stringify({ read: state.read, done: state.done, checks: state.checks, kit: state.kit, reminders: state.reminders, prefs: state.prefs, names: state.children.map(c => c.name) })); } catch {}
+  try { localStorage.setItem(STORE, JSON.stringify({ read: state.read, done: state.done, checks: state.checks, kit: state.kit, reminders: state.reminders, inbox: state.inbox, prefs: state.prefs, names: state.children.map(c => c.name) })); } catch {}
 }
 const saved = load();
 const state = {
@@ -1274,6 +1376,9 @@ const state = {
   checks: saved.checks || {},
   kit: saved.kit || {},
   reminders: saved.reminders || [],
+  inbox: saved.inbox || [],
+  pending: [],
+  paste: "",
   kitToBuyOnly: false,
   kitChild: "c1",
   checkChild: "c1",
@@ -1712,6 +1817,7 @@ function viewAlerts() {
       ${perm === "granted"
         ? `<button class="btn ghost sm" data-testalert>Send a test alert</button>`
         : `<button class="btn sm" data-askalerts${perm === "unsupported" || perm === "denied" ? " disabled" : ""}>Turn alerts on</button>`}
+      <button class="btn ghost sm" data-goto="inbox">Read the school's emails</button>
       <button class="btn ghost sm" data-goto="family">Choose what you hear about</button></div></div>`;
 
   /* standing */
@@ -1802,6 +1908,88 @@ function reminderSheet(pre = {}) {
 }
 let sheetChild = null, sheetSrc = null;
 
+/* ---------- The school's emails ---------- */
+const KIND_LABEL = { event: "Diary entry", notice: "Notice", consent: "Consent needed",
+  payment: "Payment", kit: "Kit", change: "A change", none: "Nothing to do" };
+
+function viewInbox() {
+  let h = `<button class="backlink" data-goto="alerts">
+    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10 3.5-5 4.5 5 4.5"/></svg>
+    Alerts</button>`;
+  h += `<div class="page-h"><h1>The school's emails</h1><div class="sub">The school goes on emailing. The app reads what it sends.</div></div>`;
+
+  h += `<div class="card"><div class="card-head"><h2>How it works</h2></div>
+    <div class="rows">
+      <div class="row"><span class="k">1</span><span class="v">Add this address to the school's distribution list, alongside your own.
+        <span class="note" style="font-family:ui-monospace,monospace;font-size:.84rem;color:var(--ink);margin-top:5px">${esc(INBOX_ADDRESS)}</span></span></div>
+      <div class="row"><span class="k">2</span><span class="v">Mail is accepted only where it passes DKIM from <strong>${esc(INBOX_SENDERS)}</strong>. Anything else is discarded unread, so knowing the address is not enough to put something into your app.</span></div>
+      <div class="row"><span class="k">3</span><span class="v">What the school wrote in prose becomes dated entries, consent requests and kit notes.</span></div>
+      <div class="row"><span class="k">4</span><span class="v">Nothing appears in the app until you have confirmed it, and the original email is kept against every item so an answer can always be checked against what the school actually said.</span></div>
+    </div></div>`;
+
+  h += `<div class="rubric">Try it on a real one</div>
+    <div class="card"><div class="card-pad">
+      <label class="flabel" for="pastebox">Paste a school email</label>
+      <textarea class="finput" id="pastebox" rows="7" placeholder="Paste the whole thing, headers and all. Nothing is stored anywhere but this device." style="resize:vertical;font-size:.92rem;line-height:1.5">${esc(state.paste || "")}</textarea>
+    </div>
+    <div class="btnrow">
+      <button class="btn" data-extract${extracting ? " disabled" : ""}>${extracting ? "Reading…" : "Read it"}</button>
+      <button class="btn ghost" data-sampleemail>Use an example</button>
+      ${state.pending.length ? `<button class="btn ghost" data-clearpending>Clear</button>` : ""}
+    </div></div>`;
+
+  if (state.pending.length) {
+    h += `<div class="rubric">What it found · confirm each one</div>`;
+    for (const it of state.pending) {
+      const c = it.childId ? childById(it.childId) : null;
+      h += `<div class="card"><div class="card-head">
+        <h2 style="font-size:1rem">${esc(it.title || "Untitled")}</h2>
+        <span class="pill ${it.confidence === "high" ? "green" : it.confidence === "low" ? "red" : "plain"}">${esc(it.confidence || "medium")}</span></div>
+        <div class="rows">
+          <div class="row"><span class="k">Reads as</span><span class="v">${esc(KIND_LABEL[it.kind] || it.kind)}${
+            it.action && it.action !== "none" ? ` · needs a ${esc(it.action)}` : ""}</span></div>
+          ${it.date ? `<div class="row"><span class="k">When</span><span class="v">${dayLong(new Date(it.date + "T12:00"))}${it.time ? ` at ${esc(it.time)}` : ""}</span></div>` : ""}
+          ${it.where ? `<div class="row"><span class="k">Where</span><span class="v">${esc(it.where)}</span></div>` : ""}
+          <div class="row"><span class="k">Who</span><span class="v">${esc(it.audience || "Whole school")}${c ? ` · ${esc(c.name)}` : ""}</span></div>
+          ${it.wear ? `<div class="row"><span class="k">Wearing</span><span class="v">${esc(it.wear)}</span></div>` : ""}
+          ${(it.bring || []).length ? `<div class="row"><span class="k">Bring</span><span class="v">${esc(it.bring.join(", "))}</span></div>` : ""}
+          ${it.due ? `<div class="row"><span class="k">By</span><span class="v">${dayLong(new Date(it.due + "T12:00"))}</span></div>` : ""}
+          ${it.why ? `<div class="row"><span class="k">Because</span><span class="v" style="color:var(--muted)">${esc(it.why)}</span></div>` : ""}
+        </div>
+        <div class="btnrow"><button class="btn sm" data-accept="${it.tmp}">Add it</button>
+          <button class="btn ghost sm" data-reject="${it.tmp}">Not this one</button></div></div>`;
+    }
+  }
+
+  if (state.inbox.length) {
+    h += `<div class="rubric">Taken from emails so far</div><div class="card">${state.inbox.map(i =>
+      `<div class="line"><span class="rail" style="background:var(--slate)"></span>
+        <span class="tm">${i.date ? dayShort(new Date(i.date + "T12:00")).split(" ").slice(1).join(" ") : "—"}</span>
+        <span class="bd"><span class="t">${esc(i.title)}</span>
+        <span class="m">${esc(KIND_LABEL[i.kind] || i.kind)}${i.childId ? ` · ${esc(childById(i.childId).name)}` : ""}</span></span>
+        <button class="linkish" data-forget="${i.id}" style="align-self:center">Remove</button></div>`).join("")}</div>`;
+  }
+
+  h += `<div class="footnote">In the published app the reading is done by Claude, on this device's request and with your permission. In a working service it would happen when the email arrived, so that the app was already up to date before you opened it. Emails about children carry medical and pastoral detail, so a service doing this for more than one family needs a privacy notice, a lawful basis and an agreement with whoever processes the mail.</div>`;
+  return h;
+}
+
+const SAMPLE_EMAIL = `From: The School Office <office@norlandplace.com>
+Subject: Year 4 swimming, and a change to Thursday's fixture
+
+Dear Parents,
+
+Two things this week.
+
+Year 4 swimming moves to Thursday morning for the next three weeks while the pool at Kensington is serviced on Wednesdays. Swimming kit should therefore come in on Thursday rather than Wednesday, named throughout and including a cap.
+
+Second, Thursday's rugby fixture against Wetherby Prep has been moved from Barn Elms to the Holland Park pitches and now begins at 2.30pm rather than 2pm. Children will be back at school by 4.15pm as usual. Full games kit and a gum shield please; we cannot let a child play without one.
+
+Finally, a reminder that consent for the Science Museum visit closes at the end of next week. We still need a response for a number of children.
+
+With best wishes,
+The School Office`;
+
 /* ---------- Notices ---------- */
 function viewNotices() {
   const list = relevantNotices();
@@ -1820,7 +2008,7 @@ function viewNotices() {
       <span class="bd"><span class="t">${esc(n.title)}</span>
       <span class="m">${esc(n.from)} · ${dayShort(n.date)}</span>
       <span class="x">${esc(txt)}…</span>
-      <span class="tags"><span class="pill plain">${esc(n.cat)}</span>${n.years ? `<span class="pill sky">Year ${n.years.join(" & ")}</span>` : `<span class="pill plain">Whole school</span>`}${n.pinned ? `<span class="pill green">Keep</span>` : ""}${actionOpen(n) ? `<span class="pill red">${esc(n.action.label)}</span>` : n.action ? `<span class="pill green">Done</span>` : ""}</span></span></button>`;
+      <span class="tags">${n.fromEmail ? `<span class="pill sky">from an email</span>` : ""}<span class="pill plain">${esc(n.cat)}</span>${n.years ? `<span class="pill sky">Year ${n.years.join(" & ")}</span>` : `<span class="pill plain">Whole school</span>`}${n.pinned ? `<span class="pill green">Keep</span>` : ""}${actionOpen(n) ? `<span class="pill red">${esc(n.action.label)}</span>` : n.action ? `<span class="pill green">Done</span>` : ""}</span></span></button>`;
   }).join("");
   h += `</div><div class="footnote">Notices are kept for the academic year and can be searched. Anything needing a reply stays at the top until it is dealt with, and is repeated on Today.</div>`;
   return h;
@@ -1897,7 +2085,7 @@ function viewSearch(q) {
     <input id="q" placeholder="Boater, swimming, half term, Late Stay…" value="${esc(q || "")}" autocomplete="off"></div>`;
   if (term.length < 2) { h += `<div class="empty">Type a word or two. Everything in the app is searchable, including menus and term dates.</div>`; return h; }
 
-  const nres = NOTICES.filter(n => (n.title + " " + n.from + " " + n.body).toLowerCase().includes(term));
+  const nres = allNotices().filter(n => (n.title + " " + n.from + " " + n.body).toLowerCase().includes(term));
   const sres = SCHOOL.filter(s => (s.t + " " + s.m + " " + (s.body ? s.body() : "")).toLowerCase().includes(term));
   const eres = [];
   for (const t of TERMS) for (const e of (TERM_EVENTS[t.id] || [])) if ((e.t + " " + (e.note || "")).toLowerCase().includes(term)) eres.push({ e, t });
@@ -1929,7 +2117,7 @@ function closeSheet() {
   setTimeout(() => { $("#scrim").hidden = true; $("#sheet").hidden = true; }, 200);
 }
 function noticeSheet(id) {
-  const n = NOTICES.find(x => x.id === id); if (!n) return;
+  const n = allNotices().find(x => x.id === id); if (!n) return;
   state.read[n.id] = true; save();
   const a = n.action, done = a && state.done[n.id];
   let h = `<div class="wrap"><div style="padding:12px 0 4px;color:var(--muted);font-size:.82rem">${esc(n.from)} · ${dayLong(n.date)}</div>
@@ -1952,6 +2140,7 @@ function noticeSheet(id) {
 }
 function schoolSheet(k) {
   if (k === "kitlist") return go("kit");
+  if (k === "inbox") return go("inbox");
   const s = SCHOOL.find(x => x.k === k); if (!s) return;
   openSheet(s.t, `<div class="prose">${s.body()}</div>`);
 }
@@ -2021,6 +2210,7 @@ function render() {
     route.name === "check" ? viewCheck() :
     route.name === "kit" ? viewKit() :
     route.name === "alerts" ? viewAlerts() :
+    route.name === "inbox" ? viewInbox() :
     route.name === "search" ? viewSearch(route.arg) : viewToday();
 
   const bell = $("#btn-alerts");
@@ -2099,6 +2289,40 @@ document.addEventListener("click", ev => {
     return go("kit");
   }
   if (el("#btn-alerts")) return go("alerts");
+  if (el("[data-sampleemail]")) { state.paste = SAMPLE_EMAIL; return render(); }
+  if (el("[data-clearpending]")) { state.pending = []; return render(); }
+  if (el("[data-extract]")) {
+    const text = ($("#pastebox")?.value || "").trim();
+    if (text.length < 40) { toast("Nothing to read", "Paste the email first."); return; }
+    state.paste = text; extracting = true; render();
+    extractEmail(text).then(res => {
+      extracting = false;
+      if (res.error === "unavailable") {
+        toast("Reading is not available here", "It runs in the published app, where the page may ask Claude.");
+      } else if (res.error) {
+        toast("The email could not be read", res.message || "Try again in a moment.");
+      } else {
+        const items = (res.items || []).filter(i => i.kind && i.kind !== "none");
+        state.pending = items.map(i => ({ ...i, tmp: inboxId(), from: res.from || "The school",
+          childId: childIdFromHint(i.child), source: text }));
+        toast(items.length ? `${items.length} thing${items.length > 1 ? "s" : ""} found` : "Nothing needed",
+          res.summary || "");
+      }
+      render();
+    });
+    return;
+  }
+  if ((n = el("[data-accept]"))) {
+    const it = state.pending.find(x => x.tmp === n.dataset.accept);
+    if (it) {
+      state.inbox.push({ ...it, id: inboxId(), tmp: undefined, added: new Date().toISOString() });
+      state.pending = state.pending.filter(x => x.tmp !== it.tmp);
+      save();
+    }
+    return render();
+  }
+  if ((n = el("[data-reject]"))) { state.pending = state.pending.filter(x => x.tmp !== n.dataset.reject); return render(); }
+  if ((n = el("[data-forget]"))) { state.inbox = state.inbox.filter(x => x.id !== n.dataset.forget); save(); return render(); }
   if (el("[data-askalerts]")) return askForAlerts();
   if (el("[data-testalert]")) { fireAlert("Photographs on Thursday", "Full uniform with blazer. Games kit in a bag.", () => go("notices")); return; }
   if (el("[data-newreminder]")) return reminderSheet();
@@ -2134,7 +2358,7 @@ document.addEventListener("click", ev => {
     return;
   }
   if ((n = el("[data-remindnotice]"))) {
-    const no = NOTICES.find(x => x.id === n.dataset.remindnotice); if (!no) return;
+    const no = allNotices().find(x => x.id === n.dataset.remindnotice); if (!no) return;
     const due = no.action ? addDays(no.action.due, -1) : addDays(TODAY, 1);
     closeSheet();
     setTimeout(() => reminderSheet({ heading: "Remind me about this", title: no.title,
@@ -2181,6 +2405,7 @@ document.addEventListener("click", ev => {
   if (el("#btn-search")) return go("search", "");
 });
 document.addEventListener("input", ev => {
+  if (ev.target.id === "pastebox") { state.paste = ev.target.value; return; }
   if (ev.target.id === "q") { route.arg = ev.target.value; const v = $("#view"); const pos = ev.target.selectionStart;
     v.innerHTML = viewSearch(route.arg); const q = $("#q"); if (q) { q.focus(); q.setSelectionRange(pos, pos); } }
 });

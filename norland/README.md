@@ -45,6 +45,12 @@ such as the evening brief, and your own reminders, which can be set from scratch
 from a notice, a diary entry or the kit list. Reminders are held on the device; nothing
 is sent anywhere and the school cannot see them.
 
+**The school's emails** is the way information actually gets in. An address is added to
+the school's distribution list, mail that passes DKIM from the school's domain is read,
+and what the school wrote in prose becomes dated entries, consent requests and kit notes,
+each held for confirmation with the original email kept against it. In the published app
+the reading is done live by Claude, at your request.
+
 ## Design decisions worth knowing
 
 - **Answers, not sources.** The app does not show a uniform policy and a timetable and

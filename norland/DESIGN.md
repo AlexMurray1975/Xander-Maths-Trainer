@@ -161,6 +161,50 @@ audience and, where relevant, an action with a deadline. **Clubs**, **fixtures**
 **menus** are all patterns expressed against the week rather than lists of dates, which
 is why the prototype can populate any month of the year without a data file.
 
+## Ingestion from the school's own emails
+
+There is a third route into the app, and it is better than either of the two above
+because it asks the school for nothing at all. The school goes on emailing, as it always
+has, and an address is added to its distribution list alongside the parents' own. What
+arrives is read, turned into typed records, and put to the parent for confirmation.
+
+This removes the obstacle that would otherwise end the project. No integration, no IT
+work, no permission, no decision about the parent portal. It also has a property the
+integration route lacks: because the app's content is derived from the school's own
+words, it cannot contradict them, and every item keeps the original email against it so
+an answer can be checked at source. That is the "answers, not sources" principle taken to
+its logical end, where the source is retained rather than discarded.
+
+Four things make it work rather than merely function. Mail is accepted only where it
+passes DKIM from the school's domain, so knowing the address is not enough to put
+something into a parent's app, which matters when the thing being injected could be a
+change of collection arrangements. Relative dates are resolved against the date the email
+was sent and returned as null rather than guessed when they cannot be. Nothing reaches
+the app until a parent has confirmed it, with low confidence used freely on the principle
+that a parent will check what is flagged but cannot check what is not. And an email that
+alters something already announced is typed as a change rather than as a new item, which
+is where systems of this kind usually fail, by quietly accumulating duplicates until the
+diary is wrong in a way nobody notices.
+
+What it will find hard is worth stating. Schools put the operative detail in attachments,
+so PDF extraction is not optional. Forwarded chains, quoted replies and pasted screenshots
+are common. And an email addressed to the whole school about Year 6 is not about your
+child, so audience extraction has to be right more often than it has to be clever.
+
+The prototype runs the real extraction step, using the model through the page rather than
+a server, on the parent's request and with their consent. What it does not do is receive
+mail. In a working service the same extraction would run when the email arrived, so that
+the app was already current before the parent opened it.
+
+The data protection position changes sharply here and should not be glossed. School email
+about children carries medical, pastoral and occasionally safeguarding content, and
+routing it through a mailbox and a model is processing special category data. For one
+family, reading one's own correspondence, that is a personal matter. The moment a second
+family is served, the operator is a data controller, and needs a lawful basis, a privacy
+notice, a processing agreement with whoever handles the mail and a retention policy. The
+school should also be told, since forwarding its correspondence to an automated service is
+not something its acceptable use policy is likely to have contemplated.
+
 ## What a real build would involve
 
 The application should hold almost no data of its own. Everything above already exists
