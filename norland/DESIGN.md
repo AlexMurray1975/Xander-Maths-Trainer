@@ -19,8 +19,8 @@ reasoning on the parent's behalf, it should.
 
 ## Information architecture
 
-Five sections, which is as many as a tab bar can carry without becoming a menu, and two
-task screens reached from within them.
+Five sections, which is as many as a tab bar can carry without becoming a menu, two task
+screens reached from within them, and an alerts screen behind the bell.
 
 **Today** is the landing screen and the one that justifies the application. It opens
 with the date, the term and the week, and the number of school days to the next
@@ -117,6 +117,33 @@ each term.
 The prices are indicative and are stated as such in the app. They exist to give a sense
 of the total, which is the number a parent actually wants in September, not to quote one.
 The outfitter holds the school's own list and its prices, and the app links to it.
+
+## Alerts and reminders
+
+Two different things share one screen, deliberately. What the school sends you and what
+you have asked to be reminded of both interrupt you, so the place to see and govern them
+is the same place, behind the bell.
+
+The prototype is candid about its limits rather than pretending. A page with no server
+cannot receive a push, and the web has no dependable way to schedule a local notification
+for a day when the page is shut: Notification Triggers never shipped broadly, and the
+Notifications API only fires while something of yours is running. So reminders here are
+real and are stored, they fire while the app is open, and the card that offers them says
+in plain words that a production build would use Web Push and that on an iPhone that
+works only once the app has been added to the Home Screen. A prototype that faked a lock
+screen alert would be lying about the one thing a parent would test first.
+
+The system notification is best effort and the in-app banner is what actually carries the
+alert, because an embedded page may have notifications refused outright by the frame it
+sits in. That ordering means the feature degrades to something that still works rather
+than to nothing.
+
+Reminders can be made from nothing, but they are more useful made from something, so they
+can be raised from a notice, where the default is the evening before the deadline, from a
+diary entry, where the default is the day before, and from the kit list, where the title
+counts what is still to buy. A repeating reminder advances rather than completes, so
+"every school day" means the next school day rather than tomorrow, which in a school
+calendar is not the same thing.
 
 ## Content model
 

@@ -40,6 +40,11 @@ indicative total, and which items come from the outfitter rather than anywhere. 
 filters to the outstanding items and copies them to the clipboard for whoever is doing
 the shopping.
 
+**Alerts** is behind the bell. It carries what the school sends, the standing alerts
+such as the evening brief, and your own reminders, which can be set from scratch or
+from a notice, a diary entry or the kit list. Reminders are held on the device; nothing
+is sent anywhere and the school cannot see them.
+
 ## Design decisions worth knowing
 
 - **Answers, not sources.** The app does not show a uniform policy and a timetable and
@@ -49,6 +54,9 @@ the shopping.
 - **Everything is generated from today's date.** Terms, weeks, menus, fixtures and
   notices are computed from the current date, so the prototype looks live whenever it
   is opened. Append `?date=YYYY-MM-DD` to walk through any day of the year.
+- **Alerts are honest about what they can do.** With no server behind it, the prototype
+  fires reminders while the app is open and says so in the app itself. Production needs
+  Web Push, which on an iPhone works only once the app is on the Home Screen.
 - **The house style is the school's, not a technology company's.** Navy shield crest,
   a wide letterspaced geometric sans for headings and labels, a slate blue utility strip
   carrying the term and the week, and a cool navy and white palette. Red appears only as

@@ -116,6 +116,9 @@ a{color:var(--sky);}
   color:var(--ink);border:1px solid var(--line);
 }
 .iconbtn:hover{background:var(--paper-2);}
+.iconbtn.dot{position:relative;}
+.iconbtn.dot::after{content:'';position:absolute;top:5px;right:5px;width:8px;height:8px;border-radius:50%;
+  background:var(--red);box-shadow:0 0 0 2px var(--card);}
 :root[data-theme="dark"] .crest{filter:brightness(0) invert(1);opacity:.92;}
 
 /* ---------- Child filter ---------- */
@@ -330,6 +333,22 @@ h1,h2,h3{font-family:var(--display);font-weight:500;letter-spacing:-.2px;line-he
 .banner.amber .dot{background:var(--gold);} .banner.amber .t{color:var(--gold);}
 .backlink{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--muted);font-weight:500;padding:14px 0 0;}
 
+/* alerts */
+.toasts{position:fixed;left:0;right:0;top:0;z-index:70;display:flex;flex-direction:column;gap:8px;
+  padding:calc(env(safe-area-inset-top) + 10px) 12px 0;pointer-events:none;max-width:600px;margin:0 auto;}
+.toast{background:var(--ink);color:var(--on-ink);border-radius:12px;padding:11px 13px;
+  box-shadow:0 8px 28px rgba(15,25,45,.3);pointer-events:auto;display:flex;gap:10px;align-items:flex-start;
+  transform:translateY(-14px);opacity:0;transition:transform .22s,opacity .22s;cursor:pointer;}
+.toast.on{transform:none;opacity:1;}
+.toast .toast-x{color:inherit;opacity:.6;flex:0 0 auto;padding:2px;}
+.flabel{display:block;font-size:.68rem;letter-spacing:.11em;text-transform:uppercase;color:var(--faint);font-weight:600;}
+.finput{width:100%;margin-top:6px;padding:10px 12px;border:1px solid var(--line);border-radius:10px;
+  background:var(--card);color:var(--ink);font-size:1rem;}
+.finput:focus-visible{outline:2px solid var(--slate);outline-offset:1px;}
+select.finput{appearance:none;background-image:linear-gradient(45deg,transparent 50%,var(--muted) 50%),linear-gradient(135deg,var(--muted) 50%,transparent 50%);
+  background-position:calc(100% - 16px) 18px,calc(100% - 11px) 18px;background-size:5px 5px,5px 5px;background-repeat:no-repeat;}
+@media (prefers-reduced-motion: reduce){ .toast{transition:none;} }
+
 /* sheet */
 .scrim{position:fixed;inset:0;background:rgba(15,22,38,.42);z-index:60;opacity:0;transition:opacity .18s;}
 .scrim.on{opacity:1;}
@@ -415,6 +434,9 @@ h1,h2,h3{font-family:var(--display);font-weight:500;letter-spacing:-.2px;line-he
       <div class="n">Norland Place</div>
       <div class="s" id="wm-sub">Parents</div>
     </div>
+    <button class="iconbtn" id="btn-alerts" aria-label="Alerts and reminders">
+      <svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2.5a5 5 0 0 0-5 5c0 4-1.5 5.5-1.5 5.5h13S15 11.5 15 7.5a5 5 0 0 0-5-5Z"/><path d="M8.3 16a2 2 0 0 0 3.4 0"/></svg>
+    </button>
     <button class="iconbtn" id="btn-search" aria-label="Search">
       <svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><circle cx="8.8" cy="8.8" r="5.6"/><path d="M13.2 13.2 17 17"/></svg>
     </button>
@@ -431,6 +453,7 @@ h1,h2,h3{font-family:var(--display);font-weight:500;letter-spacing:-.2px;line-he
 
 <nav class="tabbar" aria-label="Sections"><div class="inner" id="tabbar"></div></nav>
 
+<div class="toasts" id="toasts" aria-live="polite"></div>
 <div class="scrim" id="scrim" hidden></div>
 <section class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="sheet-title" hidden>
   <div class="grab"></div>
@@ -1121,12 +1144,124 @@ const SCHOOL = [
 ];
 
 /* ============================================================
+   Alerts and reminders
+
+   A prototype with no server cannot receive a real push, and the web has no
+   dependable way to schedule a local notification for a day when the page is
+   shut. So: reminders are real and stored, they fire while the app is open,
+   and the app says plainly what a production build would need instead.
+   ============================================================ */
+const REPEATS = { once: "Once", schooldays: "Every school day", weekly: "Every week" };
+
+function localStamp(d, hh, mm) {
+  return `${key(d)}T${pad(hh)}:${pad(mm)}`;
+}
+/* Reminders fire against the real clock, not against the ?date= demo override,
+   which moves only what the app treats as today. */
+function whenOf(r) { return new Date(r.at); }
+function advanceReminder(r) {
+  const d = whenOf(r);
+  const hh = d.getHours(), mm = d.getMinutes();
+  if (r.repeat === "weekly") { const n = addDays(d, 7); r.at = localStamp(n, hh, mm); }
+  else if (r.repeat === "schooldays") { const n = nextSchoolDay(d, false); r.at = localStamp(n, hh, mm); }
+  else { r.done = true; return; }
+  r.fired = false;
+}
+function addReminder(rem) {
+  state.reminders.push({ id: "r" + Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    repeat: "once", done: false, fired: false, childId: null, src: null, ...rem });
+  state.reminders.sort((a, b) => whenOf(a) - whenOf(b));
+  save();
+}
+function liveReminders() { return state.reminders.filter(r => !r.done).sort((a, b) => whenOf(a) - whenOf(b)); }
+function dueNow(now) { return liveReminders().filter(r => whenOf(r) <= now); }
+function dueToday() {
+  const end = new Date(TODAY); end.setHours(23, 59, 59, 999);
+  return liveReminders().filter(r => whenOf(r) <= end);
+}
+
+/* The evening brief is a standing alert rather than a stored reminder; it is
+   shown in the list so that everything that will interrupt you is in one place. */
+function standingAlerts() {
+  const out = [];
+  if (state.prefs.brief) out.push({ standing: true, title: "The evening brief",
+    note: "Tomorrow's kit and anything to bring, at 7pm on a school evening.", where: "Family" });
+  if (state.prefs.quiet) out.push({ standing: true, title: "Quiet hours",
+    note: "Nothing between 8pm and 7am unless it is urgent.", where: "Family" });
+  return out;
+}
+
+/* What the school has pushed recently, which in a real build is what would
+   have arrived on the phone. */
+function recentPushes() {
+  const cutoff = addDays(TODAY, -10);
+  return relevantNotices().filter(n => n.date >= cutoff)
+    .map(n => ({ id: n.id, title: n.title, from: n.from, date: n.date, action: !!n.action }))
+    .sort((a, b) => b.date - a.date);
+}
+
+const canNotify = () => typeof Notification !== "undefined";
+const notifyState = () => canNotify() ? Notification.permission : "unsupported";
+
+function toast(title, body, onTap) {
+  const wrap = $("#toasts");
+  const el = document.createElement("div");
+  el.className = "toast";
+  el.innerHTML = `<svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:0 0 17px;margin-top:1px"><path d="M10 2.5a5 5 0 0 0-5 5c0 4-1.5 5.5-1.5 5.5h13S15 11.5 15 7.5a5 5 0 0 0-5-5Z"/><path d="M8.3 16a2 2 0 0 0 3.4 0"/></svg>
+    <span style="flex:1;min-width:0"><span style="display:block;font-weight:600;font-size:.9rem">${esc(title)}</span>
+    ${body ? `<span style="display:block;font-size:.82rem;opacity:.85;margin-top:2px">${esc(body)}</span>` : ""}</span>
+    <button class="toast-x" aria-label="Dismiss"><svg width="12" height="12" viewBox="0 0 14 14" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 2l10 10M12 2L2 12"/></svg></button>`;
+  el.querySelector(".toast-x").addEventListener("click", e => { e.stopPropagation(); el.remove(); });
+  if (onTap) el.addEventListener("click", () => { el.remove(); onTap(); });
+  wrap.appendChild(el);
+  requestAnimationFrame(() => el.classList.add("on"));
+  setTimeout(() => { el.classList.remove("on"); setTimeout(() => el.remove(), 250); }, 9000);
+}
+
+function fireAlert(title, body, onTap) {
+  /* The system notification is best effort: in an embedded frame it may be
+     refused outright, so the in-app banner is what actually carries it. */
+  try {
+    if (canNotify() && Notification.permission === "granted")
+      new Notification(title, { body, icon: "icons/icon-512.png", tag: title });
+  } catch {}
+  toast(title, body, onTap);
+}
+
+function tickAlerts() {
+  const now = new Date();
+  let changed = false;
+  for (const r of state.reminders) {
+    if (r.done || r.fired) continue;
+    if (whenOf(r) <= now) {
+      r.fired = true; changed = true;
+      const c = r.childId ? childById(r.childId) : null;
+      fireAlert(r.title, c ? `${c.name} · your reminder` : "Your reminder", () => go("alerts"));
+      if (r.repeat !== "once") advanceReminder(r);
+    }
+  }
+  if (changed) { save(); if (route.name === "alerts" || route.name === "today") render(); }
+}
+
+async function askForAlerts() {
+  if (!canNotify()) { toast("Alerts are not available", "This browser does not offer notifications."); render(); return; }
+  try {
+    const p = await Notification.requestPermission();
+    if (p === "granted") fireAlert("Alerts are on", "You will hear from the school here.");
+    else toast("Alerts are off", p === "denied"
+      ? "Permission was refused. Turn it back on in the browser's settings for this site."
+      : "No answer was given, so nothing has changed.");
+  } catch { toast("Alerts could not be turned on", "The browser refused the request."); }
+  render();
+}
+
+/* ============================================================
    9. State
    ============================================================ */
 const STORE = "npp.v2";
 function load() { try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch { return {}; } }
 function save() {
-  try { localStorage.setItem(STORE, JSON.stringify({ read: state.read, done: state.done, checks: state.checks, kit: state.kit, prefs: state.prefs, names: state.children.map(c => c.name) })); } catch {}
+  try { localStorage.setItem(STORE, JSON.stringify({ read: state.read, done: state.done, checks: state.checks, kit: state.kit, reminders: state.reminders, prefs: state.prefs, names: state.children.map(c => c.name) })); } catch {}
 }
 const saved = load();
 const state = {
@@ -1138,6 +1273,7 @@ const state = {
   done: saved.done || {},
   checks: saved.checks || {},
   kit: saved.kit || {},
+  reminders: saved.reminders || [],
   kitToBuyOnly: false,
   kitChild: "c1",
   checkChild: "c1",
@@ -1261,6 +1397,18 @@ function viewToday() {
 
     if (p && p.prep) h += `<div class="row"><span class="k">Prep</span><span class="v">${esc(p.prep)}</span></div>`;
     h += `</div></div>`;
+  }
+
+  /* Reminders you set yourself */
+  const rem = dueToday();
+  if (rem.length) {
+    h += `<div class="rubric">Your reminders</div><div class="card">${rem.map(r => {
+      const rc = r.childId ? childById(r.childId) : null, rd = whenOf(r);
+      return `<button class="line tappable" data-goto="alerts">
+        <span class="rail" style="background:${rd <= new Date() ? "var(--red)" : "var(--slate)"}"></span>
+        <span class="tm">${pad(rd.getHours())}:${pad(rd.getMinutes())}</span>
+        <span class="bd"><span class="t">${esc(r.title)}</span>${rc ? `<span class="m">${esc(rc.name)}</span>` : ""}</span>
+        ${ICONS.chev}</button>`; }).join("")}</div>`;
   }
 
   /* Whole-school notes and tomorrow */
@@ -1528,10 +1676,131 @@ function viewKit() {
       <a class="btn sm" href="${OUTFITTER.url}" target="_blank" rel="noopener">${esc(OUTFITTER.name)} ↗</a>
       <button class="btn ghost sm" data-demo="Book the second-hand sale">Second-hand sale</button>
       <button class="btn ghost sm" data-copykit="${c.id}">Copy the list</button>
+      <button class="btn ghost sm" data-remindkit="${c.id}">Remind me</button>
       <button class="btn ghost sm" data-clearkit="${c.id}">Start again</button></div></div>`;
   h += `<div class="footnote">Quantities follow a typical prep school list and the prices are indicative, to give a sense of the total rather than to quote one. ${esc(OUTFITTER.name)} holds the school's own list and its prices.</div>`;
   return h;
 }
+
+/* ---------- Alerts and reminders ---------- */
+function viewAlerts() {
+  const perm = notifyState();
+  const live = liveReminders();
+  const now = new Date();
+  const endToday = new Date(TODAY); endToday.setHours(23, 59, 59, 999);
+  const endWeek = addDays(endToday, 7);
+  const buckets = [
+    ["Due now", live.filter(r => whenOf(r) <= now)],
+    ["Later today", live.filter(r => whenOf(r) > now && whenOf(r) <= endToday)],
+    ["This week", live.filter(r => whenOf(r) > endToday && whenOf(r) <= endWeek)],
+    ["Later", live.filter(r => whenOf(r) > endWeek)]
+  ].filter(([, l]) => l.length);
+
+  let h = `<button class="backlink" data-goto="today">
+    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10 3.5-5 4.5 5 4.5"/></svg>
+    Today</button>`;
+  h += `<div class="page-h"><h1>Alerts</h1><div class="sub">What the school sends you, and what you ask it to remind you of</div></div>`;
+
+  /* from the school */
+  const state_ = { granted: "on", denied: "refused", default: "not yet asked", unsupported: "unavailable" }[perm];
+  h += `<div class="card"><div class="card-head"><h2>From the school</h2>
+    <span class="pill ${perm === "granted" ? "green" : perm === "denied" ? "red" : "plain"}">${state_}</span></div>
+    <div class="card-pad" style="font-size:.89rem;color:var(--ink-2)">
+      <p style="margin:0 0 9px">Letters, consent forms, changes to something you have already been told, and fixtures and results. What each of these does is set under Family.</p>
+      <p style="margin:0;color:var(--muted);font-size:.84rem">While this is a prototype with no server behind it, alerts appear here in the app rather than on your phone's lock screen. A real build would use Web Push; on an iPhone that works only once the app has been added to the Home Screen.</p></div>
+    <div class="btnrow">
+      ${perm === "granted"
+        ? `<button class="btn ghost sm" data-testalert>Send a test alert</button>`
+        : `<button class="btn sm" data-askalerts${perm === "unsupported" || perm === "denied" ? " disabled" : ""}>Turn alerts on</button>`}
+      <button class="btn ghost sm" data-goto="family">Choose what you hear about</button></div></div>`;
+
+  /* standing */
+  const st = standingAlerts();
+  if (st.length) {
+    h += `<div class="rubric">Standing</div><div class="card"><div class="rows">${st.map(a =>
+      `<div class="row"><span class="v"><strong>${esc(a.title)}</strong><span class="note">${esc(a.note)}</span></span>
+        <span class="pill plain">${esc(a.where)}</span></div>`).join("")}</div></div>`;
+  }
+
+  /* your reminders */
+  h += `<div class="rubric">Your reminders</div>`;
+  if (!live.length) {
+    h += `<div class="card"><div class="empty"><div class="big">Nothing set</div>
+      Reminders can be set here, or from a notice, a diary entry or the kit list.</div>
+      <div class="btnrow" style="justify-content:center"><button class="btn sm" data-newreminder>Add a reminder</button></div></div>`;
+  } else {
+    for (const [label, list] of buckets) {
+      h += `<div class="card" style="margin-bottom:10px"><div class="card-head"><h2 style="font-size:.95rem">${label}</h2>
+        <span class="tag">${list.length}</span></div>`;
+      h += list.map(r => {
+        const c = r.childId ? childById(r.childId) : null;
+        const d = whenOf(r);
+        const when = sameDay(d, TODAY) ? `today at ${pad(d.getHours())}:${pad(d.getMinutes())}`
+          : sameDay(d, addDays(TODAY, 1)) ? `tomorrow at ${pad(d.getHours())}:${pad(d.getMinutes())}`
+          : `${dayShort(d)} at ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+        return `<div class="chk" style="cursor:default">
+          <button class="box" data-donereminder="${r.id}" aria-label="Mark done" style="border-color:var(--line)">
+            <svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 7.5 5.5 10.5 11.5 3.5"/></svg></button>
+          <span class="bd"><span class="t">${esc(r.title)}</span>
+            <span class="n">${when}${r.repeat !== "once" ? ` · ${REPEATS[r.repeat].toLowerCase()}` : ""}</span>
+            <span class="n" style="display:flex;gap:5px;flex-wrap:wrap;margin-top:5px">
+              ${c ? `<span class="pill plain">${esc(c.name)}</span>` : ""}
+              ${r.src ? `<span class="pill sky">from a notice</span>` : ""}
+              ${whenOf(r) <= now ? `<span class="pill red">due</span>` : ""}</span></span>
+          <button class="linkish" data-delreminder="${r.id}" style="align-self:center">Remove</button></div>`;
+      }).join("");
+      h += `</div>`;
+    }
+    h += `<div class="btnrow" style="padding-left:0;padding-right:0"><button class="btn" data-newreminder>Add a reminder</button></div>`;
+  }
+
+  /* what the school has sent lately */
+  const pushes = recentPushes();
+  if (pushes.length) {
+    h += `<div class="rubric">Sent to you lately</div><div class="card">${pushes.map(n =>
+      `<button class="line tappable" data-notice="${n.id}"><span class="rail" style="background:${n.action ? "var(--red)" : "var(--slate)"}"></span>
+        <span class="tm">${dayShort(n.date).split(" ").slice(1).join(" ")}</span>
+        <span class="bd"><span class="t">${esc(n.title)}</span><span class="m">${esc(n.from)}${n.action ? " · needs a reply" : ""}</span></span>
+        ${ICONS.chev}</button>`).join("")}</div>`;
+  }
+  h += `<div class="footnote">Reminders are held on this device only. Nothing is sent anywhere, and the school cannot see them.</div>`;
+  return h;
+}
+
+function reminderSheet(pre = {}) {
+  const d = pre.date || key(addDays(TODAY, 1));
+  const t = pre.time || "07:30";
+  let h = `<div class="wrap"><div class="card" style="margin-top:12px"><div class="card-pad">
+    <label class="flabel" for="rm-t">What should it say</label>
+    <input class="finput" id="rm-t" value="${esc(pre.title || "")}" placeholder="Gum shield for Thursday" autocomplete="off">
+    <label class="flabel" for="rm-d" style="margin-top:13px">When</label>
+    <div style="display:flex;gap:8px">
+      <input class="finput" id="rm-d" type="date" value="${d}" style="flex:1.4">
+      <input class="finput" id="rm-i" type="time" value="${t}" style="flex:1">
+    </div>
+    <div class="chips" style="padding:10px 0 0">
+      <button class="chip" data-preset="tonight">Tonight, 7pm</button>
+      <button class="chip" data-preset="morning">Tomorrow, 7.30am</button>
+      <button class="chip" data-preset="sunday">Sunday evening</button>
+    </div>
+    <label class="flabel" style="margin-top:13px">Who it is about</label>
+    <div class="chips" style="padding:6px 0 0">
+      <button class="chip" data-rchild="" aria-pressed="${!pre.childId}">Neither</button>
+      ${state.children.map(c => `<button class="chip" data-rchild="${c.id}" aria-pressed="${pre.childId === c.id}">
+        <span class="pip" style="background:${c.colour}"></span>${esc(c.name)}</button>`).join("")}
+    </div>
+    <label class="flabel" for="rm-r" style="margin-top:13px">Repeat</label>
+    <select class="finput" id="rm-r">${Object.entries(REPEATS).map(([k, v]) =>
+      `<option value="${k}"${pre.repeat === k ? " selected" : ""}>${v}</option>`).join("")}</select>
+  </div>
+  <div class="btnrow"><button class="btn" data-savereminder>Set the reminder</button>
+    <button class="btn ghost" data-close>Cancel</button></div></div></div>`;
+  openSheet(pre.heading || "New reminder", h);
+  sheetChild = pre.childId || null;
+  sheetSrc = pre.src || null;
+  setTimeout(() => { const i = $("#rm-t"); if (i && !i.value) i.focus(); }, 260);
+}
+let sheetChild = null, sheetSrc = null;
 
 /* ---------- Notices ---------- */
 function viewNotices() {
@@ -1609,7 +1878,8 @@ function viewFamily() {
     <div class="row"><span class="k">Second</span><span class="v">Second parent<span class="note">Receives notices and diary changes.</span></span></div>
     <div class="row"><span class="k">Third party</span><span class="v">Mrs S Nowak (nanny)<span class="note">Receives collection and club information only. No academic reports.</span></span></div>
     <div class="row"><span class="k">Class reps</span><span class="v">4H: Mrs Camilla Reid · 2P: Mr Tom Fairbairn</span></div></div>
-    <div class="btnrow"><button class="btn ghost sm" data-demo="Manage who receives what">Manage who receives what</button></div></div>`;
+    <div class="btnrow"><button class="btn ghost sm" data-goto="alerts">Alerts and reminders</button>
+    <button class="btn ghost sm" data-demo="Manage who receives what">Manage who receives what</button></div></div>`;
 
   h += `<div class="rubric">About</div><div class="card"><div class="card-pad" style="font-size:.88rem;color:var(--ink-2)">
     <p>A prototype of a parent application for Norland Place School, built to show what the day-to-day experience could be rather than to be connected to anything. Children's names and details are illustrative; use Edit above to put your own in.</p>
@@ -1674,6 +1944,7 @@ function noticeSheet(id) {
       </div></div></div>`;
   }
   h += `<div class="wrap"><div class="btnrow" style="padding-left:0;padding-right:0">
+    <button class="btn ghost sm" data-remindnotice="${n.id}">Remind me</button>
     <button class="btn ghost sm" data-demo="Reply to ${esc(n.from)}">Reply</button>
     <button class="btn ghost sm" data-demo="Add to my diary">Add to my diary</button>
     <button class="btn ghost sm" data-demo="Download the attachment">Attachment</button></div></div>`;
@@ -1702,7 +1973,9 @@ function eventSheet(title, dk) {
     if (w) h += `<div class="rubric">${esc(c.name)} wears</div><div class="card"><div class="card-pad" style="font-size:.9rem">
       <strong>${w.base}.</strong> ${esc(w.detail)}${w.kit.length ? `<div style="margin-top:7px;color:var(--muted)">${w.kit.map(esc).join("<br>")}</div>` : ""}
       ${w.overrides.length ? `<div style="margin-top:7px;color:var(--red)">${w.overrides.map(esc).join("<br>")}</div>` : ""}</div></div>`; }
-  h += `<div class="btnrow" style="padding-left:0;padding-right:0"><button class="btn ghost sm" data-demo="Add to my diary">Add to my diary</button>
+  h += `<div class="btnrow" style="padding-left:0;padding-right:0">
+    <button class="btn ghost sm" data-remindevent="${esc(title)}|${dk}">Remind me the day before</button>
+    <button class="btn ghost sm" data-demo="Add to my diary">Add to my diary</button>
     <button class="btn ghost sm" data-demo="Tell the office we cannot make it">Tell the office</button></div></div>`;
   openSheet(title, h);
 }
@@ -1747,7 +2020,11 @@ function render() {
     route.name === "child" ? viewChild(route.arg) :
     route.name === "check" ? viewCheck() :
     route.name === "kit" ? viewKit() :
+    route.name === "alerts" ? viewAlerts() :
     route.name === "search" ? viewSearch(route.arg) : viewToday();
+
+  const bell = $("#btn-alerts");
+  if (bell) bell.classList.toggle("dot", dueToday().length > 0 || openActions().length > 0);
 
   const ut = termFor(TODAY), uh = nextHoliday(TODAY);
   $("#ub-l").textContent = INSET.has(key(TODAY)) ? "INSET day" :
@@ -1820,6 +2097,66 @@ document.addEventListener("click", ev => {
     state.kitChild = n.dataset.openkit;
     if (!$("#sheet").hidden) { closeSheet(); setTimeout(() => go("kit"), 210); return; }
     return go("kit");
+  }
+  if (el("#btn-alerts")) return go("alerts");
+  if (el("[data-askalerts]")) return askForAlerts();
+  if (el("[data-testalert]")) { fireAlert("Photographs on Thursday", "Full uniform with blazer. Games kit in a bag.", () => go("notices")); return; }
+  if (el("[data-newreminder]")) return reminderSheet();
+  if ((n = el("[data-donereminder]"))) {
+    const r = state.reminders.find(x => x.id === n.dataset.donereminder);
+    if (r) { if (r.repeat === "once") r.done = true; else advanceReminder(r); save(); }
+    return render();
+  }
+  if ((n = el("[data-delreminder]"))) {
+    state.reminders = state.reminders.filter(x => x.id !== n.dataset.delreminder); save(); return render();
+  }
+  if ((n = el("[data-rchild]"))) {
+    sheetChild = n.dataset.rchild || null;
+    for (const b of document.querySelectorAll("[data-rchild]")) b.setAttribute("aria-pressed", String((b.dataset.rchild || null) === sheetChild));
+    return;
+  }
+  if ((n = el("[data-preset]"))) {
+    const k = n.dataset.preset;
+    const di = $("#rm-d"), ti = $("#rm-i");
+    if (k === "tonight") { di.value = key(TODAY); ti.value = "19:00"; }
+    if (k === "morning") { di.value = key(addDays(TODAY, 1)); ti.value = "07:30"; }
+    if (k === "sunday") { let x = new Date(TODAY); while (x.getDay() !== 0) x = addDays(x, 1); di.value = key(x); ti.value = "18:00"; }
+    return;
+  }
+  if (el("[data-savereminder]")) {
+    const title = ($("#rm-t")?.value || "").trim();
+    const d = $("#rm-d")?.value, t = $("#rm-i")?.value || "07:30";
+    if (!title) { $("#rm-t")?.focus(); return; }
+    if (!d) { $("#rm-d")?.focus(); return; }
+    addReminder({ title, at: `${d}T${t}`, childId: sheetChild, repeat: $("#rm-r")?.value || "once", src: sheetSrc });
+    closeSheet();
+    setTimeout(() => { render(); toast("Reminder set", `${title} · ${dayShort(new Date(d))} at ${t}`, () => go("alerts")); }, 210);
+    return;
+  }
+  if ((n = el("[data-remindnotice]"))) {
+    const no = NOTICES.find(x => x.id === n.dataset.remindnotice); if (!no) return;
+    const due = no.action ? addDays(no.action.due, -1) : addDays(TODAY, 1);
+    closeSheet();
+    setTimeout(() => reminderSheet({ heading: "Remind me about this", title: no.title,
+      date: key(due < TODAY ? TODAY : due), time: "19:00",
+      childId: no.years ? (state.children.find(c => no.years.includes(c.year)) || {}).id || null : null, src: no.id }), 220);
+    return;
+  }
+  if ((n = el("[data-remindevent]"))) {
+    const [t, dk] = n.dataset.remindevent.split("|");
+    const [y, m, dd] = dk.split("-").map(Number);
+    const before = addDays(new Date(y, m - 1, dd), -1);
+    closeSheet();
+    setTimeout(() => reminderSheet({ heading: "Remind me the day before", title: t,
+      date: key(before < TODAY ? TODAY : before), time: "19:00" }), 220);
+    return;
+  }
+  if ((n = el("[data-remindkit]"))) {
+    const c = childById(n.dataset.remindkit), owned = state.kit[c.id] || {};
+    const left = kitListFor(c).flatMap(g => g.items).filter(i => !owned[i.id]).length;
+    return reminderSheet({ heading: "Remind me to buy the kit", childId: c.id,
+      title: left ? `Buy ${c.name}'s remaining ${left} kit items` : `Check ${c.name}'s kit list`,
+      date: key(addDays(TODAY, 7)), time: "10:00" });
   }
   if ((n = el("[data-notice]"))) return noticeSheet(n.dataset.notice);
   if ((n = el("[data-school]"))) return schoolSheet(n.dataset.school);
