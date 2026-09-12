@@ -28,6 +28,12 @@ care, health, travel, the Parents' Association, policies and lost property.
 **Family** holds each child's record, the consents in force, who may collect them,
 and what each adult in the family is told about.
 
+**Uniform check** turns the derivation into a list you work through at the door: every
+item worn, carried and packed for that child on that day, ticked off and remembered.
+After three in the afternoon it opens on tomorrow, because that is when the bag is
+packed. It is reached from the Wearing line on Today, from the child's page, and from
+the uniform entry under School.
+
 ## Design decisions worth knowing
 
 - **Answers, not sources.** The app does not show a uniform policy and a timetable and

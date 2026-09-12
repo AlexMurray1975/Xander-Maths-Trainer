@@ -168,6 +168,8 @@ h1,h2,h3{font-family:var(--display);font-weight:500;letter-spacing:-.2px;line-he
 .rows{display:flex;flex-direction:column;}
 .row{display:flex;gap:12px;padding:11px 15px;border-bottom:1px solid var(--line-2);align-items:flex-start;}
 .row:last-child{border-bottom:0;}
+.row.as-btn{width:100%;text-align:left;align-items:center;}
+.row.as-btn:active{background:var(--paper-2);}
 .row .k{
   flex:0 0 84px;font-size:.68rem;letter-spacing:.11em;text-transform:uppercase;
   color:var(--faint);font-weight:600;padding-top:2px;
@@ -299,6 +301,32 @@ h1,h2,h3{font-family:var(--display);font-weight:500;letter-spacing:-.2px;line-he
 .tog::after{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .15s;}
 .tog[aria-pressed="true"]{background:var(--green);}
 .tog[aria-pressed="true"]::after{transform:translateX(18px);}
+
+/* uniform check */
+.chk{display:flex;gap:12px;padding:12px 15px;border-bottom:1px solid var(--line-2);width:100%;text-align:left;align-items:flex-start;}
+.chk:last-child{border-bottom:0;}
+.chk .box{
+  width:22px;height:22px;flex:0 0 22px;border-radius:6px;border:1.5px solid var(--line);
+  display:grid;place-items:center;margin-top:1px;color:transparent;background:var(--card);
+}
+.chk[aria-pressed="true"] .box{background:var(--green);border-color:var(--green);color:#fff;}
+.chk .bd{flex:1;min-width:0;}
+.chk .bd .t{display:block;font-size:.93rem;}
+.chk .bd .n{display:block;font-size:.79rem;color:var(--muted);margin-top:2px;}
+.chk[aria-pressed="true"] .bd .t{color:var(--muted);text-decoration:line-through;text-decoration-thickness:1px;}
+.prog{display:flex;align-items:center;gap:11px;padding:13px 15px;}
+.prog .bar{flex:1;height:6px;border-radius:3px;background:var(--paper-2);overflow:hidden;}
+.prog .bar i{display:block;height:100%;background:var(--green);border-radius:3px;transition:width .2s;}
+.prog .n{font-size:.8rem;font-weight:600;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap;}
+.prog.done .n{color:var(--green);}
+.banner{display:flex;gap:11px;padding:12px 15px;border-bottom:1px solid var(--line-2);align-items:flex-start;}
+.banner:last-child{border-bottom:0;}
+.banner .dot{width:7px;height:7px;border-radius:50%;flex:0 0 7px;margin-top:7px;}
+.banner .t{display:block;font-weight:600;font-size:.9rem;}
+.banner .m{display:block;font-size:.84rem;color:var(--ink-2);margin-top:2px;}
+.banner.red .dot{background:var(--red);} .banner.red .t{color:var(--red);}
+.banner.amber .dot{background:var(--gold);} .banner.amber .t{color:var(--gold);}
+.backlink{display:inline-flex;align-items:center;gap:6px;font-size:.82rem;color:var(--muted);font-weight:500;padding:14px 0 0;}
 
 /* sheet */
 .scrim{position:fixed;inset:0;background:rgba(15,22,38,.42);z-index:60;opacity:0;transition:opacity .18s;}
@@ -520,13 +548,13 @@ function schoolDaysBetween(a, b) { let n = 0, x = new Date(a); while (x < b) { i
    Names and details are illustrative and editable under Family.
    ============================================================ */
 const DEFAULT_CHILDREN = [
-  { id: "c1", name: "Xander", year: 4, form: "4H", teacher: "Miss Hardy", house: "Holland", colour: "#2F5C8A",
+  { id: "c1", name: "Xander", year: 4, form: "4H", teacher: "Miss Hardy", house: "Holland", colour: "#2F5C8A", uniformOption: "grey",
     allergies: "None recorded", medical: "Inhaler held in the school office (blue, salbutamol)",
     permissions: { photos: true, walks: true, suncream: true, paracetamol: false },
     collection: "Collected at 3.45pm from the Holland Park Avenue gate",
     authorised: ["Alex Murray (father)", "Mrs S Nowak (nanny)", "Mrs J Murray (grandmother)"],
     merits: 46, rank: "2nd in form", instrument: "Cello", instrumentDay: "Tue", instrumentTime: "11:20" },
-  { id: "c2", name: "Charlie", year: 2, form: "2P", teacher: "Mrs Patel", house: "Norland", colour: "#4E7359",
+  { id: "c2", name: "Charlie", year: 2, form: "2P", teacher: "Mrs Patel", house: "Norland", colour: "#4E7359", uniformOption: "grey",
     allergies: "Peanuts. EpiPen held in the school office and with the class teacher",
     medical: "None other recorded",
     permissions: { photos: true, walks: true, suncream: true, paracetamol: true },
@@ -616,7 +644,7 @@ const TERM_EVENTS = {
     { w: 1, d: "Fri", t: "New Parents' Reception", type: "parents", time: "18:30", where: "The Hall", note: "Drinks with the Head and form teachers." },
     { w: 2, d: "Thu", t: "School photographs", type: "school", note: "Full uniform with blazers and boaters. No games kit; games kit may be brought in a bag." },
     { w: 2, d: "Tue", t: "Clubs begin", type: "clubs", note: "Autumn clubs start. Sign-up closes the preceding Friday." },
-    { w: 3, d: "Wed", t: "Year 4 trip to the Science Museum", type: "trip", time: "09:00", where: "Depart from Holland Park Avenue", years: [4], note: "Packed lunch provided by the school kitchen. Full winter uniform, sensible shoes, no bags." },
+    { w: 3, d: "Mon", t: "Year 4 trip to the Science Museum", type: "trip", time: "09:00", where: "Depart from Holland Park Avenue", years: [4], note: "Packed lunch provided by the school kitchen. Full winter uniform, sensible shoes, no bags." },
     { w: 3, d: "Fri", t: "Harvest Festival", type: "school", time: "09:15", where: "St James's Norlands", note: "Parents welcome. Donations of dry goods to the school office." },
     { w: 4, d: "Tue", t: "Year 2 Parents' Evening", type: "parents", time: "16:00", years: [2], note: "Ten-minute appointments. Book through the app." },
     { w: 4, d: "Thu", t: "Year 4 Parents' Evening", type: "parents", time: "16:00", years: [4], note: "Ten-minute appointments. Book through the app." },
@@ -632,7 +660,7 @@ const TERM_EVENTS = {
   ],
   lent: [
     { w: 1, d: "Tue", t: "Spring clubs begin", type: "clubs" },
-    { w: 2, d: "Thu", t: "Year 4 trip to the British Museum", type: "trip", time: "09:15", years: [4], note: "Packed lunch provided. Full winter uniform." },
+    { w: 2, d: "Mon", t: "Year 4 trip to the British Museum", type: "trip", time: "09:15", years: [4], note: "Packed lunch provided. Full winter uniform." },
     { w: 3, d: "Fri", t: "Chinese New Year assembly", type: "school", time: "09:00" },
     { w: 4, d: "Wed", t: "Lower School Poetry Recital", type: "music", time: "14:00", years: [2] },
     { w: 5, d: "Thu", t: "Parent Coffee Morning on e-safety", type: "parents", time: "08:45", where: "The Library" },
@@ -646,8 +674,8 @@ const TERM_EVENTS = {
   summer: [
     { w: 1, d: "Tue", t: "Summer clubs begin", type: "clubs" },
     { w: 2, d: "Wed", t: "Summer uniform from today", type: "school", note: "Summer dresses, short-sleeved shirts and boaters." },
-    { w: 3, d: "Thu", t: "Year 4 trip to Kew Gardens", type: "trip", time: "09:00", years: [4] },
-    { w: 4, d: "Fri", t: "Lower School Sports Morning", type: "sport", time: "09:30", where: "Holland Park", years: [2] },
+    { w: 3, d: "Mon", t: "Year 4 trip to Kew Gardens", type: "trip", time: "09:00", years: [4] },
+    { w: 4, d: "Thu", t: "Lower School Sports Morning", type: "sport", time: "09:30", where: "Holland Park", years: [2] },
     { w: 5, d: "Wed", t: "Art Exhibition", type: "school", time: "16:00", where: "The Art Room" },
     { w: 6, d: "Thu", t: "Swimming Gala", type: "sport", time: "14:00", where: "Kensington Leisure Centre" },
     { w: 7, d: "Fri", t: "Sports Day", type: "sport", time: "09:30", where: "Barn Elms", note: "Whole school. Games kit, sun hat and sun cream applied before school." },
@@ -741,6 +769,139 @@ function wearFor(child, d) {
   return { base, detail: UNIFORM_DETAIL[base], kit: (p?.kit || []).map(k => KIT_TEXT[k]).filter(Boolean), overrides };
 }
 
+/* ---- The uniform check: the same derivation as wearFor, itemised ---- */
+const UNIFORM_ITEMS = {
+  "Summer uniform": {
+    grey:  { worn: ["Grey shorts", "Short-sleeved white shirt", "School tie", "Grey socks", "Black shoes"],
+             carried: ["Straw boater"], cool: ["Grey V-neck jumper"] },
+    check: { worn: ["Red and white checked dress", "White ankle socks", "Black shoes"],
+             carried: ["Straw boater"], cool: ["Grey cardigan"] }
+  },
+  "Winter uniform": {
+    grey:  { worn: ["Grey trousers", "White shirt", "School tie", "Navy V-neck jumper", "Grey socks", "Black shoes"],
+             carried: ["Navy blazer", "School cap"], cool: ["Winter coat", "Gloves and scarf"] },
+    check: { worn: ["Grey pinafore", "White blouse", "School tie", "Navy cardigan", "Grey tights", "Black shoes"],
+             carried: ["Navy blazer", "Beret"], cool: ["Winter coat", "Gloves and scarf"] }
+  }
+};
+const KIT_ITEMS = {
+  games:  ["School games shirt", "Navy games shorts", "Navy games socks", "Trainers or boots"],
+  swim:   ["Costume or trunks", "Swimming cap", "Towel", "Goggles", "Swim bag"],
+  pe:     ["White PE t-shirt", "Navy PE shorts", "Plimsolls"],
+  forest: ["Old trousers", "Long-sleeved top", "Wellingtons", "Named bag for muddy clothes"],
+  outdoor: []
+};
+/* where a kit token is itemised below, the year group's coarse label for the same
+   kit is redundant and would be listed twice */
+const KIT_COVERS = {
+  swim:   /swim|towel|cap|goggles|costume|trunks/i,
+  games:  /games kit|games shirt|games shorts|boots|trainers|tracksuit|gum shield/i,
+  pe:     /pe kit|plimsolls/i,
+  forest: /wellington|old clothes|old trousers|named bag/i
+};
+const slug = t => t.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+function checklistFor(child, d) {
+  if (!isSchoolDay(d)) return null;
+  const base = uniformBase(d), opt = child.uniformOption || "grey";
+  const set = UNIFORM_ITEMS[base][opt];
+  const p = patternFor(child, d) || { kit: [], bring: [], prep: "" };
+  const ev = eventsFor(d, [child.id]);
+  const t = termFor(d);
+  const banners = [];
+  let replaced = false;          /* set where the day displaces uniform altogether */
+  let suspended = false;         /* set where the day displaces the timetable too */
+  let worn = set.worn.map(x => [x, ""]);
+  let carried = set.carried.map(x => [x, ""]);
+  let bag = [];
+
+  /* kept apart so that a day which suspends the timetable can drop them wholesale */
+  const kitBag = [], bringBag = [], extraBag = [];
+  for (const k of p.kit) {
+    const items = (KIT_ITEMS[k] || []).map(x => [x, ""]);
+    if (k === "games") {
+      if (t && t.id === "michaelmas") items.push(["Gum shield", "Compulsory for rugby. They cannot play without one."]);
+      if (base === "Winter uniform") items.push(["Tracksuit", "Games are outdoors in Holland Park."]);
+    }
+    kitBag.push(...items);
+  }
+  for (const b of p.bring) {
+    if (p.kit.some(k => KIT_COVERS[k] && KIT_COVERS[k].test(b))) continue;
+    bringBag.push([b, ""]);
+  }
+
+  for (const e of ev) {
+    if (/photograph/i.test(e.t)) {
+      banners.push(["red", "School photographs today",
+        "Full uniform with blazer, inspected at registration. Games kit travels in a bag rather than being worn."]);
+      if (!worn.concat(carried).some(x => /blazer/i.test(x[0]))) worn.push(["Navy blazer", "Worn for the photograph."]);
+    }
+    if (/mufti/i.test(e.t)) {
+      banners.push(["red", "Mufti Day", "Own clothes and sensible shoes. No uniform at all today."]);
+      worn = [["Own clothes", "Sensible shoes, and nothing that cannot get dirty."]];
+      replaced = true;
+      carried = [];
+      extraBag.push(["£2 donation", "Or settle it in the app instead."]);
+    }
+    if (/World Book Day/i.test(e.t)) {
+      banners.push(["red", "World Book Day", "Dressed as a character from a book, in place of uniform."]);
+      worn = [["Book character costume", "Nothing bought specially, please."]];
+      replaced = true;
+      carried = [];
+    }
+    if (/Sports Day|Sports Morning/i.test(e.t)) {
+      banners.push(["amber", e.t, "Games kit all day, and sun cream applied before school. The normal timetable does not run."]);
+      worn = KIT_ITEMS.games.map(x => [x, ""]);
+      replaced = true;
+      suspended = true;
+      carried = [["Sun hat", ""], ["Sun cream applied at home", ""]];
+    }
+    if (e.type === "trip") {
+      banners.push(["amber", e.t,
+        "Full uniform and sensible shoes. No bag. A packed lunch is provided by the school kitchen."]);
+      carried.push(["Sensible walking shoes", "There is a walk at each end."]);
+    }
+    if (/Concert|Production|Carol Service/i.test(e.t)) {
+      banners.push(["amber", `${e.t} this evening`, "Concert dress: white shirt, school tie, dark trousers or skirt."]);
+      extraBag.push(["Concert dress", "Changed into before the performance."]);
+      if (child.instrument) extraBag.push([child.instrument, "Needed this evening."]);
+    }
+    if (/Prize Giving|Open Morning|Harvest|Easter Service/i.test(e.t)) {
+      banners.push(["amber", e.t, "Full uniform with blazer, inspected at registration."]);
+    }
+  }
+
+  /* one item may be implied twice; the parent should see it once */
+  const dedupe = list => { const seen = new Set(); return list.filter(([l]) => {
+    const k = l.toLowerCase(); if (seen.has(k)) return false; seen.add(k); return true; }); };
+  bag = dedupe([...(suspended ? [] : kitBag), ...(suspended ? [] : bringBag), ...extraBag, ["Water bottle", ""]]);
+  const wornK = new Set(worn.concat(carried).map(x => x[0].toLowerCase()));
+  bag = bag.filter(([l]) => !wornK.has(l.toLowerCase()));
+
+  const groups = [
+    { k: "worn", t: "Worn to school", items: dedupe(worn) },
+    { k: "carried", t: "Carried", items: dedupe(carried) },
+    { k: "bag", t: "In the bag", items: bag },
+    /* no point offering a uniform jumper on a day with no uniform */
+    { k: "cool", t: "If it is cold", items: replaced ? [] : set.cool.map(x => [x, ""]), optional: true }
+  ].filter(g => g.items.length);
+
+  for (const g of groups) g.items = g.items.map(([l, n]) => ({ id: `${g.k}:${slug(l)}`, label: l, note: n }));
+  const required = groups.filter(g => !g.optional).reduce((n, g) => n + g.items.length, 0);
+  return { base, groups, banners, required };
+}
+
+function nextSchoolDay(from, inclusive) {
+  let x = new Date(from);
+  if (!inclusive) x = addDays(x, 1);
+  for (let i = 0; i < 220; i++) { if (isSchoolDay(x)) return x; x = addDays(x, 1); }
+  return new Date(from);
+}
+/* after school the useful answer is tomorrow's kit, because that is when the bag is packed */
+function defaultCheckDate() {
+  return (isSchoolDay(TODAY) && new Date().getHours() < 15) ? new Date(TODAY) : nextSchoolDay(TODAY, false);
+}
+
 /* ============================================================
    7. Notices and the things that need a parent
    ============================================================ */
@@ -825,7 +986,9 @@ const SCHOOL = [
     <h3>Winter uniform</h3><p>${UNIFORM_DETAIL["Winter uniform"]}</p>
     <h3>Games and swimming</h3><p>${KIT_TEXT.games}</p><p>${KIT_TEXT.swim}</p><p>${KIT_TEXT.pe}</p>
     <h3>Where to buy</h3><p>The uniform supplier holds the full list and delivers to school twice a term. Second-hand uniform, which is in good order and a great deal cheaper, is sold by the Parents' Association at the start of each term and by appointment through the office.</p>
-    <h3>Naming</h3><p>Everything is to be named, including boaters, caps, water bottles and swimming caps. Name tapes are available from the office at £8 for a hundred.</p>` },
+    <h3>Naming</h3><p>Everything is to be named, including boaters, caps, water bottles and swimming caps. Name tapes are available from the office at £8 for a hundred.</p>
+    <div class="btnrow" style="padding-left:0;padding-right:0">${state.children.map(c =>
+      `<button class="btn sm" data-opencheck="${c.id}">Check ${esc(c.name)}</button>`).join("")}</div>` },
 
   { k: "lunch", ic: "🍽", t: "Lunch menus", m: "This week and the rotation", body: () => {
       const mon = startOfWeek(TODAY), w = termWeek(TODAY);
@@ -913,7 +1076,7 @@ const SCHOOL = [
 const STORE = "npp.v2";
 function load() { try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch { return {}; } }
 function save() {
-  try { localStorage.setItem(STORE, JSON.stringify({ read: state.read, done: state.done, prefs: state.prefs, names: state.children.map(c => c.name) })); } catch {}
+  try { localStorage.setItem(STORE, JSON.stringify({ read: state.read, done: state.done, checks: state.checks, prefs: state.prefs, names: state.children.map(c => c.name) })); } catch {}
 }
 const saved = load();
 const state = {
@@ -923,6 +1086,9 @@ const state = {
   diaryMode: "week",
   read: saved.read || {},
   done: saved.done || {},
+  checks: saved.checks || {},
+  checkChild: "c1",
+  checkDate: null,
   prefs: saved.prefs || { notices: true, diary: true, sport: true, brief: true, quiet: true },
   children: DEFAULT_CHILDREN.map((c, i) => ({ ...c, name: (saved.names && saved.names[i]) || c.name })),
   sheet: null
@@ -1022,9 +1188,11 @@ function viewToday() {
       continue;
     }
     h += `<div class="rows">`;
-    h += `<div class="row"><span class="k">Wearing</span><span class="v"><strong>${wear.base}</strong>
+    h += `<button class="row as-btn" data-opencheck="${c.id}" data-checkdate="${key(d)}">
+      <span class="k">Wearing</span><span class="v"><strong>${wear.base}</strong>
       ${wear.kit.length ? `<span class="note">${wear.kit.map(esc).join("<br>")}</span>` : ""}
-      ${wear.overrides.length ? `<span class="note" style="color:var(--red)">${wear.overrides.map(esc).join("<br>")}</span>` : ""}</span></div>`;
+      ${wear.overrides.length ? `<span class="note" style="color:var(--red)">${wear.overrides.map(esc).join("<br>")}</span>` : ""}
+      <span class="note" style="color:var(--sky);font-weight:600">Check it off ›</span></span></button>`;
 
     h += `<div class="row"><span class="k">On today</span><span class="v">${
       highlights.length ? highlights.map(e => `<strong>${esc(e.t)}</strong>${e.time ? ` at ${e.time}` : ""}${e.where ? `, ${esc(e.where)}` : ""}`).join("<br>")
@@ -1056,7 +1224,8 @@ function viewToday() {
     kids.map(c => { const w = wearFor(c, n), pp = patternFor(c, n);
       return `<div style="margin-bottom:8px"><strong>${esc(c.name)}:</strong> ${esc(w ? w.base : "–")}${
         w && w.kit.length ? `, plus kit` : ""}${pp && pp.bring.length ? `. Bring ${esc(pp.bring.join(", ").toLowerCase())}` : ""}.</div>`; }).join("")
-  }${nEv.filter(e => e.scope !== "child").length ? `<div style="color:var(--muted);margin-top:4px">${nEv.filter(e => e.scope !== "child").map(e => esc(e.t)).join(" · ")}</div>` : ""}</div></div>`;
+  }${nEv.filter(e => e.scope !== "child").length ? `<div style="color:var(--muted);margin-top:4px">${nEv.filter(e => e.scope !== "child").map(e => esc(e.t)).join(" · ")}</div>` : ""}</div>
+  <div class="btnrow">${kids.map(c => `<button class="btn ghost sm" data-opencheck="${c.id}" data-checkdate="${key(n)}">Check ${esc(c.name)}'s kit</button>`).join("")}</div></div>`;
 
   h += `<div class="protobar">A prototype. Dates, menus, notices and names are illustrative and generated from today's date, so the app looks live whenever it is opened. Add <code>?date=YYYY-MM-DD</code> to the address to walk through any day of the year.</div>`;
   return h;
@@ -1191,8 +1360,63 @@ function viewChild(id) {
     <div class="row"><span class="k">Games</span><span class="v">${termFor(TODAY) ? SPORT_BY_TERM[termFor(TODAY).id] : "Cricket"}${c.year >= 3 ? ", with fixtures on Thursdays" : ", in Holland Park"}</span></div>
     <div class="row"><span class="k">House</span><span class="v">${esc(c.house)} · ${esc(c.rank)}</span></div></div></div>`;
 
-  h += `<div class="btnrow" style="padding-left:0;padding-right:0"><button class="btn ghost" data-goto="diary">See the full diary</button>
+  h += `<div class="btnrow" style="padding-left:0;padding-right:0"><button class="btn" data-opencheck="${c.id}">Uniform check</button>
+    <button class="btn ghost" data-goto="diary">See the full diary</button>
     <button class="btn ghost" data-demo="Report an absence">Report an absence</button></div>`;
+  return h;
+}
+
+/* ---------- Uniform check ---------- */
+function viewCheck() {
+  const c = childById(state.checkChild) || state.children[0];
+  const d = state.checkDate || defaultCheckDate();
+  const a = nextSchoolDay(TODAY, true), b = nextSchoolDay(a, false);
+  const labelFor = x => sameDay(x, TODAY) ? "Today" : sameDay(x, addDays(TODAY, 1)) ? "Tomorrow" : DAYNAMES[x.getDay()];
+  const list = checklistFor(c, d);
+  const store = state.checks[`${c.id}|${key(d)}`] || {};
+
+  let h = `<button class="backlink" data-goto="today">
+    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10 3.5-5 4.5 5 4.5"/></svg>
+    Today</button>`;
+  h += `<div class="page-h"><h1>Uniform check</h1><div class="sub">${esc(c.name)} · ${dayLong(d)}</div></div>`;
+  h += `<div class="seg" role="group">${[a, b].map(x =>
+    `<button data-checkday="${key(x)}" aria-pressed="${sameDay(x, d)}">${labelFor(x)}</button>`).join("")}</div>`;
+  h += `<div class="chips" style="padding-left:0;padding-right:0">${state.children.map(k =>
+    `<button class="chip" data-checkchild="${k.id}" aria-pressed="${k.id === c.id}">
+      <span class="pip" style="background:${k.colour}"></span>${esc(k.name)}</button>`).join("")}</div>`;
+
+  if (!list) {
+    h += `<div class="card"><div class="empty"><div class="big">No school that day</div>
+      Nothing to pack. The next school day is ${dayLong(nextSchoolDay(d, false))}.</div></div>`;
+    return h;
+  }
+
+  const done = list.groups.filter(g => !g.optional).reduce((n, g) => n + g.items.filter(i => store[i.id]).length, 0);
+  const pct = list.required ? Math.round((done / list.required) * 100) : 100;
+
+  if (list.banners.length) h += `<div class="card" style="margin-top:12px">${list.banners.map(([tone, t, m]) =>
+    `<div class="banner ${tone}"><span class="dot"></span><span><span class="t">${esc(t)}</span><span class="m">${esc(m)}</span></span></div>`).join("")}</div>`;
+
+  h += `<div class="card" style="margin-top:12px"><div class="card-head"><h2>${list.base}</h2>
+    <span class="tag">${esc(c.uniformOption === "check" ? "Checked dress" : "Shorts and shirt")}</span></div>
+    <div class="prog${done === list.required ? " done" : ""}">
+      <span class="bar"><i style="width:${pct}%"></i></span>
+      <span class="n">${done} of ${list.required}</span></div></div>`;
+
+  for (const g of list.groups) {
+    h += `<div class="rubric">${g.t}${g.optional ? " · optional" : ""}</div><div class="card">`;
+    h += g.items.map(i => `<button class="chk" data-check="${c.id}|${key(d)}|${i.id}" aria-pressed="${!!store[i.id]}">
+      <span class="box"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 7.5 5.5 10.5 11.5 3.5"/></svg></span>
+      <span class="bd"><span class="t">${esc(i.label)}</span>${i.note ? `<span class="n">${esc(i.note)}</span>` : ""}</span></button>`).join("");
+    h += `</div>`;
+  }
+
+  h += `<div class="card"><div class="card-pad" style="font-size:.88rem;color:var(--ink-2)">
+    ${done === list.required
+      ? "<strong>All checked.</strong> Everything named, including the boater and the water bottle."
+      : "Everything is to be named, including boaters, caps, water bottles and swimming caps."}</div>
+    <div class="btnrow"><button class="btn ghost sm" data-clearcheck="${c.id}|${key(d)}">Start again</button>
+    <button class="btn ghost sm" data-school="uniform">The full uniform list</button></div></div>`;
   return h;
 }
 
@@ -1407,6 +1631,7 @@ function render() {
     route.name === "school" ? viewSchool() :
     route.name === "family" ? viewFamily() :
     route.name === "child" ? viewChild(route.arg) :
+    route.name === "check" ? viewCheck() :
     route.name === "search" ? viewSearch(route.arg) : viewToday();
 
   const ut = termFor(TODAY), uh = nextHoliday(TODAY);
@@ -1437,6 +1662,23 @@ document.addEventListener("click", ev => {
   }
   if ((n = el("[data-day]"))) { const [y, m, d] = n.dataset.day.split("-").map(Number); state.date = new Date(y, m - 1, d); return render(); }
   if ((n = el("[data-jump]"))) { const [y, m, d] = n.dataset.jump.split("-").map(Number); state.date = new Date(y, m - 1, d); state.diaryMode = "day"; return go("diary"); }
+  if ((n = el("[data-checkchild]"))) { state.checkChild = n.dataset.checkchild; return render(); }
+  if ((n = el("[data-checkday]"))) { const [y, m, dd] = n.dataset.checkday.split("-").map(Number);
+    state.checkDate = new Date(y, m - 1, dd); return render(); }
+  if ((n = el("[data-check]"))) {
+    const [cid, dk, iid] = n.dataset.check.split("|");
+    const k = `${cid}|${dk}`;
+    state.checks[k] = state.checks[k] || {};
+    if (state.checks[k][iid]) delete state.checks[k][iid]; else state.checks[k][iid] = true;
+    save(); return render();
+  }
+  if ((n = el("[data-clearcheck]"))) { delete state.checks[n.dataset.clearcheck]; save(); return render(); }
+  if ((n = el("[data-opencheck]"))) {
+    state.checkChild = n.dataset.opencheck;
+    state.checkDate = n.dataset.checkdate ? (([y, m, dd]) => new Date(y, m - 1, dd))(n.dataset.checkdate.split("-").map(Number)) : defaultCheckDate();
+    if (!$("#sheet").hidden) { closeSheet(); setTimeout(() => go("check"), 210); return; }
+    return go("check");
+  }
   if ((n = el("[data-notice]"))) return noticeSheet(n.dataset.notice);
   if ((n = el("[data-school]"))) return schoolSheet(n.dataset.school);
   if ((n = el("[data-ev]"))) { const [t, d] = n.dataset.ev.split("|"); return eventSheet(t, d); }

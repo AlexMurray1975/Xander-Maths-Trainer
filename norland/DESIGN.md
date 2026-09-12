@@ -19,7 +19,8 @@ reasoning on the parent's behalf, it should.
 
 ## Information architecture
 
-Five sections, which is as many as a tab bar can carry without becoming a menu.
+Five sections, which is as many as a tab bar can carry without becoming a menu, and one
+task screen reached from within them.
 
 **Today** is the landing screen and the one that justifies the application. It opens
 with the date, the term and the week, and the number of school days to the next
@@ -70,6 +71,30 @@ and no games kit, a mufti day produces no uniform at all, and a concert in the e
 produces concert dress. Three inputs, one sentence out. The same function serves the
 Today card, the week kit summary and the detail sheet behind any diary event, which is
 why the answers cannot drift apart.
+
+## The uniform check
+
+The check is the derivation above, itemised. It takes the same three inputs and emits a
+list in three groups, being what is worn, what is carried and what goes in the bag, with
+an optional fourth for cold weather. A day that displaces the uniform, such as a mufti
+day or World Book Day, replaces the worn list rather than adding to it, and suppresses
+the cold-weather layer, because a uniform jumper is the wrong answer on a day with no
+uniform. A day that displaces the timetable as well, such as Sports Day, drops the
+timetable's kit entirely rather than asking a parent to pack swimming things for a day
+at Barn Elms.
+
+Two rules keep the list honest. Nothing appears twice, so where the year group's
+standing list says "swimming kit" and the check itemises costume, cap, towel, goggles
+and bag, the coarse label is suppressed. And the optional group does not count towards
+the tally, so a parent is never told they are two items short because they have not
+packed gloves in September.
+
+Building it was worth it for what it exposed. Two faults in the sample calendar only
+became visible once the answers were itemised: a trip scheduled on the day Year 4 swim,
+so the list said "no bag" and then asked for a swim bag, and Sports Day falling on Year
+2's Forest School afternoon. Both are exactly the sort of thing a school's own calendar
+does, and a parent app that merely republishes the calendar passes the contradiction
+straight through to the parent. One that derives an answer has to resolve it.
 
 ## Content model
 
