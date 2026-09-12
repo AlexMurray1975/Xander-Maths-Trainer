@@ -34,6 +34,12 @@ After three in the afternoon it opens on tomorrow, because that is when the bag 
 packed. It is reached from the Wearing line on Today, from the child's page, and from
 the uniform entry under School.
 
+**Kit list** is the start-of-term version: everything the school requires, by year group,
+ticked off against what is already in the cupboard, with what is left to buy, an
+indicative total, and which items come from the outfitter rather than anywhere. It
+filters to the outstanding items and copies them to the clipboard for whoever is doing
+the shopping.
+
 ## Design decisions worth knowing
 
 - **Answers, not sources.** The app does not show a uniform policy and a timetable and
@@ -53,7 +59,7 @@ the uniform entry under School.
 - `index.html` — the whole application, with the CSS and JavaScript inline.
 - `manifest.webmanifest` — metadata for "Add to Home Screen".
 - `sw.js` — service worker for offline use. Bump `CACHE_VERSION` after any edit.
-- `icons/` — app icons, generated from `icons/icon.svg`.
+- `icons/` — the school's crest, keyed to transparency, and the app icons built from it.
 - `DESIGN.md` — the design note: information architecture, content model, integration,
   data protection and what a real build would involve.
 

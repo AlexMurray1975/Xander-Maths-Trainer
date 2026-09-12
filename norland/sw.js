@@ -1,7 +1,8 @@
 /* Norland Place Parents — offline shell.
    Bump CACHE_VERSION after editing any file so installed devices update. */
-const CACHE_VERSION = "npp-v3";
-const ASSETS = ["./", "./index.html", "./manifest.webmanifest", "./icons/icon.svg", "./icons/apple-touch-icon.png"];
+const CACHE_VERSION = "npp-v4";
+const ASSETS = ["./", "./index.html", "./manifest.webmanifest",
+  "./icons/crest.png", "./icons/icon-512.png", "./icons/apple-touch-icon.png"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(CACHE_VERSION).then(c => c.addAll(ASSETS)).then(() => self.skipWaiting()));

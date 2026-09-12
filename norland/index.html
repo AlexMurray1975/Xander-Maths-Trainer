@@ -11,7 +11,7 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#4A6B96">
 <link rel="manifest" href="manifest.webmanifest">
-<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+<link rel="icon" href="icons/icon-512.png" sizes="512x512" type="image/png">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -52,6 +52,7 @@
   --sans:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 @media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) .crest{filter:brightness(0) invert(1);opacity:.92;}
   :root:not([data-theme="light"]){
     --paper:#0E1A2A; --paper-2:#091320; --card:#16253A; --ink:#E9EFF6; --on-ink:#0E1A2A; --ink-2:#C5D3E2;
     --muted:#91A3B9; --faint:#6F819B; --line:#26374F; --line-2:#1D2C41; --slate:#2E4A73;
@@ -104,7 +105,7 @@ a{color:var(--sky);}
   font-family:var(--display);font-size:.61rem;letter-spacing:.16em;text-transform:uppercase;font-weight:400;}
 .utility .inner .r{margin-left:auto;opacity:.8;white-space:nowrap;}
 .topbar .inner{max-width:600px;margin:0 auto;padding:11px 16px 10px;display:flex;align-items:center;gap:11px;}
-.crest{width:34px;height:37px;flex:0 0 34px;color:var(--ink);}
+.crest{width:34px;height:36px;flex:0 0 34px;display:block;object-fit:contain;}
 .wordmark{flex:1;min-width:0;}
 .wordmark .n{font-family:var(--display);font-weight:600;font-size:.94rem;letter-spacing:.02em;
   text-transform:uppercase;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
@@ -115,6 +116,7 @@ a{color:var(--sky);}
   color:var(--ink);border:1px solid var(--line);
 }
 .iconbtn:hover{background:var(--paper-2);}
+:root[data-theme="dark"] .crest{filter:brightness(0) invert(1);opacity:.92;}
 
 /* ---------- Child filter ---------- */
 .chips{display:flex;gap:7px;overflow-x:auto;padding:12px 16px 2px;max-width:600px;margin:0 auto;scrollbar-width:none;}
@@ -211,7 +213,7 @@ h1,h2,h3{font-family:var(--display);font-weight:500;letter-spacing:-.2px;line-he
 
 /* buttons */
 .btn{
-  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none;
   border-radius:10px;padding:11px 16px;font-size:.9rem;font-weight:600;
   border:1px solid var(--ink);background:var(--ink);color:var(--on-ink);
 }
@@ -408,12 +410,7 @@ h1,h2,h3{font-family:var(--display);font-weight:500;letter-spacing:-.2px;line-he
 <header class="topbar">
   <div class="utility"><div class="inner"><span id="ub-l"></span><span class="r" id="ub-r"></span></div></div>
   <div class="inner">
-    <svg class="crest" viewBox="0 0 64 70" aria-hidden="true">
-      <path d="M4.5 5Q32 23 59.5 5L59.5 34C59.5 49.5 48 61 32 67C16 61 4.5 49.5 4.5 34Z" fill="none"
-            stroke="currentColor" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
-      <text x="32" y="44" text-anchor="middle" font-family="Poppins, system-ui, sans-serif"
-            font-size="16" font-weight="500" letter-spacing=".5" fill="currentColor">NP</text>
-    </svg>
+    <img class="crest" src="icons/crest.png" alt="" width="34" height="36">
     <div class="wordmark">
       <div class="n">Norland Place</div>
       <div class="s" id="wm-sub">Parents</div>
@@ -891,6 +888,57 @@ function checklistFor(child, d) {
   return { base, groups, banners, required };
 }
 
+/* ---- The start-of-term kit list: what the school requires, and what is
+   still to be bought. Quantities follow a prep school list; the prices are
+   indicative only and are not the outfitter's. ---- */
+const OUTFITTER = { name: "Billings & Edmonds", url: "https://www.billingsandedmonds.co.uk/our-schools/norland-place-school" };
+const KIT_LIST = [
+  { g: "Winter uniform", items: [
+    { t: "Navy blazer", q: 1, p: 95, w: "outfitter", sh: true },
+    { t: "Grey trousers", q: 2, p: 30, w: "high street", yr: [3, 6] },
+    { t: "Grey shorts", q: 2, p: 26, w: "high street", yr: [0, 2], note: "Shorts are worn until the end of Year 2." },
+    { t: "White shirt, long sleeved", q: 4, p: 14, w: "high street" },
+    { t: "School tie", q: 1, p: 16, w: "outfitter" },
+    { t: "Navy V-neck jumper", q: 2, p: 34, w: "outfitter", sh: true },
+    { t: "School cap", q: 1, p: 22, w: "outfitter", sh: true },
+    { t: "Grey socks", q: 5, p: 6, w: "high street", note: "Five pairs is one a day." },
+    { t: "Black shoes", q: 1, p: 45, w: "high street" },
+    { t: "Winter coat", q: 1, p: 60, w: "high street" } ] },
+  { g: "Summer uniform", items: [
+    { t: "Grey shorts", q: 2, p: 26, w: "high street", yr: [3, 6] },
+    { t: "White shirt, short sleeved", q: 3, p: 13, w: "high street" },
+    { t: "Straw boater", q: 1, p: 38, w: "outfitter", sh: true, note: "Named inside the band. The most frequently lost item in the school." } ] },
+  { g: "Games and swimming", items: [
+    { t: "School games shirt", q: 2, p: 24, w: "outfitter" },
+    { t: "Navy games shorts", q: 2, p: 16, w: "outfitter" },
+    { t: "Navy games socks", q: 2, p: 9, w: "outfitter" },
+    { t: "Tracksuit", q: 1, p: 48, w: "outfitter", sh: true },
+    { t: "Trainers", q: 1, p: 35, w: "high street" },
+    { t: "Rugby or football boots", q: 1, p: 35, w: "high street", yr: [3, 6] },
+    { t: "Gum shield", q: 1, p: 8, w: "high street", yr: [3, 6], note: "Compulsory for rugby. They cannot play without one." },
+    { t: "Swimming trunks", q: 1, p: 14, w: "high street" },
+    { t: "Swimming cap", q: 1, p: 6, w: "high street" },
+    { t: "Goggles", q: 1, p: 12, w: "high street" },
+    { t: "Towel", q: 1, p: 12, w: "high street" } ] },
+  { g: "Bags and sundries", items: [
+    { t: "Book bag", q: 1, p: 22, w: "outfitter", yr: [0, 2] },
+    { t: "School rucksack", q: 1, p: 32, w: "outfitter", yr: [3, 6] },
+    { t: "Games bag", q: 1, p: 20, w: "outfitter" },
+    { t: "Swim bag", q: 1, p: 14, w: "outfitter" },
+    { t: "Water bottle", q: 1, p: 9, w: "high street" },
+    { t: "Pencil case, filled", q: 1, p: 15, w: "high street", yr: [3, 6] },
+    { t: "Name tapes", q: 1, p: 8, w: "school office", note: "£8 for a hundred, added to the termly bill. Everything is to be named." } ] }
+];
+function kitListFor(child) {
+  const out = [];
+  for (const g of KIT_LIST) {
+    const items = g.items.filter(i => !i.yr || (child.year >= i.yr[0] && child.year <= i.yr[1]))
+      .map(i => ({ ...i, id: `${slug(g.g)}:${slug(i.t)}` }));
+    if (items.length) out.push({ g: g.g, items });
+  }
+  return out;
+}
+
 function nextSchoolDay(from, inclusive) {
   let x = new Date(from);
   if (!inclusive) x = addDays(x, 1);
@@ -980,6 +1028,7 @@ const SCHOOL = [
         `</table></div><p>Terms end at midday. INSET days fall on the two weekdays before the start of the Michaelmas and Lent terms; the school is closed to pupils on those days.</p>
         <p>The whole calendar can be subscribed to from the Diary, so that it keeps itself up to date in your own diary rather than being copied across by hand.</p>`; } },
 
+  { k: "kitlist", ic: "🧾", t: "Start of term kit list", m: "Tick off what you have, see what to buy", body: null },
   { k: "uniform", ic: "🎓", t: "Uniform and kit", m: "What is worn, and when", body: () => `
     <p><strong>Today the school is in ${uniformBase(TODAY).toLowerCase()}.</strong> Summer uniform is worn from the start of the Michaelmas term until October half term, and from the May half term to the end of the Summer term. Winter uniform is worn in between.</p>
     <h3>Summer uniform</h3><p>${UNIFORM_DETAIL["Summer uniform"]}</p>
@@ -988,7 +1037,8 @@ const SCHOOL = [
     <h3>Where to buy</h3><p>The uniform supplier holds the full list and delivers to school twice a term. Second-hand uniform, which is in good order and a great deal cheaper, is sold by the Parents' Association at the start of each term and by appointment through the office.</p>
     <h3>Naming</h3><p>Everything is to be named, including boaters, caps, water bottles and swimming caps. Name tapes are available from the office at £8 for a hundred.</p>
     <div class="btnrow" style="padding-left:0;padding-right:0">${state.children.map(c =>
-      `<button class="btn sm" data-opencheck="${c.id}">Check ${esc(c.name)}</button>`).join("")}</div>` },
+      `<button class="btn sm" data-opencheck="${c.id}">Check ${esc(c.name)}</button>`).join("")}
+      <button class="btn ghost sm" data-openkit="${state.children[0].id}">Start of term list</button></div>` },
 
   { k: "lunch", ic: "🍽", t: "Lunch menus", m: "This week and the rotation", body: () => {
       const mon = startOfWeek(TODAY), w = termWeek(TODAY);
@@ -1076,7 +1126,7 @@ const SCHOOL = [
 const STORE = "npp.v2";
 function load() { try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch { return {}; } }
 function save() {
-  try { localStorage.setItem(STORE, JSON.stringify({ read: state.read, done: state.done, checks: state.checks, prefs: state.prefs, names: state.children.map(c => c.name) })); } catch {}
+  try { localStorage.setItem(STORE, JSON.stringify({ read: state.read, done: state.done, checks: state.checks, kit: state.kit, prefs: state.prefs, names: state.children.map(c => c.name) })); } catch {}
 }
 const saved = load();
 const state = {
@@ -1087,6 +1137,9 @@ const state = {
   read: saved.read || {},
   done: saved.done || {},
   checks: saved.checks || {},
+  kit: saved.kit || {},
+  kitToBuyOnly: false,
+  kitChild: "c1",
   checkChild: "c1",
   checkDate: null,
   prefs: saved.prefs || { notices: true, diary: true, sport: true, brief: true, quiet: true },
@@ -1416,7 +1469,67 @@ function viewCheck() {
       ? "<strong>All checked.</strong> Everything named, including the boater and the water bottle."
       : "Everything is to be named, including boaters, caps, water bottles and swimming caps."}</div>
     <div class="btnrow"><button class="btn ghost sm" data-clearcheck="${c.id}|${key(d)}">Start again</button>
-    <button class="btn ghost sm" data-school="uniform">The full uniform list</button></div></div>`;
+    <button class="btn ghost sm" data-openkit="${c.id}">Start of term list</button></div></div>`;
+  return h;
+}
+
+/* ---------- Start of term kit list ---------- */
+function viewKit() {
+  const c = childById(state.kitChild) || state.children[0];
+  const groups = kitListFor(c);
+  const owned = state.kit[c.id] || {};
+  const all = groups.flatMap(g => g.items);
+  const toBuy = all.filter(i => !owned[i.id]);
+  const cost = toBuy.reduce((n, i) => n + i.p * i.q, 0);
+  const pct = all.length ? Math.round(((all.length - toBuy.length) / all.length) * 100) : 100;
+
+  let h = `<button class="backlink" data-goto="school">
+    <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10 3.5-5 4.5 5 4.5"/></svg>
+    School</button>`;
+  h += `<div class="page-h"><h1>Kit list</h1><div class="sub">${esc(c.name)} · Year ${c.year} · everything the school asks for</div></div>`;
+  h += `<div class="chips" style="padding-left:0;padding-right:0">${state.children.map(k =>
+    `<button class="chip" data-kitchild="${k.id}" aria-pressed="${k.id === c.id}">
+      <span class="pip" style="background:${k.colour}"></span>${esc(k.name)}</button>`).join("")}</div>`;
+
+  h += `<div class="card" style="margin-top:12px"><div class="statgrid">
+    <div class="s"><div class="big-num">${all.length - toBuy.length}</div><div class="l">In the cupboard</div></div>
+    <div class="s"><div class="big-num"${toBuy.length ? ' style="color:var(--red)"' : ""}>${toBuy.length}</div><div class="l">Still to buy</div></div>
+    <div class="s"><div class="big-num">${toBuy.length ? "£" + cost.toLocaleString("en-GB") : "—"}</div><div class="l">Indicative</div></div></div>
+    <div class="prog${toBuy.length ? "" : " done"}"><span class="bar"><i style="width:${pct}%"></i></span>
+    <span class="n">${pct}%</span></div></div>`;
+
+  h += `<div class="seg" role="group">
+    <button data-kitfilter="all" aria-pressed="${!state.kitToBuyOnly}">Everything</button>
+    <button data-kitfilter="buy" aria-pressed="${state.kitToBuyOnly}">Only what to buy${toBuy.length ? ` (${toBuy.length})` : ""}</button></div>`;
+
+  let shown = 0;
+  for (const g of groups) {
+    const items = state.kitToBuyOnly ? g.items.filter(i => !owned[i.id]) : g.items;
+    if (!items.length) continue;
+    shown += items.length;
+    h += `<div class="rubric">${g.g}</div><div class="card">`;
+    h += items.map(i => `<button class="chk" data-kititem="${c.id}|${i.id}" aria-pressed="${!!owned[i.id]}">
+      <span class="box"><svg width="12" height="12" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 7.5 5.5 10.5 11.5 3.5"/></svg></span>
+      <span class="bd"><span class="t">${i.q > 1 ? `${i.q} × ` : ""}${esc(i.t)}</span>
+        ${i.note ? `<span class="n">${esc(i.note)}</span>` : ""}
+        <span class="n" style="display:flex;gap:5px;flex-wrap:wrap;margin-top:5px">
+          <span class="pill ${i.w === "outfitter" ? "sky" : "plain"}">${esc(i.w)}</span>
+          ${i.sh ? `<span class="pill green">often second-hand</span>` : ""}
+          <span class="pill plain">about £${i.p * i.q}</span></span></span></button>`).join("");
+    h += `</div>`;
+  }
+  if (!shown) h += `<div class="card"><div class="empty"><div class="big">Nothing left to buy</div>
+    Everything on the school's list is ticked off for ${esc(c.name)}.</div></div>`;
+
+  h += `<div class="rubric">Where to buy it</div><div class="card"><div class="card-pad" style="font-size:.9rem;color:var(--ink-2)">
+    <p style="margin:0 0 9px">Anything marked <span class="pill sky">outfitter</span> carries the school's crest or colours and comes from ${esc(OUTFITTER.name)}. The rest is ordinary and can come from anywhere.</p>
+    <p style="margin:0">Blazers, boaters, caps, jumpers and tracksuits are worth buying second-hand. The Parents' Association sells them at the start of each term, in good order and a great deal cheaper, and children grow out of them long before they wear out.</p></div>
+    <div class="btnrow">
+      <a class="btn sm" href="${OUTFITTER.url}" target="_blank" rel="noopener">${esc(OUTFITTER.name)} ↗</a>
+      <button class="btn ghost sm" data-demo="Book the second-hand sale">Second-hand sale</button>
+      <button class="btn ghost sm" data-copykit="${c.id}">Copy the list</button>
+      <button class="btn ghost sm" data-clearkit="${c.id}">Start again</button></div></div>`;
+  h += `<div class="footnote">Quantities follow a typical prep school list and the prices are indicative, to give a sense of the total rather than to quote one. ${esc(OUTFITTER.name)} holds the school's own list and its prices.</div>`;
   return h;
 }
 
@@ -1515,7 +1628,7 @@ function viewSearch(q) {
   if (term.length < 2) { h += `<div class="empty">Type a word or two. Everything in the app is searchable, including menus and term dates.</div>`; return h; }
 
   const nres = NOTICES.filter(n => (n.title + " " + n.from + " " + n.body).toLowerCase().includes(term));
-  const sres = SCHOOL.filter(s => (s.t + " " + s.m + " " + s.body()).toLowerCase().includes(term));
+  const sres = SCHOOL.filter(s => (s.t + " " + s.m + " " + (s.body ? s.body() : "")).toLowerCase().includes(term));
   const eres = [];
   for (const t of TERMS) for (const e of (TERM_EVENTS[t.id] || [])) if ((e.t + " " + (e.note || "")).toLowerCase().includes(term)) eres.push({ e, t });
 
@@ -1567,6 +1680,7 @@ function noticeSheet(id) {
   openSheet(n.title, h);
 }
 function schoolSheet(k) {
+  if (k === "kitlist") return go("kit");
   const s = SCHOOL.find(x => x.k === k); if (!s) return;
   openSheet(s.t, `<div class="prose">${s.body()}</div>`);
 }
@@ -1632,6 +1746,7 @@ function render() {
     route.name === "family" ? viewFamily() :
     route.name === "child" ? viewChild(route.arg) :
     route.name === "check" ? viewCheck() :
+    route.name === "kit" ? viewKit() :
     route.name === "search" ? viewSearch(route.arg) : viewToday();
 
   const ut = termFor(TODAY), uh = nextHoliday(TODAY);
@@ -1678,6 +1793,33 @@ document.addEventListener("click", ev => {
     state.checkDate = n.dataset.checkdate ? (([y, m, dd]) => new Date(y, m - 1, dd))(n.dataset.checkdate.split("-").map(Number)) : defaultCheckDate();
     if (!$("#sheet").hidden) { closeSheet(); setTimeout(() => go("check"), 210); return; }
     return go("check");
+  }
+  if ((n = el("[data-kitchild]"))) { state.kitChild = n.dataset.kitchild; return render(); }
+  if ((n = el("[data-kitfilter]"))) { state.kitToBuyOnly = n.dataset.kitfilter === "buy"; return render(); }
+  if ((n = el("[data-kititem]"))) {
+    const [cid, iid] = n.dataset.kititem.split("|");
+    state.kit[cid] = state.kit[cid] || {};
+    if (state.kit[cid][iid]) delete state.kit[cid][iid]; else state.kit[cid][iid] = true;
+    save(); return render();
+  }
+  if ((n = el("[data-clearkit]"))) { delete state.kit[n.dataset.clearkit]; save(); return render(); }
+  if ((n = el("[data-copykit]"))) {
+    const c = childById(n.dataset.copykit), owned = state.kit[c.id] || {};
+    const lines = kitListFor(c).flatMap(g => g.items.filter(i => !owned[i.id])
+      .map(i => `${i.q > 1 ? i.q + " x " : ""}${i.t}${i.w === "outfitter" ? " (outfitter)" : ""}`));
+    const txt = lines.length
+      ? `${c.name} — still to buy\n\n${lines.join("\n")}\n\nIndicative total: £${
+          kitListFor(c).flatMap(g => g.items).filter(i => !owned[i.id]).reduce((t, i) => t + i.p * i.q, 0)}`
+      : `${c.name} — nothing left to buy.`;
+    navigator.clipboard?.writeText(txt).then(
+      () => openSheet("Copied", `<div class="prose"><p>The list is on the clipboard, ready to send to whoever is doing the shopping.</p><pre style="white-space:pre-wrap;font-size:.85rem;background:var(--paper-2);padding:12px;border-radius:10px">${esc(txt)}</pre></div>`),
+      () => openSheet(`${c.name} — still to buy`, `<div class="prose"><pre style="white-space:pre-wrap;font-size:.85rem">${esc(txt)}</pre></div>`));
+    return;
+  }
+  if ((n = el("[data-openkit]"))) {
+    state.kitChild = n.dataset.openkit;
+    if (!$("#sheet").hidden) { closeSheet(); setTimeout(() => go("kit"), 210); return; }
+    return go("kit");
   }
   if ((n = el("[data-notice]"))) return noticeSheet(n.dataset.notice);
   if ((n = el("[data-school]"))) return schoolSheet(n.dataset.school);

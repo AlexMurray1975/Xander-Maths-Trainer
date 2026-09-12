@@ -19,8 +19,8 @@ reasoning on the parent's behalf, it should.
 
 ## Information architecture
 
-Five sections, which is as many as a tab bar can carry without becoming a menu, and one
-task screen reached from within them.
+Five sections, which is as many as a tab bar can carry without becoming a menu, and two
+task screens reached from within them.
 
 **Today** is the landing screen and the one that justifies the application. It opens
 with the date, the term and the week, and the number of school days to the next
@@ -96,6 +96,28 @@ so the list said "no bag" and then asked for a swim bag, and Sports Day falling 
 does, and a parent app that merely republishes the calendar passes the contradiction
 straight through to the parent. One that derives an answer has to resolve it.
 
+## The kit list
+
+The daily check answers "what does today need". The kit list answers the other uniform
+question, which is asked twice a year and costs a great deal more: what does the school
+require in total, what is already in the cupboard, and what has to be bought. It is the
+same pattern applied to a different horizon, and the two share their vocabulary so that
+an item ticked as owned reads the same as an item ticked as packed.
+
+Three things make it useful rather than merely a list. Quantities are per year group, so
+a Year 2 boy is asked for grey shorts, a book bag and no gum shield, while a Year 4 boy
+is asked for trousers, boots, a gum shield and a rucksack. Each item says where it comes
+from, since roughly a third of a school list carries a crest and must come from the
+outfitter while the rest is ordinary and can come from anywhere, and that distinction is
+the one a parent cannot work out from a list of garments. And the items worth buying
+second-hand are marked, because a blazer, a boater, a cap and a tracksuit are grown out
+of long before they wear out, and the Parents' Association sells them at the start of
+each term.
+
+The prices are indicative and are stated as such in the app. They exist to give a sense
+of the total, which is the number a parent actually wants in September, not to quote one.
+The outfitter holds the school's own list and its prices, and the app links to it.
+
 ## Content model
 
 The prototype is deliberately built on a small number of entities, because these are
@@ -165,6 +187,13 @@ app follows all four. The strip, which on the school's own site carries the pare
 portal and the dates page, here states the term, the week and the number of school days
 to the next holiday, so that the answer to the most frequently asked question in the
 school is present on every screen without being asked for.
+
+The crest is the school's own artwork rather than a drawing of it. The logo file never
+reached the build environment, so it was recovered from a screenshot of the site: the
+crest located by scanning for its ink, cropped, and the white keyed to transparency by
+alpha rather than by threshold, so the edges stay clean. It is therefore at screenshot
+resolution, which is ample for the header and adequate for the home-screen icon, and it
+should be replaced with the original artwork before this went anywhere real.
 
 Two deliberate departures. Poppins stands in for the wordmark face, which I have
 matched by eye rather than identified; substituting the school's licensed face is a
