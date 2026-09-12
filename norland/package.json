@@ -1,0 +1,10 @@
+{
+  "name": "norland-place-parents",
+  "private": true,
+  "type": "module",
+  "description": "A prototype parent app for Norland Place School.",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.0.0",
+    "zod": "^3.23.8"
+  }
+}

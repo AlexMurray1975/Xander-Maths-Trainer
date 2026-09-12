@@ -74,6 +74,9 @@ the reading is done live by Claude, at your request.
 - `manifest.webmanifest` — metadata for "Add to Home Screen".
 - `sw.js` — service worker for offline use. Bump `CACHE_VERSION` after any edit.
 - `icons/` — the school's crest, keyed to transparency, and the app icons built from it.
+- `api/` — the extraction endpoint the app calls when it is not running as a Claude
+  artifact, and the inbound mailbox endpoint. Both need an Anthropic API key.
+- `vercel.json`, `package.json`, `.env.example` — deployment.
 - `DESIGN.md` — the design note: information architecture, content model, integration,
   data protection and what a real build would involve.
 
@@ -88,3 +91,9 @@ device, in `localStorage`. There is no account, no backend, no analytics and no 
 This is an independent prototype and not an official Norland Place School application.
 Children's names, staff names, menus, notices, fixtures and term dates are illustrative.
 The names can be changed under Family; everything else follows from them.
+
+## Putting it online
+
+See [`DEPLOY.md`](DEPLOY.md). Vercel rather than GitHub Pages, because the two
+API endpoints under `api/` need somewhere that can run a function, and they are
+what make the email reading work outside the Claude artifact.

@@ -569,14 +569,14 @@ function schoolDaysBetween(a, b) { let n = 0, x = new Date(a); while (x < b) { i
    ============================================================ */
 const DEFAULT_CHILDREN = [
   { id: "c1", name: "Xander", year: 4, form: "4H", teacher: "Miss Hardy", house: "Holland", colour: "#2F5C8A", uniformOption: "grey",
-    allergies: "None recorded", medical: "Inhaler held in the school office (blue, salbutamol)",
+    allergies: "Not yet entered", medical: "Not yet entered. Tap Edit to put in what the school should hold.",
     permissions: { photos: true, walks: true, suncream: true, paracetamol: false },
     collection: "Collected at 3.45pm from the Holland Park Avenue gate",
     authorised: ["Alex Murray (father)", "Mrs S Nowak (nanny)", "Mrs J Murray (grandmother)"],
     merits: 46, rank: "2nd in form", instrument: "Cello", instrumentDay: "Tue", instrumentTime: "11:20" },
   { id: "c2", name: "Charlie", year: 2, form: "2P", teacher: "Mrs Patel", house: "Norland", colour: "#4E7359", uniformOption: "grey",
-    allergies: "Peanuts. EpiPen held in the school office and with the class teacher",
-    medical: "None other recorded",
+    allergies: "Not yet entered",
+    medical: "Not yet entered. Tap Edit to put in what the school should hold.",
     permissions: { photos: true, walks: true, suncream: true, paracetamol: true },
     collection: "Collected at 3.15pm from the Lower School door",
     authorised: ["Alex Murray (father)", "Mrs S Nowak (nanny)"],
@@ -1311,15 +1311,40 @@ ${text}
 }
 
 let extracting = false;
+const TOKEN_KEY = "npp.apptoken";
+const appToken = () => { try { return localStorage.getItem(TOKEN_KEY) || ""; } catch { return ""; } };
+const setAppToken = v => { try { v ? localStorage.setItem(TOKEN_KEY, v) : localStorage.removeItem(TOKEN_KEY); } catch {} };
+/* On its own hosting there is no Claude to ask, so the reading goes to the
+   project's own endpoint, which holds the API key server side. */
+const selfHosted = () => location.protocol.startsWith("http") && !/claude\.ai$/.test(location.hostname);
+
 async function extractEmail(text) {
   const sample = await window.claude?.use?.("sample");
-  if (!sample) return { error: "unavailable" };
+  if (sample) {
+    try {
+      const out = await sample.json(extractPrompt(text), { modelTier: "default" });
+      if (!out || !Array.isArray(out.items)) return { error: "shape" };
+      return out;
+    } catch (e) {
+      return { error: (e && e.code) || "failed", message: e && e.message };
+    }
+  }
+  if (!selfHosted()) return { error: "unavailable" };
+  if (!appToken()) return { error: "no_token" };
   try {
-    const out = await sample.json(extractPrompt(text), { modelTier: "default" });
+    const r = await fetch("/api/extract", {
+      method: "POST",
+      headers: { "content-type": "application/json", "x-app-token": appToken() },
+      body: JSON.stringify({ text, today: dayLong(TODAY) + " " + TODAY.getFullYear(),
+        children: state.children.map(c => ({ name: c.name, year: c.year })) })
+    });
+    if (r.status === 401) { setAppToken(""); return { error: "bad_token" }; }
+    if (!r.ok) { const j = await r.json().catch(() => ({})); return { error: j.error || "failed", message: `HTTP ${r.status}` }; }
+    const out = await r.json();
     if (!out || !Array.isArray(out.items)) return { error: "shape" };
     return out;
   } catch (e) {
-    return { error: (e && e.code) || "failed", message: e && e.message };
+    return { error: "network", message: e && e.message };
   }
 }
 
@@ -1927,8 +1952,15 @@ function viewInbox() {
       <div class="row"><span class="k">4</span><span class="v">Nothing appears in the app until you have confirmed it, and the original email is kept against every item so an answer can always be checked against what the school actually said.</span></div>
     </div></div>`;
 
-  h += `<div class="rubric">Try it on a real one</div>
-    <div class="card"><div class="card-pad">
+  h += `<div class="rubric">Try it on a real one</div>`;
+  if (selfHosted() && !appToken()) {
+    h += `<div class="card"><div class="card-pad">
+      <label class="flabel" for="tok">Access word</label>
+      <input class="finput" id="tok" type="password" autocomplete="off" placeholder="The one set when this was deployed">
+      <p style="font-size:.82rem;color:var(--muted);margin-top:9px">Asked once and kept on this device. It stops the reading endpoint being usable by anyone who finds the address.</p>
+      </div><div class="btnrow"><button class="btn sm" data-savetoken>Save it</button></div></div>`;
+  }
+  h += `<div class="card"><div class="card-pad">
       <label class="flabel" for="pastebox">Paste a school email</label>
       <textarea class="finput" id="pastebox" rows="7" placeholder="Paste the whole thing, headers and all. Nothing is stored anywhere but this device." style="resize:vertical;font-size:.92rem;line-height:1.5">${esc(state.paste || "")}</textarea>
     </div>
@@ -1970,7 +2002,9 @@ function viewInbox() {
         <button class="linkish" data-forget="${i.id}" style="align-self:center">Remove</button></div>`).join("")}</div>`;
   }
 
-  h += `<div class="footnote">In the published app the reading is done by Claude, on this device's request and with your permission. In a working service it would happen when the email arrived, so that the app was already up to date before you opened it. Emails about children carry medical and pastoral detail, so a service doing this for more than one family needs a privacy notice, a lawful basis and an agreement with whoever processes the mail.</div>`;
+  h += `<div class="footnote">${selfHosted()
+    ? "The reading is done by this deployment's own endpoint, which holds the API key server side."
+    : "In the published app the reading is done by Claude, on this device's request and with your permission."} In a working service it would happen when the email arrived, so that the app was already up to date before you opened it. Emails about children carry medical and pastoral detail, so a service doing this for more than one family needs a privacy notice, a lawful basis and an agreement with whoever processes the mail.</div>`;
   return h;
 }
 
@@ -2290,6 +2324,12 @@ document.addEventListener("click", ev => {
   }
   if (el("#btn-alerts")) return go("alerts");
   if (el("[data-sampleemail]")) { state.paste = SAMPLE_EMAIL; return render(); }
+  if (el("[data-savetoken]")) {
+    const v = ($("#tok")?.value || "").trim();
+    if (!v) { $("#tok")?.focus(); return; }
+    setAppToken(v); render(); toast("Saved", "The reading endpoint can now be used from this device.");
+    return;
+  }
   if (el("[data-clearpending]")) { state.pending = []; return render(); }
   if (el("[data-extract]")) {
     const text = ($("#pastebox")?.value || "").trim();
@@ -2298,7 +2338,15 @@ document.addEventListener("click", ev => {
     extractEmail(text).then(res => {
       extracting = false;
       if (res.error === "unavailable") {
-        toast("Reading is not available here", "It runs in the published app, where the page may ask Claude.");
+        toast("Reading is not available here", "It runs in the published app, or on your own hosting with an API key behind it.");
+      } else if (res.error === "no_token") {
+        toast("An access word is needed", "Enter the one set when this was deployed.");
+      } else if (res.error === "bad_token") {
+        toast("That access word was refused", "Try it again.");
+      } else if (res.error === "bad_api_key") {
+        toast("The API key was refused", "Check ANTHROPIC_API_KEY in the deployment settings.");
+      } else if (res.error === "rate_limited") {
+        toast("Rate limited", "Wait a moment and try again.");
       } else if (res.error) {
         toast("The email could not be read", res.message || "Try again in a moment.");
       } else {
