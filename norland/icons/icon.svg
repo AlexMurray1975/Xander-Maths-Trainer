@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
-  <rect width="512" height="512" rx="112" fill="#1E3A5C"/>
-  <path d="M150 128H362V330C362 424 286 484 256 504C226 484 150 424 150 330Z"
-        fill="none" stroke="#FFFFFF" stroke-width="20" stroke-linejoin="round"/>
-  <text x="256" y="330" text-anchor="middle" font-family="Poppins, Avenir Next, Helvetica, Arial, sans-serif"
-        font-size="136" font-weight="500" letter-spacing="4" fill="#FFFFFF">NP</text>
+  <rect width="512" height="512" rx="112" fill="#34506E"/>
+  <path d="M148 120Q256 184 364 120L364 296C364 356 316 400 256 424C196 400 148 356 148 296Z"
+        fill="none" stroke="#FFFFFF" stroke-width="21" stroke-linejoin="round"/>
+  <text x="256" y="320" text-anchor="middle" font-family="Poppins, Avenir Next, Helvetica, Arial, sans-serif"
+        font-size="124" font-weight="500" letter-spacing="3" fill="#FFFFFF">NP</text>
 </svg>

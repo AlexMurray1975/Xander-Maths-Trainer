@@ -9,7 +9,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Norland Place">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#44618A">
+<meta name="theme-color" content="#4A6B96">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
@@ -30,14 +30,14 @@
   --paper:#F1F4F8;
   --paper-2:#E4EAF1;
   --card:#FFFFFF;
-  --ink:#1E3A5C;
+  --ink:#34506E;
   --on-ink:#FFFFFF;
-  --ink-2:#33506F;
+  --ink-2:#4A6484;
   --muted:#657A94;
   --faint:#93A3B6;
   --line:#DAE2EB;
   --line-2:#E9EEF4;
-  --slate:#44618A;
+  --slate:#4A6B96;
   --red:#B0323A;
   --red-soft:#F8E7E8;
   --gold:#A8894F;
@@ -46,7 +46,7 @@
   --sky:#44618A;
   --sky-soft:#E5EBF3;
   --plum:#6A5A86;
-  --shadow:0 1px 2px rgba(30,58,92,.06), 0 6px 18px rgba(30,58,92,.06);
+  --shadow:0 1px 2px rgba(52,80,110,.07), 0 6px 18px rgba(52,80,110,.06);
   --radius:14px;
   --display:'Poppins', 'Avenir Next', 'Segoe UI', system-ui, sans-serif;
   --sans:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -104,12 +104,12 @@ a{color:var(--sky);}
   font-family:var(--display);font-size:.61rem;letter-spacing:.16em;text-transform:uppercase;font-weight:400;}
 .utility .inner .r{margin-left:auto;opacity:.8;white-space:nowrap;}
 .topbar .inner{max-width:600px;margin:0 auto;padding:11px 16px 10px;display:flex;align-items:center;gap:11px;}
-.crest{width:36px;height:36px;flex:0 0 36px;color:var(--ink);}
+.crest{width:35px;height:37px;flex:0 0 35px;color:var(--ink);}
 .wordmark{flex:1;min-width:0;}
-.wordmark .n{font-family:var(--display);font-weight:500;font-size:.9rem;letter-spacing:.15em;
-  text-transform:uppercase;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.wordmark .s{font-family:var(--display);font-weight:300;font-size:.68rem;letter-spacing:.24em;
-  text-transform:uppercase;color:var(--muted);margin-top:2px;}
+.wordmark .n{font-family:var(--display);font-weight:600;font-size:.94rem;letter-spacing:.02em;
+  text-transform:uppercase;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.wordmark .s{font-family:var(--display);font-weight:300;font-size:.72rem;letter-spacing:.2em;
+  text-transform:uppercase;color:var(--ink);opacity:.78;line-height:1.15;margin-top:1px;}
 .iconbtn{
   width:36px;height:36px;border-radius:10px;display:grid;place-items:center;flex:0 0 36px;
   color:var(--ink);border:1px solid var(--line);
@@ -380,9 +380,11 @@ h1,h2,h3{font-family:var(--display);font-weight:500;letter-spacing:-.2px;line-he
 <header class="topbar">
   <div class="utility"><div class="inner"><span id="ub-l"></span><span class="r" id="ub-r"></span></div></div>
   <div class="inner">
-    <svg class="crest" viewBox="0 0 64 64" aria-hidden="true">
-      <path d="M11 7H53V33C53 45 43.5 52.5 32 57.5C20.5 52.5 11 45 11 33Z" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linejoin="round"/>
-      <text x="32" y="39.5" text-anchor="middle" font-family="Poppins, system-ui, sans-serif" font-size="19" font-weight="500" letter-spacing=".5" fill="currentColor">NP</text>
+    <svg class="crest" viewBox="0 0 64 68" aria-hidden="true">
+      <path d="M5 5Q32 21 59 5L59 33C59 48 47 59 32 64C17 59 5 48 5 33Z" fill="none"
+            stroke="currentColor" stroke-width="5.4" stroke-linejoin="round"/>
+      <text x="32" y="42" text-anchor="middle" font-family="Poppins, system-ui, sans-serif"
+            font-size="17" font-weight="500" letter-spacing=".5" fill="currentColor">NP</text>
     </svg>
     <div class="wordmark">
       <div class="n">Norland Place</div>
@@ -524,7 +526,7 @@ const DEFAULT_CHILDREN = [
     collection: "Collected at 3.45pm from the Holland Park Avenue gate",
     authorised: ["Alex Murray (father)", "Mrs S Nowak (nanny)", "Mrs J Murray (grandmother)"],
     merits: 46, rank: "2nd in form", instrument: "Cello", instrumentDay: "Tue", instrumentTime: "11:20" },
-  { id: "c2", name: "Freddie", year: 2, form: "2P", teacher: "Mrs Patel", house: "Norland", colour: "#4E7359",
+  { id: "c2", name: "Charlie", year: 2, form: "2P", teacher: "Mrs Patel", house: "Norland", colour: "#4E7359",
     allergies: "Peanuts. EpiPen held in the school office and with the class teacher",
     medical: "None other recorded",
     permissions: { photos: true, walks: true, suncream: true, paracetamol: true },
@@ -908,7 +910,7 @@ const SCHOOL = [
 /* ============================================================
    9. State
    ============================================================ */
-const STORE = "npp.v1";
+const STORE = "npp.v2";
 function load() { try { return JSON.parse(localStorage.getItem(STORE)) || {}; } catch { return {}; } }
 function save() {
   try { localStorage.setItem(STORE, JSON.stringify({ read: state.read, done: state.done, prefs: state.prefs, names: state.children.map(c => c.name) })); } catch {}
@@ -1230,7 +1232,7 @@ function viewSchool() {
     <button class="btn ghost sm" data-demo="Book Late Stay">Book Late Stay</button>
     <button class="btn ghost sm" data-demo="Message the form teacher">Message the form teacher</button>
     <button class="btn ghost sm" data-demo="Call the school office">Call the office</button></div></div>`;
-  h += `<div class="footnote">Norland Place School, 162–166 Holland Park Avenue, London W11. Founded 1876, and in its 150th year. This is an independent prototype and not an official school application; the content is illustrative.</div>`;
+  h += `<div class="footnote">Norland Place School, 162–166 Holland Park Avenue, London W11. Founded 1876, and in its 150th year. An independent prototype by a parent, not an official school application. The school's crest and name are used to show how an app of its own might look; the content is illustrative.</div>`;
   return h;
 }
 
