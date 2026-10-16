@@ -44,7 +44,9 @@ missions are completed in, so a £50 reward builds half a room.
 
 ## Command (parent) controls
 
-Press and hold the money panel on the home screen for 2 seconds. Shows per-fact progress,
+Press and hold the money panel on the home screen for 2 seconds, then enter the 4-digit
+Command PIN (set the first time; changeable inside). The PIN stops Xander approving his own
+missions. Shows per-fact progress,
 inspection dates, recent sessions, a "mark as paid" toggle, the inspection rules and a reset.
 
 ## Adding the next mission
@@ -58,7 +60,9 @@ needs no extra code; Mission 3 is a locked placeholder ready to be filled in.
 - `manifest.webmanifest`, `sw.js`, `icons/`: home-screen install and offline support.
 - `.github/workflows/deploy-pages.yml`: publishes to GitHub Pages on every push to `main`.
 
-Progress is stored on the device (`localStorage`); there are no accounts, servers or trackers.
+Progress is stored on the iPad (`localStorage`); there are no accounts, servers or trackers.
+Add the app to the Home Screen: Safari can clear data for websites that have not been visited
+for a few weeks, but not for Home Screen apps. The app also asks the browser to keep its data.
 After changing any file, bump `CACHE_VERSION` in `sw.js` so installed copies update.
 
 ## Install on an iPad

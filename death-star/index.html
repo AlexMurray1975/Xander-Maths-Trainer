@@ -202,6 +202,11 @@
   .parent .row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:8px 0;font-size:.9rem;}
   .parent select{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-family:inherit;font-size:.9rem;}
   .pbtn{padding:9px 12px;border-radius:9px;border:1px solid var(--line);background:var(--panel2);font-size:.85rem;font-weight:700;}
+  .pinbox{max-width:340px;text-align:center;}
+  .pinbox.bad{animation:shake .35s ease;}
+  .pindots{display:flex;justify-content:center;gap:14px;margin-bottom:16px;}
+  .pindots i{width:16px;height:16px;border-radius:50%;border:2px solid var(--holo);}
+  .pindots i.on{background:var(--holo);}
   .pbtn.danger{border-color:#7d1f1c;color:#ff8a86;}
   .note{font-size:.78rem;color:var(--soft);line-height:1.45;margin-top:6px;}
   footer{text-align:center;color:#4a5468;font-size:.72rem;margin-top:28px;}
@@ -790,11 +795,41 @@ function celebrate(mid){
 (function(){
   const box=$('fundBox'), bar=$('holdBar'); let t0=null, raf=null;
   function stop(){ t0=null; cancelAnimationFrame(raf); bar.style.width='0'; }
-  function step(){ if(t0===null) return; const f=Math.min(1,(performance.now()-t0)/2000); bar.style.width=(f*100)+'%'; if(f>=1){ stop(); openParent(); } else raf=requestAnimationFrame(step); }
+  function step(){ if(t0===null) return; const f=Math.min(1,(performance.now()-t0)/2000); bar.style.width=(f*100)+'%'; if(f>=1){ stop(); openPin(); } else raf=requestAnimationFrame(step); }
   box.addEventListener('pointerdown', ()=>{ t0=performance.now(); raf=requestAnimationFrame(step); });
   ['pointerup','pointerleave','pointercancel'].forEach(ev=>box.addEventListener(ev,stop));
   box.addEventListener('contextmenu', e=>e.preventDefault());
 })();
+/* A 4-digit PIN keeps Command controls (and the power to approve missions)
+   for parents. It is set the first time the controls are opened. */
+function openPin(){
+  const o=$('overlay'), setting=!S.settings.pin; let first=null, entry='';
+  function draw(msg, bad){
+    const title = setting ? (first===null?'SET A COMMAND PIN':'CONFIRM THE PIN') : 'COMMAND PIN';
+    o.innerHTML=`<div class="parent pinbox ${bad?'bad':''}">
+      <h3>${title}</h3>
+      <div class="note" style="margin-bottom:12px">${msg}</div>
+      <div class="pindots">${[0,1,2,3].map(i=>`<i class="${i<entry.length?'on':''}"></i>`).join('')}</div>
+      <div class="pad">${['1','2','3','4','5','6','7','8','9','x','0','del'].map(k=>
+        `<button class="key ${k==='del'?'del':''}" data-p="${k}">${k==='del'?'⌫':(k==='x'?'✕':k)}</button>`).join('')}</div></div>`;
+    o.classList.remove('hidden');
+  }
+  draw(setting?'Choose 4 digits that only parents know. You will need them to approve missions.':'Enter the 4-digit PIN.');
+  o.onclick=e=>{
+    const b=e.target.closest('[data-p]'); if(!b) return; const k=b.dataset.p;
+    if(k==='x'){ o.onclick=null; o.classList.add('hidden'); return; }
+    if(k==='del'){ entry=entry.slice(0,-1); return draw(o.querySelector('.note').textContent); }
+    entry+=k; if(entry.length<4) return draw(o.querySelector('.note').textContent);
+    const v=entry; entry='';
+    if(!setting){
+      if(v===S.settings.pin){ o.onclick=null; return openParent(); }
+      sfx.miss(); return draw('Wrong PIN. Try again.', true);
+    }
+    if(first===null){ first=v; return draw('Enter the same 4 digits again.'); }
+    if(v===first){ S.settings.pin=v; save(); o.onclick=null; return openParent(); }
+    first=null; sfx.miss(); draw('Those did not match. Choose your 4 digits again.', true);
+  };
+}
 function openParent(){
   const M=S.missions.m1, cfg=CONFIG.missions[0], o=$('overlay');
   const mode={seq:'Assembly',drill:'Target',trench:'Trench',inspect:'Inspection'};
@@ -820,17 +855,19 @@ function openParent(){
     <h4>INSPECTION RULES</h4>
     <div class="row"><span>Time limit for all 12</span><select id="setTime">${opt([45,60,75,90,120],S.settings.timeLimitSecs,' s')}</select></div>
     <div class="row"><span>Passes needed (on different days)</span><select id="setDays">${opt([1,2,3,4,5],S.settings.daysRequired,'')}</select></div>
+    <div class="row"><span>Command PIN</span><button class="pbtn" id="pinBtn">Change PIN</button></div>
     <div class="row"><span>Sound</span><button class="pbtn" id="sndBtn">${S.settings.sound?'On':'Off'}</button></div>
     <h4>RECENT SESSIONS</h4>
     <table><tr><th>When</th><th>Mode</th><th>Right</th><th>Time</th><th></th></tr>${logRows}</table>
     <h4>RESET</h4>
     <div class="row"><span>Wipe Mission 1 progress</span><button class="pbtn danger" id="resetBtn">Reset</button></div>
-    <div class="note">Progress is saved on this device only. Clearing Safari's website data will erase it.</div>
+    <div class="note">Progress is saved on this iPad only. Keep the app on the Home Screen, and do not clear Safari's website data, or progress will be lost. A forgotten PIN can only be cleared by wiping the app's data.</div>
     <button class="cta alt" id="closeParent">CLOSE</button></div>`;
   o.classList.remove('hidden');
   $('closeParent').onclick=()=>{ o.classList.add('hidden'); renderHome(); };
   $('setTime').onchange=e=>{ S.settings.timeLimitSecs=+e.target.value; save(); };
   $('setDays').onchange=e=>{ S.settings.daysRequired=+e.target.value; if(!M.complete && M.passes.length>=S.settings.daysRequired && studCount('m1')>=studMax()){ M.complete=true; M.completedAt=today(); M.celebrated=false; } save(); openParent(); };
+  $('pinBtn').onclick=()=>{ S.settings.pin=null; save(); openPin(); };
   $('sndBtn').onclick=()=>{ S.settings.sound=!S.settings.sound; save(); openParent(); };
   if($('paidBtn')) $('paidBtn').onclick=()=>{ M.paid=!M.paid; save(); openParent(); };
   if($('m2Btn')) $('m2Btn').onclick=()=>{ const M2=S.missions.m2;
@@ -843,6 +880,8 @@ function openParent(){
 
 /* ---------- Boot ---------- */
 show('home');
+// Ask the browser to keep saved progress rather than clear it when space is short.
+try{ if(navigator.storage && navigator.storage.persist) navigator.storage.persist().catch(()=>{}); }catch(e){}
 if('serviceWorker' in navigator){ window.addEventListener('load', ()=>navigator.serviceWorker.register('sw.js').catch(()=>{})); }
 </script>
 </body>

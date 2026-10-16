@@ -1,7 +1,7 @@
 /* Xander's Death Star: service worker
    Full offline support. Bump CACHE_VERSION whenever the app files change
    so devices pick up the new version. */
-const CACHE_VERSION = 'xds-v4';
+const CACHE_VERSION = 'xds-v5';
 const APP_SHELL = [
   './',
   './index.html',
