@@ -165,6 +165,23 @@
   .fact.l3{background:#00852B;border-color:#00561c;color:#fff;}
   .fact .studs i.lit{background:var(--lego);border-color:#c79f00;}
   .fact.l3 .studs i.lit{background:var(--laser);border-color:#2fb33a;}
+  .tgrid{display:grid;grid-template-columns:repeat(13,1fr);gap:2px;margin:18px 0 8px;}
+  .tgrid > div{aspect-ratio:1;display:flex;align-items:center;justify-content:center;border-radius:3px;
+    font-family:'Orbitron',sans-serif;font-weight:800;font-size:clamp(.45rem,2.1vw,.8rem);}
+  .tgrid .h{background:#E3000B;color:#fff;}
+  .tgrid .h.hn{background:#5B616A;color:#c9ced6;}
+  .tgrid .corner{background:transparent;color:var(--lego);font-size:clamp(.7rem,3vw,1.1rem);}
+  .tgrid .c{background:#20283a;box-shadow:inset 0 -2px 0 rgba(0,0,0,.35);}
+  .tgrid .c.l1{background:#B40000;} .tgrid .c.l2{background:#F2A900;} .tgrid .c.l3{background:#00852B;}
+  .tgrid .c.cur{outline:2px solid var(--lego);outline-offset:-2px;}
+  .tgrid .c.n{background:#4B525C;color:#aeb4bd;box-shadow:none;}
+  .sbadge{min-width:46px;height:40px;border-radius:5px;background:#E3000B;color:#fff;display:flex;align-items:center;justify-content:center;
+    font-family:'Orbitron',sans-serif;font-weight:900;font-size:1rem;box-shadow:inset 0 -3px 0 rgba(0,0,0,.3);}
+  .sbadge.n{background:#5B616A;color:#c9ced6;}
+  .mode.nailed{opacity:.7;}
+  .mode.nextup{border-color:var(--lego);--stud:#8a7000;}
+  .nx{font-size:.62rem;color:#1a1a1a;background:var(--lego);padding:2px 6px;border-radius:4px;margin-left:6px;vertical-align:middle;letter-spacing:.06em;}
+  .legend b{color:var(--text);}
   .legend{font-size:.75rem;color:var(--soft);text-align:center;margin-bottom:6px;}
   .modes{display:grid;gap:10px;margin-top:14px;}
   .mode{display:flex;align-items:center;gap:14px;text-align:left;width:100%;padding:13px 14px;border-radius:12px;
@@ -309,7 +326,7 @@
 <!-- ============ MISSION ============ -->
 <section id="mission" class="wrap hidden">
   <div class="topbar">
-    <button class="back" data-go="home">◀ BASE</button>
+    <button class="back" id="mBack">◀ BASE</button>
     <div class="rankwrap"><div class="rank" id="rankHead">RANK<b id="rankName">Youngling</b></div><img class="rankfig" id="rankFig" alt=""></div>
   </div>
   <div class="mhead">
@@ -317,7 +334,7 @@
     <p id="mDesc"></p>
   </div>
   <div class="factgrid" id="factGrid"></div>
-  <div class="legend" id="legend">Each brick has 3 studs. Answer a fact quickly and correctly to light a stud. Light all 36 to unlock Lord Vader's Inspection.</div>
+  <div class="legend" id="legend"></div>
   <div class="modes" id="modes"></div>
   <div class="brief hidden" id="brief"></div>
 </section>
@@ -357,10 +374,10 @@ const CONFIG = {
   quickSecs: 6,                     // a practice answer this fast lights a stud
   studsPerFact: 3,
   missions: [
-    { id:'m1', code:'01', title:'Operation Twelve', short:'Master the 12 times table',
-      desc:'Command needs an engineer who knows every fact in the 12 times table, in any order, at speed. Light all 36 studs in training, then pass Lord Vader\'s Inspection on 3 different days.',
-      reward:200, table:12, type:'times', status:'active',
-      doneMsg:'you have mastered the 12 times table.' },
+    { id:'m1', code:'01', title:'Operation Twelve', short:'Master every times table up to 12 × 12',
+      desc:'Command needs an engineer who knows every times table up to 12 × 12. Nail one series at a time to grey it out on the grid: start with the 1s and the 10s, then the squares. When the whole grid is grey, pass Lord Vader\'s Inspection on 3 different days.',
+      reward:200, type:'times', status:'active',
+      doneMsg:'you have mastered every times table up to 12 × 12.' },
     // An 'approval' mission is checked by a parent: Xander reports it done, and
     // Command (parent) approves it in Command controls to release the reward.
     { id:'m2', code:'02', title:'Imperial Dispatch', short:'Complete your English assignment',
@@ -370,15 +387,27 @@ const CONFIG = {
     { id:'m3', code:'03', title:'Classified', short:'Awaiting orders from Command',
       reward:null, status:'locked' }
   ],
-  // Defaults for the final test; a parent can change these in Command controls.
+  // Mission 1 series, in the order Xander tackles them ('sq' = the squares).
+  seriesOrder: [1, 10, 'sq', 2, 5, 11, 3, 4, 9, 6, 8, 7, 12],
+  inspectionFacts: 24,              // final test: this many facts from the whole grid
+  // Defaults; a parent can change these in Command controls.
+  // timeLimitSecs is for a 12-fact Series Check; the Inspection gets the same pace.
   inspection: { timeLimitSecs: 60, daysRequired: 3 }
 };
+// A fact is an unordered pair: 3 × 7 and 7 × 3 share one key, "3x7".
+function fkey(a,b){ return Math.min(a,b)+'x'+Math.max(a,b); }
+const SERIES = CONFIG.seriesOrder.map(t=> t==='sq'
+  ? { id:'sq', name:'squares', badge:'n²', facts:Array.from({length:12},(_,i)=>[i+1,i+1]) }
+  : { id:'t'+t, t, name:t+' times table', badge:t+'×', facts:Array.from({length:12},(_,i)=>[i+1,t]) });
+SERIES.forEach(s=>{ s.title = s.name[0].toUpperCase()+s.name.slice(1); });
+function seriesById(id){ return SERIES.find(s=>s.id===id); }
+const ALL_FACTS=[]; for(let a=1;a<=12;a++) for(let b=a;b<=12;b++) ALL_FACTS.push([a,b]);
 
 /* =====================================================================
    STATE (saved on this device)
    ===================================================================== */
 const STORE_KEY = 'xds-v1';
-function freshMission(){ return { studs:{}, passes:[], complete:false, completedAt:null, paid:false, celebrated:false, submitted:false, trenchBest:0, bestInspection:null }; }
+function freshMission(){ return { studs:{}, nailed:{}, passes:[], complete:false, completedAt:null, paid:false, celebrated:false, submitted:false, trenchBest:0, bestInspection:null }; }
 function freshState(){
   return { missions:{ m1:freshMission() }, settings:{ sound:true, timeLimitSecs:CONFIG.inspection.timeLimitSecs, daysRequired:CONFIG.inspection.daysRequired }, log:[] };
 }
@@ -387,6 +416,8 @@ try{ S = JSON.parse(localStorage.getItem(STORE_KEY)) || freshState(); }catch(e){
 CONFIG.missions.forEach(m => {
   if(m.status==='active' && !S.missions[m.id]) S.missions[m.id] = freshMission();
   const M=S.missions[m.id]; if(M && M.celebrated===undefined) M.celebrated = !!M.complete;   // older saves
+  if(M && !M.nailed) M.nailed={};
+  if(M) Object.keys(M.studs||{}).forEach(k=>{ if(/^\d+$/.test(k)){ M.studs[fkey(+k,12)]=M.studs[k]; delete M.studs[k]; } });   // 12× table only
 });
 function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(S)); }catch(e){} }
 
@@ -408,19 +439,18 @@ function missionRange(mid){
   }
   return null;
 }
-function studCount(mid){ const st=S.missions[mid].studs; let n=0; for(let a=1;a<=12;a++) n += (st[a]||0); return n; }
-function studMax(){ return 12*CONFIG.studsPerFact; }
+function nailedCount(){ return SERIES.filter(x=>(S.missions.m1.nailed||{})[x.id]).length; }
 function missionProgress(mid){
   const M=S.missions[mid]; if(!M) return 0; if(M.complete) return 1;
   if(CONFIG.missions.find(m=>m.id===mid).type==='approval') return M.submitted ? 0.5 : 0;
-  // 60% training studs, 40% inspection days.
-  return 0.6*studCount(mid)/studMax() + 0.4*Math.min(M.passes.length,S.settings.daysRequired)/S.settings.daysRequired;
+  // 70% series nailed, 30% inspection days.
+  return 0.7*nailedCount()/SERIES.length + 0.3*Math.min(M.passes.length,S.settings.daysRequired)/S.settings.daysRequired;
 }
 const RANK_FIG={ 'Youngling':'fig-youngling','Cadet':'fig-cadet','Stormtrooper':'fig-trooper','Officer':'fig-officer','Commander':'fig-vader','Grand Moff':'fig-tarkin' };
 function rankFor(mid){
   const M=S.missions[mid]; if(M.complete) return 'Grand Moff';
-  const n=studCount(mid);
-  if(n>=36) return 'Commander'; if(n>=27) return 'Officer'; if(n>=18) return 'Stormtrooper'; if(n>=9) return 'Cadet'; return 'Youngling';
+  const n=nailedCount();
+  if(n>=SERIES.length) return 'Commander'; if(n>=9) return 'Officer'; if(n>=5) return 'Stormtrooper'; if(n>=2) return 'Cadet'; return 'Youngling';
 }
 
 /* =====================================================================
@@ -590,7 +620,7 @@ $('gallery').addEventListener('click', e=>{
   o.innerHTML=`<div class="viewer"><img src="img/${Rm.photo}.jpg" alt="${Rm.name}"><h2>${Rm.name.toUpperCase()}</h2><button class="cta alt" id="viewOk">CLOSE</button></div>`;
   o.classList.remove('hidden'); $('viewOk').onclick=()=>o.classList.add('hidden');
 });
-$('missionList').addEventListener('click', e=>{ const b=e.target.closest('[data-mission]'); if(b){ currentMission=b.dataset.mission; show('mission'); } });
+$('missionList').addEventListener('click', e=>{ const b=e.target.closest('[data-mission]'); if(b){ currentMission=b.dataset.mission; mView='grid'; show('mission'); } });
 
 /* =====================================================================
    MISSION SCREEN
@@ -598,7 +628,7 @@ $('missionList').addEventListener('click', e=>{ const b=e.target.closest('[data-
 let currentMission='m1';
 function mCfg(){ return CONFIG.missions.find(m=>m.id===currentMission); }
 function renderApproval(cfg, M){
-  $('rankHead').firstChild.textContent='STATUS';
+  $('rankHead').firstChild.textContent='STATUS'; $('mBack').textContent='◀ BASE';
   $('rankFig').src='img/fig-officer.png';
   $('rankName').textContent = M.complete?'Approved':(M.submitted?'With Command':'In progress');
   $('mTitle').textContent=cfg.title; $('mDesc').textContent=cfg.short+'. Reward: '+gbp(cfg.reward)+'.';
@@ -613,35 +643,93 @@ function renderApproval(cfg, M){
   $('brief').innerHTML=`<h3>ORDERS FROM COMMAND</h3><p>${cfg.desc}</p>`;
   $('brief').classList.remove('hidden');
 }
+/* ---------- Mission 1: the 12 × 12 grid, learned one series at a time ---------- */
+let mView='grid';            // 'grid', or the id of the series being trained
+const TRICKS = {
+  t1:'Any number times 1 stays the same: 7 × 1 = 7.',
+  t10:'To times by 10, put a zero on the end: 7 × 10 = 70.',
+  sq:'A square is a number times itself. Learn them as a list: 1, 4, 9, 16, 25, 36, 49, 64, 81, 100, 121, 144.',
+  t2:'Times 2 is doubling: 7 × 2 = 7 + 7 = 14.',
+  t5:'Times 5 is half of times 10: 7 × 10 = 70, and half of 70 is 35. The answers always end in 5 or 0.',
+  t11:'Up to 9, write the number twice: 7 × 11 = 77. Then 10 × 11 = 110, 11 × 11 = 121 and 12 × 11 = 132.',
+  t3:'Count in threes: 3, 6, 9, 12 and so on. The digits of every answer add up to 3, 6 or 9.',
+  t4:'Double, then double again: 7 × 4 is 14, then 28.',
+  t9:'Times 10, then take one away: 7 × 9 = 70 − 7 = 63. The digits of every answer add up to 9.',
+  t6:'Times 5, then add one more: 7 × 6 = 35 + 7 = 42.',
+  t8:'Double, double, double: 7 × 8 is 14, then 28, then 56.',
+  t7:'Times 5 plus times 2: 7 × 7 = 35 + 14 = 49. You already know most of the 7s from the other tables.',
+  t12:'Times 10 plus times 2: 7 × 12 = 70 + 14 = 84.'
+};
+function M1(){ return S.missions.m1; }
+function isNailed(sid){ return !!(M1().nailed||{})[sid]; }
+function cellNailed(r,c){ return isNailed('t'+r) || isNailed('t'+c) || (r===c && isNailed('sq')); }
+function seriesStuds(sid){ const st=M1().studs; return seriesById(sid).facts.reduce((t,[a,b])=>t+(st[fkey(a,b)]||0),0); }
+function nextSeries(){ return SERIES.find(s=>!isNailed(s.id)); }
+
 function renderMission(){
-  const cfg=mCfg(), M=S.missions[cfg.id], T=cfg.table;
+  const cfg=mCfg(), M=S.missions[cfg.id];
   if(cfg.type==='approval') return renderApproval(cfg, M);
   $('rankHead').firstChild.textContent='RANK';
+  $('rankName').textContent=rankFor(cfg.id);
   $('rankFig').src='img/'+RANK_FIG[rankFor(cfg.id)]+'.png'; $('rankFig').classList.remove('hidden');
   $('factGrid').classList.remove('hidden'); $('legend').classList.remove('hidden');
-  $('mTitle').textContent=cfg.title; $('mDesc').textContent=cfg.desc.replace('3 different days', S.settings.daysRequired+' different day'+(S.settings.daysRequired>1?'s':''));
-  $('rankName').textContent=rankFor(cfg.id);
-  let g=''; for(let a=1;a<=12;a++){ const l=M.studs[a]||0;
-    g+=`<div class="fact l${l}"><div class="studs">${[0,1,2].map(i=>`<i class="${i<l?'lit':''}"></i>`).join('')}</div>${a} × ${T}</div>`; }
-  $('factGrid').innerHTML=g;
+  $('brief').classList.add('hidden');
+  if(mView==='grid') renderGridView(cfg, M); else renderSeriesView(seriesById(mView), M);
+}
+function renderGridView(cfg, M){
+  $('mBack').textContent='◀ BASE';
+  $('mTitle').textContent=cfg.title;
+  $('mDesc').textContent=cfg.desc.replace('3 different days', S.settings.daysRequired+' different day'+(S.settings.daysRequired>1?'s':''));
+  const nx=nextSeries(), cur=c=>nx && nx.facts.some(([a,b])=>fkey(a,b)===c);
+  let g='<div class="h corner">×</div>';
+  for(let c=1;c<=12;c++) g+=`<div class="h ${isNailed('t'+c)?'hn':''}">${c}</div>`;
+  for(let r=1;r<=12;r++){
+    g+=`<div class="h ${isNailed('t'+r)?'hn':''}">${r}</div>`;
+    for(let c=1;c<=12;c++){
+      const k=fkey(r,c), l=M.studs[k]||0;
+      g+= cellNailed(r,c) ? `<div class="c n">${r*c}</div>` : `<div class="c l${l} ${cur(k)?'cur':''}"></div>`;
+    }
+  }
+  $('factGrid').className='tgrid'; $('factGrid').innerHTML=g;
+  const nailedN=SERIES.filter(s=>isNailed(s.id)).length;
+  $('legend').innerHTML=`<b>${nailedN} of ${SERIES.length}</b> series nailed. Grey squares are done. Coloured squares show studs lit in training: red 1, yellow 2, green 3. ${nx?'Yellow outline: next up, the '+nx.name+'.':''}`;
 
-  const ready = studCount(cfg.id)>=studMax();
-  const passedToday = M.passes.includes(today());
+  const allDone = nailedN===SERIES.length, passedToday = M.passes.includes(today());
   const dots = Array.from({length:S.settings.daysRequired},(_,i)=>`<i class="${i<M.passes.length?'on':''}"></i>`).join('');
   let inspD;
   if(M.complete) inspD='Passed. Mission complete. Take it again any time to stay sharp.';
-  else if(!ready) inspD=`Locked. Light all 36 studs first (${studCount(cfg.id)}/36).`;
+  else if(!allDone) inspD='Locked. Grey out the whole grid first.';
   else if(passedToday) inspD='Passed today. Come back tomorrow for the next inspection.';
-  else inspD=`All 12 facts, any order, no mistakes, under ${S.settings.timeLimitSecs} seconds.`;
-  $('modes').innerHTML = `
-    <button class="mode studded" data-mode="brief"><div class="ic">📡</div><div><div class="t">Briefing</div><div class="d">Learn the table and the secret trick.</div></div></button>
-    <button class="mode studded" data-mode="seq"><div class="ic">🧱</div><div><div class="t">Assembly Line</div><div class="d">In order, 1 × ${T} to 12 × ${T}, with the ladder to help.</div></div></button>
-    <button class="mode studded" data-mode="drill"><div class="ic">🎯</div><div><div class="t">Target Practice</div><div class="d">All 12 facts, jumbled. This lights the studs.</div></div></button>
-    <button class="mode studded" data-mode="trench"><div class="ic">🚀</div><div><div class="t">Trench Run</div><div class="d">60 seconds. How many hits? Best: ${M.trenchBest}</div></div></button>
-    <button class="mode boss studded" data-mode="inspect" ${(ready && (!passedToday || M.complete))?'':'disabled'}><div class="ic"><img src="img/fig-vader.png" alt=""></div><div style="flex:1"><div class="t">Lord Vader's Inspection</div><div class="d">${inspD}</div><div class="days">${dots}</div></div></button>`;
-  $('brief').classList.add('hidden');
+  else inspD=`${CONFIG.inspectionFacts} facts from the whole grid, no mistakes, under ${inspLimit()} seconds.`;
+  $('modes').innerHTML = SERIES.map(s=>{
+    const done=isNailed(s.id), next=nx&&nx.id===s.id;
+    return `<button class="mode studded ${done?'nailed':''} ${next?'nextup':''}" data-series="${s.id}">
+      <div class="sbadge ${done?'n':''}">${s.badge}</div>
+      <div style="flex:1"><div class="t">${s.title}${next?' <span class="nx">NEXT UP</span>':''}</div>
+      <div class="d">${done?'Nailed on '+fmtDate(M.nailed[s.id])+'. Greyed out on the grid.':`Studs lit: ${seriesStuds(s.id)} of 36. Pass the Series Check to grey it out.`}</div></div></button>`;
+  }).join('') + `
+    <button class="mode studded" data-mode="trench"><div class="ic">🚀</div><div><div class="t">Trench Run</div><div class="d">60 seconds on the whole grid. How many hits? Best: ${M.trenchBest}</div></div></button>
+    <button class="mode boss studded" data-mode="inspect" ${(allDone && (!passedToday || M.complete))?'':'disabled'}><div class="ic"><img src="img/fig-vader.png" alt=""></div><div style="flex:1"><div class="t">Lord Vader's Inspection</div><div class="d">${inspD}</div><div class="days">${dots}</div></div></button>`;
 }
+function renderSeriesView(s, M){
+  $('mBack').textContent='◀ GRID';
+  $('mTitle').textContent=s.title;
+  $('mDesc').textContent=TRICKS[s.id];
+  $('factGrid').className='factgrid';
+  $('factGrid').innerHTML=s.facts.map(([a,b])=>{ const l=M.studs[fkey(a,b)]||0;
+    return `<div class="fact l${l}"><div class="studs">${[0,1,2].map(i=>`<i class="${i<l?'lit':''}"></i>`).join('')}</div>${a} × ${b}</div>`; }).join('');
+  $('legend').textContent='Each brick has 3 studs. Answer a fact quickly and correctly to light a stud. When you are ready, pass the Series Check to grey this series out on the grid.';
+  const done=isNailed(s.id);
+  $('modes').innerHTML = `
+    <button class="mode studded" data-mode="brief"><div class="ic">📡</div><div><div class="t">Briefing</div><div class="d">See all 12 facts and the trick for this series.</div></div></button>
+    <button class="mode studded" data-mode="seq"><div class="ic">🧱</div><div><div class="t">Assembly Line</div><div class="d">In order, ${s.facts[0][0]} × ${s.facts[0][1]} to 12 × ${s.facts[11][1]}${s.t?', with the ladder to help':''}.</div></div></button>
+    <button class="mode studded" data-mode="drill"><div class="ic">🎯</div><div><div class="t">Target Practice</div><div class="d">All 12 facts, jumbled. This lights the studs.</div></div></button>
+    <button class="mode boss studded" data-mode="check"><div class="ic"><img src="img/fig-officer.png" alt=""></div><div style="flex:1"><div class="t">Series Check</div><div class="d">${done?'Nailed on '+fmtDate(M.nailed[s.id])+'. Take it again any time.':`All 12 facts, jumbled, no mistakes, under ${S.settings.timeLimitSecs} seconds. Pass it to grey this series out on the grid.`}</div></div></button>`;
+}
+function fmtDate(d){ if(!d) return ''; const [y,m,dd]=d.split('-'); return `${+dd} ${['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m-1]}`; }
+$('mBack').onclick=()=>{ if(currentMission==='m1' && mView!=='grid'){ mView='grid'; renderMission(); window.scrollTo(0,0); } else show('home'); };
 $('modes').addEventListener('click', e=>{
+  const sb=e.target.closest('[data-series]'); if(sb){ mView=sb.dataset.series; renderMission(); window.scrollTo(0,0); return; }
   const b=e.target.closest('[data-mode]'); if(!b || b.disabled) return;
   if(b.dataset.mode==='brief') return toggleBrief();
   if(b.dataset.mode==='submit' || b.dataset.mode==='unsubmit'){
@@ -651,41 +739,45 @@ $('modes').addEventListener('click', e=>{
   startQuiz(b.dataset.mode);
 });
 function toggleBrief(){
-  const el=$('brief'), T=mCfg().table;
+  const el=$('brief'), s=seriesById(mView);
   if(!el.classList.contains('hidden')){ el.classList.add('hidden'); return; }
-  let rows=''; for(let a=1;a<=12;a++) rows+=`<div><span>${a} × ${T}</span><b>${a*T}</b></div>`;
+  const rows=s.facts.map(([a,b])=>`<div><span>${a} × ${b}</span><b>${a*b}</b></div>`).join('');
   el.innerHTML=`<h3>INCOMING TRANSMISSION</h3>
-    <p><b>The secret trick:</b> 12 times a number is 10 times it, plus 2 times it. So 7 × 12 is 70 + 14 = 84.</p>
+    <p><b>The trick:</b> ${TRICKS[s.id]}</p>
     <div class="tbl">${rows}</div>
-    <p><b>Spot the pattern:</b> the answers go up by 12 each time, and the last digits go 2, 4, 6, 8, 0 and then repeat.</p>
-    <p><b>Turn it round:</b> 7 × 12 is the same as 12 × 7. Learn one and you know both.</p>`;
+    ${s.t?`<p><b>Turn it round:</b> 7 × ${s.t} is the same as ${s.t} × 7. Learn one and you know both.</p>`:''}`;
   el.classList.remove('hidden'); el.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 /* =====================================================================
    QUIZ ENGINE
-   modes: seq (in order, ladder hint), drill (12 jumbled, misses come back),
-          trench (60s sprint), inspect (12 jumbled, no misses, time limit)
+   modes: seq (series in order, ladder hint), drill (series jumbled, misses come back),
+          check (series jumbled, no misses, time limit: nails the series),
+          trench (60s sprint on the whole grid), inspect (final test on the whole grid)
    ===================================================================== */
 let Q=null, tick=null;
-function makeQ(a){ const T=mCfg().table, flip=Math.random()<0.5; return { a, text: flip?`${T} × ${a}`:`${a} × ${T}`, answer:a*T }; }
+function makeQ([a,b]){ const flip=a!==b && Math.random()<0.5; return { key:fkey(a,b), text: flip?`${b} × ${a}`:`${a} × ${b}`, answer:a*b }; }
 function weightedPick(last){
-  const st=S.missions[currentMission].studs; const pool=[];
-  for(let a=1;a<=12;a++){ if(a===last) continue; const w=4-(st[a]||0); for(let k=0;k<w;k++) pool.push(a); }
+  const st=M1().studs, pool=[];
+  ALL_FACTS.forEach(f=>{ const k=fkey(...f); if(k===last) return; const w=4-(st[k]||0); for(let i=0;i<w;i++) pool.push(f); });
   return pool[Math.floor(Math.random()*pool.length)];
 }
+function inspLimit(){ return S.settings.timeLimitSecs*CONFIG.inspectionFacts/12; }
 function startQuiz(mode){
-  const names={seq:['TRAINING','Assembly Line'],drill:['TRAINING','Target Practice'],trench:['SPRINT','Trench Run'],inspect:['FINAL TEST','Lord Vader\'s Inspection']};
-  const facts=[1,2,3,4,5,6,7,8,9,10,11,12];
-  Q={ mode, queue: mode==='seq'?facts.map(a=>({a,text:`${a} × ${mCfg().table}`,answer:a*mCfg().table})):(mode==='trench'?[]:shuffle(facts).map(makeQ)),
-      i:0, hits:0, attempts:0, misses:[], input:'', start:performance.now(), lock:false, qStart:performance.now(), failed:false };
-  if(mode==='trench') Q.queue.push(makeQ(weightedPick()));
+  const s = mView!=='grid' ? seriesById(mView) : null;
+  const names={seq:['TRAINING','Assembly Line'],drill:['TRAINING','Target Practice'],check:['SERIES CHECK',s?s.title:''],trench:['SPRINT','Trench Run'],inspect:['FINAL TEST','Lord Vader\'s Inspection']};
+  let queue;
+  if(mode==='seq') queue=s.facts.map(([a,b])=>({key:fkey(a,b),text:`${a} × ${b}`,answer:a*b,a,t:s.t}));
+  else if(mode==='drill'||mode==='check') queue=shuffle(s.facts.slice()).map(makeQ);
+  else if(mode==='inspect') queue=shuffle(ALL_FACTS.slice()).slice(0,CONFIG.inspectionFacts).map(makeQ);
+  else queue=[makeQ(weightedPick())];
+  Q={ mode, series:s?s.id:null, queue, i:0, hits:0, attempts:0, misses:[], input:'', start:performance.now(), lock:false, qStart:performance.now(), failed:false };
   $('qMode').firstChild.textContent=names[mode][0]; $('qModeName').textContent=names[mode][1];
-  $('timebarWrap').classList.toggle('hidden', !(mode==='trench'||mode==='inspect'));
+  $('timebarWrap').classList.toggle('hidden', !limitSecs());
   show('quiz'); nextQ();
   clearInterval(tick); tick=setInterval(updateClock,100); updateClock();
 }
-function limitSecs(){ return Q.mode==='trench'?60:(Q.mode==='inspect'?S.settings.timeLimitSecs:null); }
+function limitSecs(){ return Q.mode==='trench'?60:(Q.mode==='check'?S.settings.timeLimitSecs:(Q.mode==='inspect'?inspLimit():null)); }
 function elapsed(){ return (performance.now()-Q.start)/1000; }
 function updateClock(){
   if(!Q) return; const el=elapsed(), lim=limitSecs();
@@ -699,7 +791,7 @@ function nextQ(){
   $('qCount').textContent = Q.mode==='trench' ? (Q.i+1) : `${Math.min(Q.i+1,Q.queue.length)}/${Q.queue.length}`;
   $('qHits').textContent=Q.hits;
   const lad=$('ladder');
-  if(Q.mode==='seq'){ const T=mCfg().table; lad.innerHTML=Array.from({length:q.a-1},(_,k)=>`<span>${(k+1)*T}</span>`).join('')+'<span>?</span>'; lad.classList.remove('hidden'); }
+  if(Q.mode==='seq' && q.t){ lad.innerHTML=Array.from({length:q.a-1},(_,k)=>`<span>${(k+1)*q.t}</span>`).join('')+'<span>?</span>'; lad.classList.remove('hidden'); }
   else lad.classList.add('hidden');
 }
 function renderAns(){ const a=$('qAns'); a.textContent=Q.input||'?'; a.classList.toggle('empty',!Q.input); }
@@ -709,7 +801,8 @@ function press(k){
   if(k==='fire'){ if(Q.input) submit(); return; }
   if(Q.input.length<4){ Q.input+=k; sfx.key(); renderAns(); }
 }
-function bump(a, d){ const st=S.missions[currentMission].studs; st[a]=Math.max(0,Math.min(CONFIG.studsPerFact,(st[a]||0)+d)); }
+function bump(k, d){ const st=M1().studs; st[k]=Math.max(0,Math.min(CONFIG.studsPerFact,(st[k]||0)+d)); }
+const TESTS=['check','inspect'];
 function submit(){
   const q=Q.queue[Q.i], ok = parseInt(Q.input,10)===q.answer, secs=(performance.now()-Q.qStart)/1000;
   Q.lock=true; Q.attempts++; Q.lastAt=performance.now();
@@ -718,15 +811,15 @@ function submit(){
     Q.hits++; sfx.laser(); box.classList.add('hit');
     $('qFb').textContent = ['Direct hit!','Impressive.','Most impressive.','Target destroyed!','On target!'][Math.floor(Math.random()*5)];
     $('qFb').className='fb ok';
-    if(Q.mode==='seq'){ if(!(S.missions[currentMission].studs[q.a]>0) && secs<=CONFIG.quickSecs) bump(q.a,1); }
-    else if(Q.mode!=='inspect' && secs<=CONFIG.quickSecs) bump(q.a,1);
+    if(Q.mode==='seq'){ if(!(M1().studs[q.key]>0) && secs<=CONFIG.quickSecs) bump(q.key,1); }   // the ladder helps, so at most one stud
+    else if(!TESTS.includes(Q.mode) && secs<=CONFIG.quickSecs) bump(q.key,1);
   } else {
     sfx.miss(); box.classList.add('miss');
     $('qFb').textContent=`Missed. ${q.text} = ${q.answer}`; $('qFb').className='fb no';
     Q.misses.push(q.text+' = '+q.answer);
-    if(Q.mode!=='inspect') bump(q.a,-1);
+    if(!TESTS.includes(Q.mode)) bump(q.key,-1);
     if(Q.mode==='drill'||Q.mode==='seq') Q.queue.push({...q});   // try it again at the end
-    if(Q.mode==='inspect') Q.failed='miss';
+    if(TESTS.includes(Q.mode)) Q.failed='miss';
   }
   save();
   $('qHits').textContent=Q.hits;
@@ -734,19 +827,29 @@ function submit(){
     if(!Q) return;
     if(Q.failed){ finishQuiz(); return; }
     Q.i++;
-    if(Q.mode==='trench') Q.queue.push(makeQ(weightedPick(q.a)));
+    if(Q.mode==='trench') Q.queue.push(makeQ(weightedPick(q.key)));
     if(Q.i>=Q.queue.length) finishQuiz(); else nextQ();
   }, ok?450:1700);
 }
 function finishQuiz(){
   clearInterval(tick); const R=Q; Q=null; if(!R) return;
-  const M=S.missions[currentMission], cfg=mCfg();
+  const M=M1(), s=R.series?seriesById(R.series):null;
   const secs = ((R.lastAt||performance.now())-R.start)/1000;   // stop the clock at the last answer, not after the feedback pause
-  S.log.unshift({ date:today(), time:new Date().toTimeString().slice(0,5), mode:R.mode, hits:R.hits, attempts:R.attempts, secs:Math.round(secs*10)/10, passed: R.mode==='inspect' ? !R.failed : null });
+  S.log.unshift({ date:today(), time:new Date().toTimeString().slice(0,5), mode:R.mode, series:R.series, hits:R.hits, attempts:R.attempts, secs:Math.round(secs*10)/10, passed: TESTS.includes(R.mode) ? !R.failed : null });
   S.log = S.log.slice(0,200);
   let html='', justCompleted=false;
-  if(R.mode==='inspect'){
-    if(!R.failed && secs<=S.settings.timeLimitSecs){
+  const failHtml=(n,lim)=>`<h2 style="color:#ff6b66">NOT YET</h2><div class="big">${R.failed==='time'?'Out of time':'Missed one'}</div>
+    <p class="msg">${R.failed==='time'?`You need all ${n} in under ${lim} seconds.`:'This test needs a perfect score.'} Practise a little more and try again. You can retake it as often as you like.</p>`;
+  if(R.mode==='check'){
+    if(!R.failed){
+      const first=!isNailed(s.id); M.nailed=M.nailed||{}; if(first) M.nailed[s.id]=today();
+      const left=SERIES.filter(x=>!isNailed(x.id)).length;
+      html=`<h2 style="color:var(--laser)">SERIES NAILED</h2><div class="big">${secs.toFixed(1)}s</div>
+        <p class="msg">${first?`The ${s.name} ${s.id==='sq'?'are':'is'} now greyed out on your grid.`:'Still razor sharp.'} ${left?`${left} series to go.`:'The whole grid is grey. Lord Vader\'s Inspection is unlocked!'}</p>`;
+      sfx.march();
+    } else html=failHtml(12,S.settings.timeLimitSecs);
+  } else if(R.mode==='inspect'){
+    if(!R.failed){
       if(!M.passes.includes(today())) M.passes.push(today());
       if(!M.bestInspection || secs<M.bestInspection) M.bestInspection=Math.round(secs*10)/10;
       if(!M.complete && M.passes.length>=S.settings.daysRequired){ M.complete=true; M.completedAt=today(); M.celebrated=true; justCompleted=true; }
@@ -755,23 +858,21 @@ function finishQuiz(){
         <p class="msg">${M.complete ? (justCompleted?'Lord Vader is pleased.':'Still razor sharp. Lord Vader approves.') :
           `Lord Vader is satisfied, for now. Pass ${left} more inspection${left>1?'s':''} on ${left>1?'different days':'another day'} to complete the mission.`}</p>`;
       sfx.march();
-    } else {
-      html=`<h2 style="color:#ff6b66">INSPECTION FAILED</h2><div class="big">${R.failed==='time'?'Out of time':'Missed one'}</div>
-        <p class="msg">${R.failed==='time'?`You need all 12 in under ${S.settings.timeLimitSecs} seconds.`:'The Inspection needs a perfect score.'} Practise a little more and try again. You can retake it as often as you like.</p>`;
-    }
+    } else html=failHtml(CONFIG.inspectionFacts,inspLimit());
   } else if(R.mode==='trench'){
     const best = R.hits>M.trenchBest; if(best) M.trenchBest=R.hits;
     html=`<h2>TRENCH RUN OVER</h2><div class="big">${R.hits} hits</div><p class="msg">${best?'New personal best!':'Your best is '+M.trenchBest+'.'} ${R.attempts-R.hits?`${R.attempts-R.hits} missed.`:'No misses at all.'}</p>`;
   } else {
-    html=`<h2>${R.misses.length?'TRAINING COMPLETE':'PERFECT RUN'}</h2><div class="big">${12}/${12 + R.misses.length}</div>
-      <p class="msg">Studs lit: ${studCount(currentMission)} of 36. ${studCount(currentMission)>=36?'Lord Vader\'s Inspection is unlocked.':'Fast, correct answers light the studs.'}</p>`;
+    const n=seriesStuds(s.id);
+    html=`<h2>${R.misses.length?'TRAINING COMPLETE':'PERFECT RUN'}</h2><div class="big">${R.hits}/${R.attempts}</div>
+      <p class="msg">Studs lit in the ${s.name}: ${n} of 36. ${isNailed(s.id)?'This series is already nailed.':(n>=30?'You look ready for the Series Check!':'Fast, correct answers light the studs.')}</p>`;
   }
   if(R.misses.length) html+=`<div class="misslist">${R.misses.map(m=>{ const [l,r]=m.split(' = '); return `<div><span>${l}</span><b>${r}</b></div>`; }).join('')}</div>`;
-  html+=`<button class="cta" id="againBtn">GO AGAIN</button><button class="cta alt" data-go="mission">MISSION SCREEN</button>`;
+  html+=`<button class="cta" id="againBtn">GO AGAIN</button><button class="cta alt" data-go="mission">${s?(s.t?'BACK TO THE '+s.t+' TIMES TABLE':'BACK TO THE SQUARES'):'MISSION SCREEN'}</button>`;
   save();
   $('resultBody').innerHTML=html; show('result');
   $('againBtn').onclick=()=>{ if(R.mode==='inspect' && M.passes.includes(today()) && !M.complete) show('mission'); else startQuiz(R.mode); };
-  if(justCompleted) setTimeout(()=>celebrate(currentMission), 900);
+  if(justCompleted) setTimeout(()=>celebrate('m1'), 900);
 }
 $('quitBtn').onclick=()=>{ clearInterval(tick); Q=null; show('mission'); };
 
@@ -848,9 +949,10 @@ function openPin(){
 }
 function openParent(){
   const M=S.missions.m1, cfg=CONFIG.missions[0], o=$('overlay');
-  const mode={seq:'Assembly',drill:'Target',trench:'Trench',inspect:'Inspection'};
-  const studRows=[1,2,3,4,5,6,7,8,9,10,11,12].map(a=>`<td style="text-align:center">${a}<br><b style="color:${['#8E98AB','#ff6b66','#FFCF00','#5DFF6A'][M.studs[a]||0]}">${M.studs[a]||0}</b></td>`).join('');
-  const logRows=S.log.slice(0,15).map(l=>`<tr><td>${l.date.slice(5)} ${l.time||''}</td><td>${mode[l.mode]}</td><td>${l.hits}/${l.attempts}</td><td>${l.secs}s</td><td>${l.passed===null?'':(l.passed?'✅':'❌')}</td></tr>`).join('') || '<tr><td colspan="5">No sessions yet.</td></tr>';
+  const mode={seq:'Assembly',drill:'Target',check:'Check',trench:'Trench',inspect:'Inspection'};
+  const seriesRows=SERIES.map(x=>`<tr><td>${x.title}</td><td>${M.nailed[x.id]?'Nailed '+fmtDate(M.nailed[x.id]):seriesStuds(x.id)+'/36 studs'}</td>
+    <td style="text-align:right"><button class="pbtn" data-nail="${x.id}">${M.nailed[x.id]?'Undo':'Mark nailed'}</button></td></tr>`).join('');
+  const logRows=S.log.slice(0,15).map(l=>`<tr><td>${l.date.slice(5)} ${l.time||''}</td><td>${mode[l.mode]}${l.series?' '+seriesById(l.series).badge:''}</td><td>${l.hits}/${l.attempts}</td><td>${l.secs}s</td><td>${l.passed===null?'':(l.passed?'✅':'❌')}</td></tr>`).join('') || '<tr><td colspan="5">No sessions yet.</td></tr>';
   const opt=(vals,cur,suf)=>vals.map(v=>`<option value="${v}" ${v==cur?'selected':''}>${v}${suf}</option>`).join('');
   o.innerHTML=`<div class="parent">
     <h3>COMMAND CONTROLS</h3>
@@ -860,16 +962,17 @@ function openParent(){
     <div class="row"><span>Inspections passed</span><b>${M.passes.length? M.passes.join(', ') : 'none yet'}</b></div>
     <div class="row"><span>Best inspection time</span><b>${M.bestInspection?M.bestInspection+'s':'n/a'}</b></div>
     <div class="row"><span>Trench Run best</span><b>${M.trenchBest} hits</b></div>
-    <table><tr>${studRows}</tr></table>
-    <div class="note">Studs lit per fact (0 to 3). A stud lights for a correct answer within ${CONFIG.quickSecs} seconds in training, and goes out for a wrong one.</div>
+    <table>${seriesRows}</table>
+    <div class="note">A series is nailed when Xander passes its Series Check: all 12 facts, no mistakes, within the time limit. If he already knows one (the 1s or 10s, say), you can mark it nailed here. Studs: a correct answer within ${CONFIG.quickSecs} seconds in training lights one (3 per fact); a wrong answer puts one out.</div>
     ${M.complete?`<div class="row" style="margin-top:12px"><span>${gbp(cfg.reward)} paid into the Death Star fund?</span><button class="pbtn" id="paidBtn">${M.paid?'Paid ✅ (undo)':'Mark as paid'}</button></div>`:''}
     ${(()=>{ const c2=CONFIG.missions.find(m=>m.id==='m2'), M2=S.missions.m2; if(!c2||!M2) return '';
       return `<h4>MISSION 2: ${c2.title.toUpperCase()}</h4>
       <div class="row"><span>${c2.short}</span><b>${M2.complete?'Approved ('+M2.completedAt+')':(M2.submitted?'Reported done '+(M2.submittedAt||''):'Not reported yet')}</b></div>
       <div class="row"><span>${M2.complete?'Withdraw approval':'Approve and release '+gbp(c2.reward)}</span><button class="pbtn" id="m2Btn">${M2.complete?'Undo':'Approve'}</button></div>
       ${M2.complete?`<div class="row"><span>${gbp(c2.reward)} paid into the Death Star fund?</span><button class="pbtn" id="m2Paid">${M2.paid?'Paid ✅ (undo)':'Mark as paid'}</button></div>`:''}`; })()}
-    <h4>INSPECTION RULES</h4>
-    <div class="row"><span>Time limit for all 12</span><select id="setTime">${opt([45,60,75,90,120],S.settings.timeLimitSecs,' s')}</select></div>
+    <h4>TEST RULES</h4>
+    <div class="row"><span>Series Check time limit (12 facts)</span><select id="setTime">${opt([45,60,75,90,120],S.settings.timeLimitSecs,' s')}</select></div>
+    <div class="note">Lord Vader's Inspection is ${CONFIG.inspectionFacts} facts from the whole grid, at the same pace (${inspLimit()} seconds at the current setting).</div>
     <div class="row"><span>Passes needed (on different days)</span><select id="setDays">${opt([1,2,3,4,5],S.settings.daysRequired,'')}</select></div>
     <div class="row"><span>Command PIN</span><button class="pbtn" id="pinBtn">Change PIN</button></div>
     <div class="row"><span>Sound</span><button class="pbtn" id="sndBtn">${S.settings.sound?'On':'Off'}</button></div>
@@ -881,8 +984,10 @@ function openParent(){
     <button class="cta alt" id="closeParent">CLOSE</button></div>`;
   o.classList.remove('hidden');
   $('closeParent').onclick=()=>{ o.classList.add('hidden'); renderHome(); };
-  $('setTime').onchange=e=>{ S.settings.timeLimitSecs=+e.target.value; save(); };
-  $('setDays').onchange=e=>{ S.settings.daysRequired=+e.target.value; if(!M.complete && M.passes.length>=S.settings.daysRequired && studCount('m1')>=studMax()){ M.complete=true; M.completedAt=today(); M.celebrated=false; } save(); openParent(); };
+  $('setTime').onchange=e=>{ S.settings.timeLimitSecs=+e.target.value; save(); openParent(); };
+  $('setDays').onchange=e=>{ S.settings.daysRequired=+e.target.value; if(!M.complete && M.passes.length>=S.settings.daysRequired && nailedCount()===SERIES.length){ M.complete=true; M.completedAt=today(); M.celebrated=false; } save(); openParent(); };
+  o.querySelectorAll('[data-nail]').forEach(b=>b.onclick=()=>{ const id=b.dataset.nail;
+    if(M.nailed[id]) delete M.nailed[id]; else M.nailed[id]=today(); save(); openParent(); });
   $('pinBtn').onclick=()=>{ S.settings.pin=null; save(); openPin(); };
   $('sndBtn').onclick=()=>{ S.settings.sound=!S.settings.sound; save(); openParent(); };
   if($('paidBtn')) $('paidBtn').onclick=()=>{ M.paid=!M.paid; save(); openParent(); };
