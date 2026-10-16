@@ -77,6 +77,7 @@
   .brick::before,.brick::after{content:"";position:absolute;top:-5px;width:34%;height:6px;border-radius:2px 2px 0 0;background:inherit;border:inherit;border-bottom:none;}
   .brick::before{left:9%;} .brick::after{right:9%;}
   .brick.on{background:var(--lego);border-color:#c79f00;}
+  .brick.half{background:linear-gradient(90deg,var(--lego) 0 var(--f),rgba(255,207,0,.15) var(--f));border-color:#c79f00;}
   .brick.pend{background:repeating-linear-gradient(45deg,rgba(255,207,0,.35) 0 4px,rgba(255,207,0,.08) 4px 8px);border-color:#8a7000;}
   .rooms{font-size:.82rem;color:var(--soft);margin-top:10px;line-height:1.45;}
   .rooms b{color:var(--text);} .rooms b.y{color:var(--lego);}
@@ -240,14 +241,14 @@
 <section id="mission" class="wrap hidden">
   <div class="topbar">
     <button class="back" data-go="home">◀ BASE</button>
-    <div class="rank">RANK<b id="rankName">Youngling</b></div>
+    <div class="rank" id="rankHead">RANK<b id="rankName">Youngling</b></div>
   </div>
   <div class="mhead">
     <h2 id="mTitle">Operation Twelve</h2>
     <p id="mDesc"></p>
   </div>
   <div class="factgrid" id="factGrid"></div>
-  <div class="legend">Each brick has 3 studs. Answer a fact quickly and correctly to light a stud. Light all 36 to unlock Lord Vader's Inspection.</div>
+  <div class="legend" id="legend">Each brick has 3 studs. Answer a fact quickly and correctly to light a stud. Light all 36 to unlock Lord Vader's Inspection.</div>
   <div class="modes" id="modes"></div>
   <div class="brief hidden" id="brief"></div>
 </section>
@@ -289,8 +290,15 @@ const CONFIG = {
   missions: [
     { id:'m1', code:'01', title:'Operation Twelve', short:'Master the 12 times table',
       desc:'Command needs an engineer who knows every fact in the 12 times table, in any order, at speed. Light all 36 studs in training, then pass Lord Vader\'s Inspection on 3 different days.',
-      reward:200, table:12, status:'active' },
-    { id:'m2', code:'02', title:'Classified', short:'Awaiting orders from Command',
+      reward:200, table:12, type:'times', status:'active',
+      doneMsg:'you have mastered the 12 times table.' },
+    // An 'approval' mission is checked by a parent: Xander reports it done, and
+    // Command (parent) approves it in Command controls to release the reward.
+    { id:'m2', code:'02', title:'Imperial Dispatch', short:'Complete your English assignment',
+      desc:'Every Imperial officer must be able to write a first-class report. Complete your English assignment carefully and to the best of your ability. When it is finished, report to Command. Once Command has checked it, the reward is yours.',
+      reward:50, type:'approval', status:'active',
+      doneMsg:'your English assignment has been approved by Command.' },
+    { id:'m3', code:'03', title:'Classified', short:'Awaiting orders from Command',
       reward:null, status:'locked' }
   ],
   // Defaults for the final test; a parent can change these in Command controls.
@@ -301,13 +309,16 @@ const CONFIG = {
    STATE (saved on this device)
    ===================================================================== */
 const STORE_KEY = 'xds-v1';
-function freshMission(){ return { studs:{}, passes:[], complete:false, completedAt:null, paid:false, trenchBest:0, bestInspection:null }; }
+function freshMission(){ return { studs:{}, passes:[], complete:false, completedAt:null, paid:false, celebrated:false, submitted:false, trenchBest:0, bestInspection:null }; }
 function freshState(){
   return { missions:{ m1:freshMission() }, settings:{ sound:true, timeLimitSecs:CONFIG.inspection.timeLimitSecs, daysRequired:CONFIG.inspection.daysRequired }, log:[] };
 }
 let S;
 try{ S = JSON.parse(localStorage.getItem(STORE_KEY)) || freshState(); }catch(e){ S = freshState(); }
-CONFIG.missions.forEach(m => { if(m.status==='active' && !S.missions[m.id]) S.missions[m.id] = freshMission(); });
+CONFIG.missions.forEach(m => {
+  if(m.status==='active' && !S.missions[m.id]) S.missions[m.id] = freshMission();
+  const M=S.missions[m.id]; if(M && M.celebrated===undefined) M.celebrated = !!M.complete;   // older saves
+});
 function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(S)); }catch(e){} }
 
 function today(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
@@ -317,12 +328,22 @@ function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.rand
 
 /* ---------- Derived numbers ---------- */
 function earned(){ return CONFIG.missions.reduce((t,m)=> t + (m.reward && S.missions[m.id] && S.missions[m.id].complete ? m.reward : 0), 0); }
-// Money already earned before this mission, so we know which rooms it builds.
-function missionStartGBP(mid){ let t=0; for(const m of CONFIG.missions){ if(m.id===mid) return t; t+=m.reward||0; } return t; }
+// The slice of the fund an unfinished mission will fill: it starts after the money
+// already earned and after any unfinished missions listed before it.
+function missionRange(mid){
+  let t=earned();
+  for(const m of CONFIG.missions){
+    if(!m.reward || m.status!=='active' || S.missions[m.id].complete) continue;
+    if(m.id===mid) return [t, t+m.reward];
+    t+=m.reward;
+  }
+  return null;
+}
 function studCount(mid){ const st=S.missions[mid].studs; let n=0; for(let a=1;a<=12;a++) n += (st[a]||0); return n; }
 function studMax(){ return 12*CONFIG.studsPerFact; }
 function missionProgress(mid){
   const M=S.missions[mid]; if(!M) return 0; if(M.complete) return 1;
+  if(CONFIG.missions.find(m=>m.id===mid).type==='approval') return M.submitted ? 0.5 : 0;
   // 60% training studs, 40% inspection days.
   return 0.6*studCount(mid)/studMax() + 0.4*Math.min(M.passes.length,S.settings.daysRequired)/S.settings.daysRequired;
 }
@@ -352,6 +373,18 @@ const ROOMS = [   // in unlock order (bottom deck first); £100 each
 ];
 const ROOM_VALUE = CONFIG.prizeTotal / ROOMS.length;
 function roomsFor(fromGBP, toGBP){ return ROOMS.slice(Math.floor(fromGBP/ROOM_VALUE+1e-9), Math.floor(toGBP/ROOM_VALUE+1e-9)).map(r=>r.name); }
+// Describe what a slice of the fund builds, e.g. "the Hangar Bay and the Trash
+// Compactor" or "half of the Detention Block".
+function describeBuild(fromGBP, toGBP){
+  const out=[];
+  ROOMS.forEach((R,i)=>{
+    const ov=Math.min(toGBP,(i+1)*ROOM_VALUE)-Math.max(fromGBP,i*ROOM_VALUE);
+    if(ov<=1e-9) return;
+    const f=ov/ROOM_VALUE;
+    out.push((f>0.999?'the ':(Math.abs(f-.5)<1e-6?'half of the ':'part of the '))+R.name);
+  });
+  return listNames(out);
+}
 function listNames(a){ return a.length<2 ? a.join('') : a.slice(0,-1).join(', ')+' and '+a[a.length-1]; }
 
 // Small line drawings for each room, centred on 0,0.
@@ -369,10 +402,16 @@ const GLYPH = {
 };
 
 let dsSeq=0;
-function deathStarSVG(earnedGBP, pendRooms, pendProgress, glow){
+// pending: [{from, to, p}] slices of the fund that unfinished missions will fill,
+// with p = how far through each mission Xander is (0 to 1).
+function deathStarSVG(earnedGBP, pending, glow){
   const id='ds'+(dsSeq++), cx=175, cy=165, r=142;
   const built=Math.floor(earnedGBP/ROOM_VALUE+1e-9);
-  const state=i=> i<built ? 'on' : (i<built+pendRooms ? 'pend' : 'off');
+  const lo=i=>i*ROOM_VALUE, hi=i=>(i+1)*ROOM_VALUE;
+  const part=i=>Math.max(0,Math.min(earnedGBP,hi(i))-lo(i))/ROOM_VALUE;          // share of room i paid for
+  const pend=i=>pending.reduce((t,g)=>t+Math.max(0,Math.min(g.to,hi(i))-Math.max(g.from,lo(i)))*g.p,0)/ROOM_VALUE;
+  const touched=i=>pending.some(g=>g.to>lo(i)+1e-9 && g.from<hi(i)-1e-9);
+  const state=i=> part(i)>0.999 ? 'on' : ((touched(i)||part(i)>0) ? 'pend' : 'off');
   const ST = {
     on:  { fill:'#14171D', stroke:'#9AA1AA', label:'#E8ECF2', dash:'' },
     pend:{ fill:'#141826', stroke:'#FFCF00', label:'#FFCF00', dash:'4 3' },
@@ -399,9 +438,11 @@ function deathStarSVG(earnedGBP, pendRooms, pendProgress, glow){
         hullTop = hullTop===null ? y-4 : Math.min(hullTop,y-4);
       }
       rooms+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${s.fill}" stroke="${st==='on'?'#5B616A':s.stroke}" stroke-width="1" ${s.dash?`stroke-dasharray="${s.dash}"`:''}/>`;
-      if(st==='pend' && pendProgress>0){
-        const ph=h*Math.min(1,pendProgress);
-        rooms+=`<rect x="${x}" y="${y+h-ph}" width="${w}" height="${ph}" fill="rgba(255,207,0,.22)"/>`;
+      if(st==='pend'){
+        // Already-paid part of the room in solid grey, mission progress as yellow above it.
+        const bh=h*part(ri), ph=h*Math.min(1-part(ri),pend(ri));
+        if(bh>0) rooms+=`<rect x="${x}" y="${y+h-bh}" width="${w}" height="${bh}" fill="#4B525C"/>`;
+        if(ph>0) rooms+=`<rect x="${x}" y="${y+h-bh-ph}" width="${w}" height="${ph}" fill="rgba(255,207,0,.22)"/>`;
       }
       if(st==='on') rooms+=`<rect x="${x}" y="${y+h-6}" width="${w}" height="6" fill="#3A3F47"/>`;
       // Centre the drawing and label on the part of the room inside the hull,
@@ -494,29 +535,43 @@ document.addEventListener('click', e=>{ const b=e.target.closest('[data-go]'); i
    ===================================================================== */
 function renderHome(){
   const e=earned(), total=CONFIG.prizeTotal;
-  const active=CONFIG.missions.find(m=>m.status==='active' && !S.missions[m.id].complete && m.reward);
-  const pendRooms = active ? roomsFor(e, e+active.reward).length : 0;
-  $('heroDS').innerHTML = deathStarSVG(e, pendRooms, active?missionProgress(active.id):0, e>=total);
+  const open=CONFIG.missions.filter(m=>m.status==='active' && m.reward && !S.missions[m.id].complete);
+  const pending=open.map(m=>{ const [from,to]=missionRange(m.id); return {from,to,p:missionProgress(m.id)}; });
+  const pendTo = pending.length ? pending[pending.length-1].to : e;
+  $('heroDS').innerHTML = deathStarSVG(e, pending, e>=total);
   $('fundAmt').textContent=gbp(e); $('fundTotal').textContent=gbp(total);
   $('fundLbl').textContent = e>=total ? 'The Death Star is fully operational. Collect your prize!' :
     `earned towards the ${CONFIG.prizeName} (${Math.round(e/total*100)}% built)`;
-  let br=''; for(let i=0;i<10;i++){ const lo=i*100; br+=`<div class="brick ${e>lo?'on':(active && e+active.reward>lo?'pend':'')}"></div>`; }
+  let br=''; for(let i=0;i<ROOMS.length;i++){ const lo=i*ROOM_VALUE, hi=lo+ROOM_VALUE;
+    if(e>=hi-1e-9) br+=`<div class="brick on"></div>`;
+    else if(e>lo) br+=`<div class="brick half" style="--f:${Math.round((e-lo)/ROOM_VALUE*100)}%"></div>`;
+    else br+=`<div class="brick ${pendTo>lo?'pend':''}"></div>`; }
   $('fundBricks').innerHTML=br;
-  const got=roomsFor(0,e), next=active?roomsFor(e,e+active.reward):[];
+  const got=roomsFor(0,e), partRoom=(e%ROOM_VALUE>1e-9)?ROOMS[Math.floor(e/ROOM_VALUE)]:null;
   $('roomsLbl').innerHTML = (got.length?`Rooms built: <b>${listNames(got)}</b>. `:'')+
-    (next.length?`Next to build: <b class="y">${listNames(next)}</b>.`:(e>=total?'':'More rooms unlock with the next mission.'));
+    (partRoom?`Under construction: <b>${partRoom.name}</b> (${gbp(e%ROOM_VALUE)} of ${gbp(ROOM_VALUE)}). `:'')+
+    (pending.length?`Your missions will build <b class="y">${describeBuild(e,pendTo)}</b>.`:(e>=total?'':'More rooms unlock with the next mission.'));
 
   const allocated = CONFIG.missions.reduce((t,m)=>t+(m.reward||0),0);
+  const statusLine=(m,M)=>{
+    if(M.complete) return 'Mission complete. '+gbp(m.reward)+' earned'+(M.paid?' and paid.':'.');
+    const rg=missionRange(m.id), builds=rg?' Builds '+describeBuild(rg[0],rg[1])+'.':'';
+    if(m.type==='approval' && M.submitted) return 'Reported done. Waiting for Command to approve.'+builds;
+    return m.short+'.'+builds;
+  };
   $('missionList').innerHTML = CONFIG.missions.map(m=>{
     const M=S.missions[m.id], locked=m.status!=='active', done=M&&M.complete;
     const p = locked?0:missionProgress(m.id);
     const reward = m.reward ? gbp(m.reward) : (locked ? gbp(total-allocated)+'?' : '');
     return `<button class="mission ${locked?'locked':''} ${done?'done':''}" ${locked?'disabled':`data-mission="${m.id}"`}>
       <div class="num">${locked?'🔒':m.code}</div>
-      <div class="body"><div class="t">${m.title}</div><div class="d">${done?'Mission complete. '+gbp(m.reward)+' earned'+(M.paid?' and paid.':'.'):m.short+(m.reward?'. Builds the '+listNames(roomsFor(missionStartGBP(m.id),missionStartGBP(m.id)+m.reward))+'.':'')}</div>
+      <div class="body"><div class="t">${m.title}</div><div class="d">${locked?m.short:statusLine(m,M)}</div>
       ${locked?'':`<div class="pbar"><i style="width:${Math.round(p*100)}%"></i></div>`}</div>
       <div class="reward">${reward}</div></button>`;
   }).join('');
+  // A mission approved in Command controls is celebrated the next time base is shown.
+  const fresh=CONFIG.missions.find(m=>S.missions[m.id] && S.missions[m.id].complete && !S.missions[m.id].celebrated);
+  if(fresh && $('overlay').classList.contains('hidden')){ S.missions[fresh.id].celebrated=true; save(); setTimeout(()=>celebrate(fresh.id),400); }
 }
 $('missionList').addEventListener('click', e=>{ const b=e.target.closest('[data-mission]'); if(b){ currentMission=b.dataset.mission; show('mission'); } });
 
@@ -525,8 +580,26 @@ $('missionList').addEventListener('click', e=>{ const b=e.target.closest('[data-
    ===================================================================== */
 let currentMission='m1';
 function mCfg(){ return CONFIG.missions.find(m=>m.id===currentMission); }
+function renderApproval(cfg, M){
+  $('rankHead').firstChild.textContent='STATUS';
+  $('rankName').textContent = M.complete?'Approved':(M.submitted?'With Command':'In progress');
+  $('mTitle').textContent=cfg.title; $('mDesc').textContent=cfg.short+'. Reward: '+gbp(cfg.reward)+'.';
+  $('factGrid').classList.add('hidden'); $('legend').classList.add('hidden');
+  const rg=missionRange(cfg.id);
+  $('modes').innerHTML = M.complete
+    ? `<div class="mode"><div class="ic">✅</div><div><div class="t">Approved by Command</div><div class="d">${gbp(cfg.reward)} added to the Death Star fund.</div></div></div>`
+    : M.submitted
+    ? `<div class="mode"><div class="ic">📨</div><div><div class="t">Report received</div><div class="d">Command will check your assignment and approve it.</div></div></div>
+       <button class="mode" data-mode="unsubmit"><div class="ic">↩️</div><div><div class="t">Not finished after all?</div><div class="d">Take your report back and keep working.</div></div></button>`
+    : `<button class="mode boss" data-mode="submit"><div class="ic">📨</div><div><div class="t">Report to Command</div><div class="d">Tap when your assignment is finished. Command will check it.${rg?' It builds '+describeBuild(rg[0],rg[1])+'.':''}</div></div></button>`;
+  $('brief').innerHTML=`<h3>ORDERS FROM COMMAND</h3><p>${cfg.desc}</p>`;
+  $('brief').classList.remove('hidden');
+}
 function renderMission(){
   const cfg=mCfg(), M=S.missions[cfg.id], T=cfg.table;
+  if(cfg.type==='approval') return renderApproval(cfg, M);
+  $('rankHead').firstChild.textContent='RANK';
+  $('factGrid').classList.remove('hidden'); $('legend').classList.remove('hidden');
   $('mTitle').textContent=cfg.title; $('mDesc').textContent=cfg.desc.replace('3 different days', S.settings.daysRequired+' different day'+(S.settings.daysRequired>1?'s':''));
   $('rankName').textContent=rankFor(cfg.id);
   let g=''; for(let a=1;a<=12;a++){ const l=M.studs[a]||0;
@@ -552,6 +625,10 @@ function renderMission(){
 $('modes').addEventListener('click', e=>{
   const b=e.target.closest('[data-mode]'); if(!b || b.disabled) return;
   if(b.dataset.mode==='brief') return toggleBrief();
+  if(b.dataset.mode==='submit' || b.dataset.mode==='unsubmit'){
+    const M=S.missions[currentMission]; M.submitted = b.dataset.mode==='submit'; M.submittedAt = M.submitted?today():null;
+    if(M.submitted) sfx.laser(); save(); return renderMission();
+  }
   startQuiz(b.dataset.mode);
 });
 function toggleBrief(){
@@ -653,7 +730,7 @@ function finishQuiz(){
     if(!R.failed && secs<=S.settings.timeLimitSecs){
       if(!M.passes.includes(today())) M.passes.push(today());
       if(!M.bestInspection || secs<M.bestInspection) M.bestInspection=Math.round(secs*10)/10;
-      if(!M.complete && M.passes.length>=S.settings.daysRequired){ M.complete=true; M.completedAt=today(); justCompleted=true; }
+      if(!M.complete && M.passes.length>=S.settings.daysRequired){ M.complete=true; M.completedAt=today(); M.celebrated=true; justCompleted=true; }
       const left=S.settings.daysRequired-M.passes.length;
       html=`<h2 style="color:var(--laser)">INSPECTION PASSED</h2><div class="big">${secs.toFixed(1)}s</div>
         <p class="msg">${M.complete ? (justCompleted?'Lord Vader is pleased.':'Still razor sharp. Lord Vader approves.') :
@@ -675,7 +752,7 @@ function finishQuiz(){
   save();
   $('resultBody').innerHTML=html; show('result');
   $('againBtn').onclick=()=>{ if(R.mode==='inspect' && M.passes.includes(today()) && !M.complete) show('mission'); else startQuiz(R.mode); };
-  if(justCompleted) setTimeout(celebrate, 900);
+  if(justCompleted) setTimeout(()=>celebrate(currentMission), 900);
 }
 $('quitBtn').onclick=()=>{ clearInterval(tick); Q=null; show('mission'); };
 
@@ -691,13 +768,13 @@ document.addEventListener('keydown', e=>{
 /* =====================================================================
    CELEBRATION
    ===================================================================== */
-function celebrate(){
-  const cfg=mCfg(), e=earned(), o=$('overlay');
+function celebrate(mid){
+  const cfg=CONFIG.missions.find(m=>m.id===mid), e=earned(), o=$('overlay');
   o.innerHTML=`<div class="beam"></div><div class="celebrate">
-    <div class="ds">${deathStarSVG(e,0,0,e>=CONFIG.prizeTotal)}</div>
+    <div class="ds">${deathStarSVG(e,[],e>=CONFIG.prizeTotal)}</div>
     <h2>Mission complete</h2>
     <div class="amt">+${gbp(cfg.reward)}</div>
-    <p>${CONFIG.childName}, you have mastered the ${cfg.table} times table. You have built the ${listNames(roomsFor(e-cfg.reward,e))}. The Death Star is now ${Math.round(e/CONFIG.prizeTotal*100)}% built: ${gbp(e)} of ${gbp(CONFIG.prizeTotal)}.</p>
+    <p>${CONFIG.childName}, ${cfg.doneMsg} You have built ${describeBuild(e-cfg.reward,e)}. The Death Star is now ${Math.round(e/CONFIG.prizeTotal*100)}% built: ${gbp(e)} of ${gbp(CONFIG.prizeTotal)}.</p>
     <button class="cta" id="celebOk">RETURN TO BASE</button></div>`;
   o.classList.remove('hidden'); sfx.march();
   const cols=['#FFCF00','#E0332E','#0055BF','#00852B','#9AA1AA','#fff'];
@@ -735,6 +812,11 @@ function openParent(){
     <table><tr>${studRows}</tr></table>
     <div class="note">Studs lit per fact (0 to 3). A stud lights for a correct answer within ${CONFIG.quickSecs} seconds in training, and goes out for a wrong one.</div>
     ${M.complete?`<div class="row" style="margin-top:12px"><span>${gbp(cfg.reward)} paid into the Death Star fund?</span><button class="pbtn" id="paidBtn">${M.paid?'Paid ✅ (undo)':'Mark as paid'}</button></div>`:''}
+    ${(()=>{ const c2=CONFIG.missions.find(m=>m.id==='m2'), M2=S.missions.m2; if(!c2||!M2) return '';
+      return `<h4>MISSION 2: ${c2.title.toUpperCase()}</h4>
+      <div class="row"><span>${c2.short}</span><b>${M2.complete?'Approved ('+M2.completedAt+')':(M2.submitted?'Reported done '+(M2.submittedAt||''):'Not reported yet')}</b></div>
+      <div class="row"><span>${M2.complete?'Withdraw approval':'Approve and release '+gbp(c2.reward)}</span><button class="pbtn" id="m2Btn">${M2.complete?'Undo':'Approve'}</button></div>
+      ${M2.complete?`<div class="row"><span>${gbp(c2.reward)} paid into the Death Star fund?</span><button class="pbtn" id="m2Paid">${M2.paid?'Paid ✅ (undo)':'Mark as paid'}</button></div>`:''}`; })()}
     <h4>INSPECTION RULES</h4>
     <div class="row"><span>Time limit for all 12</span><select id="setTime">${opt([45,60,75,90,120],S.settings.timeLimitSecs,' s')}</select></div>
     <div class="row"><span>Passes needed (on different days)</span><select id="setDays">${opt([1,2,3,4,5],S.settings.daysRequired,'')}</select></div>
@@ -748,9 +830,14 @@ function openParent(){
   o.classList.remove('hidden');
   $('closeParent').onclick=()=>{ o.classList.add('hidden'); renderHome(); };
   $('setTime').onchange=e=>{ S.settings.timeLimitSecs=+e.target.value; save(); };
-  $('setDays').onchange=e=>{ S.settings.daysRequired=+e.target.value; if(!M.complete && M.passes.length>=S.settings.daysRequired && studCount('m1')>=studMax()){ M.complete=true; M.completedAt=today(); } save(); openParent(); };
+  $('setDays').onchange=e=>{ S.settings.daysRequired=+e.target.value; if(!M.complete && M.passes.length>=S.settings.daysRequired && studCount('m1')>=studMax()){ M.complete=true; M.completedAt=today(); M.celebrated=false; } save(); openParent(); };
   $('sndBtn').onclick=()=>{ S.settings.sound=!S.settings.sound; save(); openParent(); };
   if($('paidBtn')) $('paidBtn').onclick=()=>{ M.paid=!M.paid; save(); openParent(); };
+  if($('m2Btn')) $('m2Btn').onclick=()=>{ const M2=S.missions.m2;
+    if(M2.complete){ if(!confirm('Withdraw approval and remove the reward from the fund?')) return; M2.complete=false; M2.completedAt=null; M2.paid=false; M2.celebrated=false; }
+    else { M2.complete=true; M2.completedAt=today(); M2.submitted=true; M2.celebrated=false; }
+    save(); openParent(); };
+  if($('m2Paid')) $('m2Paid').onclick=()=>{ S.missions.m2.paid=!S.missions.m2.paid; save(); openParent(); };
   $('resetBtn').onclick=()=>{ if(confirm('Wipe all Mission 1 progress, including any completed reward? This cannot be undone.')){ S.missions.m1=freshMission(); save(); openParent(); } };
 }
 

@@ -15,7 +15,8 @@ mission will build show as yellow scaffolding that fills as the mission progress
 | # | Mission | Reward | Status |
 |---|---------|--------|--------|
 | 1 | **Operation Twelve**: master the 12 times table | £200 (Hangar Bay, Trash Compactor) | Live |
-| 2 | Classified | up to £800 | Awaiting orders |
+| 2 | **Imperial Dispatch**: complete an English assignment | £50 (half of the Detention Block) | Live |
+| 3 | Classified | up to £750 | Awaiting orders |
 
 ### How Mission 1 is earned
 
@@ -31,6 +32,16 @@ mission will build show as yellow scaffolding that fills as the mission progress
 
 The time limit and number of days can be changed in Command controls.
 
+### How Mission 2 is earned
+
+The app cannot mark written work, so Mission 2 is approved by a parent. Xander taps
+**Report to Command** when the assignment is finished; a parent checks it and taps
+**Approve** in Command controls, which releases the £50 and shows the celebration the
+next time the home screen opens. Approval can be withdrawn there too.
+
+Money always fills the Death Star from the bottom deck upwards, whatever order the
+missions are completed in, so a £50 reward builds half a room.
+
 ## Command (parent) controls
 
 Press and hold the money panel on the home screen for 2 seconds. Shows per-fact progress,
@@ -38,8 +49,8 @@ inspection dates, recent sessions, a "mark as paid" toggle, the inspection rules
 
 ## Adding the next mission
 
-Edit `CONFIG.missions` near the top of the script in `index.html`. Mission 2 is a locked
-placeholder ready to be filled in.
+Edit `CONFIG.missions` near the top of the script in `index.html`. A mission of `type:'approval'`
+needs no extra code; Mission 3 is a locked placeholder ready to be filled in.
 
 ## Files
 
