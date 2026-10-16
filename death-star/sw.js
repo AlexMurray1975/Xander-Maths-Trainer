@@ -1,7 +1,7 @@
 /* Xander's Death Star: service worker
    Full offline support. Bump CACHE_VERSION whenever the app files change
    so devices pick up the new version. */
-const CACHE_VERSION = 'xds-v7';
+const CACHE_VERSION = 'xds-v8';
 const APP_SHELL = [
   './',
   './index.html',
@@ -9,6 +9,7 @@ const APP_SHELL = [
   './icons/icon-512.png',
   './icons/icon-maskable-512.png',
   './img/deathstar.webp',
+  './img/lego-logo.png',
   './img/box.jpg',
   './img/room-hangar.jpg',
   './img/room-compactor.jpg',
