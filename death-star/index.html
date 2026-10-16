@@ -57,13 +57,58 @@
 
   /* ---------- Header ---------- */
   header{padding:22px 0 6px;text-align:center;}
-  header .kicker{font-family:'Orbitron',sans-serif;font-size:.7rem;color:var(--imperial);letter-spacing:.35em;font-weight:800;}
+  .brandrow{display:flex;align-items:center;justify-content:center;gap:10px;flex-wrap:wrap;}
+  .legobadge{display:inline-block;background:#E3000B;border-radius:4px;padding:5px 9px 4px;font-family:'Arial Black','Exo 2',sans-serif;font-weight:900;font-style:italic;
+    font-size:1.05rem;letter-spacing:.02em;color:#fff;-webkit-text-stroke:1.2px #000;paint-order:stroke fill;
+    text-shadow:1.5px 0 #FFD500,-1.5px 0 #FFD500,0 1.5px #FFD500,0 -1.5px #FFD500,1.5px 1.5px #FFD500,-1.5px -1.5px #FFD500,1.5px -1.5px #FFD500,-1.5px 1.5px #FFD500;
+    box-shadow:0 0 0 2px #fff, 0 0 0 3px #1a1a1a;}
+  header .kicker{font-family:'Orbitron',sans-serif;font-size:.62rem;color:#c9ced6;letter-spacing:.22em;font-weight:800;}
   header h1{font-size:1.65rem;font-weight:900;margin-top:4px;text-transform:uppercase;
     background:linear-gradient(180deg,#fff 0%,#c9ced6 55%,#7f868f 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
 
   /* ---------- Death Star hero ---------- */
-  .hero{position:relative;margin:8px auto 0;width:min(86vw,360px);aspect-ratio:350/372;}
-  .hero svg{width:100%;height:100%;display:block;filter:drop-shadow(0 0 28px rgba(111,183,255,.12));}
+  .hero{position:relative;margin:10px auto 0;width:min(94vw,420px);aspect-ratio:1260/1100;}
+  .hero svg{width:100%;height:100%;display:block;filter:drop-shadow(0 0 30px rgba(111,183,255,.14));}
+  .beamline{filter:drop-shadow(0 0 10px #5DFF6A);animation:pulse 1.6s ease-in-out infinite;}
+  @keyframes pulse{50%{opacity:.45}}
+
+  /* ---------- LEGO studs on bricks, buttons and cards ---------- */
+  .studded{position:relative;margin-top:8px;}
+  .studded::before{content:"";position:absolute;left:12px;right:12px;top:-7px;height:7px;pointer-events:none;
+    background-image:linear-gradient(90deg,var(--stud,#3a4560) 0 16px,transparent 16px);background-size:28px 7px;background-repeat:repeat-x;
+    background-position:center bottom;border-radius:3px 3px 0 0;}
+
+  /* ---------- Room gallery ---------- */
+  .gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:16px 10px;}
+  .room{position:relative;border-radius:6px;overflow:visible;background:#0c1019;border:1px solid var(--line);--stud:#2b3448;text-align:left;padding:0;}
+  .room .ph{display:block;width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:6px 6px 0 0;}
+  .room .nm{font-family:'Orbitron',sans-serif;font-weight:800;font-size:.7rem;padding:7px 8px;letter-spacing:.04em;}
+  .room .tag{position:absolute;left:8px;top:8px;font-family:'Orbitron',sans-serif;font-weight:800;font-size:.68rem;padding:4px 7px;border-radius:5px;background:rgba(5,7,13,.85);}
+  .room.off .ph{filter:grayscale(1) brightness(.22) blur(2px);}
+  .room.off .tag{color:#9FCBFF;border:1px solid rgba(111,183,255,.5);}
+  .room.off .nm{color:var(--soft);}
+  .room.pend{border-color:#8a7000;--stud:#8a7000;}
+  .room.pend .ph{filter:grayscale(.85) brightness(.45);}
+  .room.pend .tag{color:var(--lego);border:1px solid var(--lego);}
+  .room.on{border-color:#5B616A;--stud:#9AA1AA;cursor:pointer;}
+  .room.on .nm{color:#fff;}
+  .viewer{max-width:640px;width:100%;text-align:center;}
+  .viewer img{width:100%;border-radius:10px;display:block;}
+  .viewer h2{font-size:1.1rem;margin:14px 0 4px;color:#fff;}
+
+  /* ---------- Prize ---------- */
+  .prize{display:flex;gap:14px;align-items:center;background:linear-gradient(135deg,#1a0d10,#0d1222);border:1px solid #6b1d1a;border-radius:14px;padding:12px;--stud:#6b1d1a;}
+  .prize img{width:42%;max-width:220px;border-radius:6px;display:block;}
+  .prize .pk{font-family:'Orbitron',sans-serif;font-size:.65rem;letter-spacing:.18em;color:#ff6b66;font-weight:800;}
+  .prize .pt{font-family:'Orbitron',sans-serif;font-size:1.3rem;font-weight:900;margin-top:4px;}
+  .prize .pd{font-size:.85rem;color:var(--soft);margin-top:4px;line-height:1.4;}
+  .prize .pa{font-family:'Orbitron',sans-serif;font-weight:900;color:var(--lego);font-size:1.4rem;margin-top:8px;}
+  .rankwrap{display:flex;align-items:center;gap:8px;}
+  .rankfig{height:58px;width:auto;filter:drop-shadow(0 2px 6px rgba(0,0,0,.6));}
+  .cthumbs{display:flex;gap:8px;justify-content:center;margin:12px 0 4px;flex-wrap:wrap;}
+  .cthumbs figure{width:46%;max-width:200px;}
+  .cthumbs img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:6px;border:2px solid var(--lego);display:block;}
+  .cthumbs figcaption{font-family:'Orbitron',sans-serif;font-size:.65rem;font-weight:800;margin-top:5px;color:#fff;}
   .fund{
     margin:12px 0 0;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);
     border-radius:16px;padding:14px 16px;text-align:center;position:relative;overflow:hidden;
@@ -165,6 +210,12 @@
   .pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px;}
   .key{height:62px;border-radius:12px;font-family:'Orbitron',sans-serif;font-weight:800;font-size:1.5rem;
     background:linear-gradient(180deg,#2a3346,#1b2232);border:1px solid #36415a;box-shadow:0 3px 0 #0a0d14;}
+  .key{--stud:#4a5675;}
+  .mode,.mission{--stud:#3a4560;}
+  .mode.boss{--stud:#a8302b;}
+  .mission.done{--stud:#2f9e3a;}
+  .ic img{height:44px;display:block;margin:0 auto;}
+  .key.fire{--stud:#ff5a55;}
   .key:active{transform:translateY(2px);box-shadow:0 1px 0 #0a0d14;}
   .key.fire{background:linear-gradient(180deg,#e0332e,#a01d1a);border-color:#ff5a55;font-size:1rem;letter-spacing:.1em;}
   .key.del{font-size:1.1rem;color:var(--soft);}
@@ -181,9 +232,9 @@
   .misslist div b{color:var(--laser);}
 
   .overlay{position:fixed;inset:0;z-index:50;background:rgba(3,5,10,.92);display:flex;padding:20px;overflow:auto;}
-  .overlay > .celebrate,.overlay > .parent{margin:auto;}   /* centred, but scrollable from the top when taller than the screen */
+  .overlay > .celebrate,.overlay > .parent,.overlay > .viewer{margin:auto;}   /* centred, but scrollable from the top when taller than the screen */
   .celebrate{text-align:center;max-width:460px;}
-  .celebrate .ds{width:min(70vw,280px);margin:0 auto;}
+  .celebrate .ds{width:min(80vw,340px);margin:0 auto;}
   .celebrate h2{font-size:1.5rem;color:var(--laser);margin-top:12px;text-transform:uppercase;}
   .celebrate .amt{font-family:'Orbitron',sans-serif;font-weight:900;font-size:3rem;color:var(--lego);margin:6px 0;}
   .celebrate p{color:var(--soft);line-height:1.5;}
@@ -215,7 +266,8 @@
   @media (min-width:700px){
     html{font-size:19px;}
     .wrap{max-width:680px;}
-    .hero{width:440px;}
+    .hero{width:600px;}
+    .gallery{grid-template-columns:repeat(5,1fr);}
     .key{height:84px;}
   }
 </style>
@@ -225,7 +277,7 @@
 <!-- ============ HOME ============ -->
 <section id="home" class="wrap">
   <header>
-    <div class="kicker">IMPERIAL CONSTRUCTION PROJECT</div>
+    <div class="brandrow"><span class="legobadge">LEGO</span><span class="kicker">STAR WARS · ULTIMATE COLLECTOR SERIES</span></div>
     <h1>Xander's Death Star</h1>
   </header>
   <div class="hero" id="heroDS"></div>
@@ -239,6 +291,18 @@
   </div>
   <div class="section-t">MISSIONS</div>
   <div id="missionList"></div>
+  <div class="section-t">ROOMS OF THE DEATH STAR</div>
+  <div class="gallery" id="gallery"></div>
+  <div class="section-t">THE ULTIMATE PRIZE</div>
+  <div class="prize studded">
+    <img src="img/box.jpg" alt="LEGO Star Wars Death Star box">
+    <div>
+      <div class="pk">LEGO STAR WARS 75419</div>
+      <div class="pt">Death Star</div>
+      <div class="pd">9,023 pieces · 38 minifigures · 70 cm tall</div>
+      <div class="pa">£899.99</div>
+    </div>
+  </div>
   <footer>Hold the money panel for 2 seconds for Command (parent) controls.</footer>
 </section>
 
@@ -246,7 +310,7 @@
 <section id="mission" class="wrap hidden">
   <div class="topbar">
     <button class="back" data-go="home">◀ BASE</button>
-    <div class="rank" id="rankHead">RANK<b id="rankName">Youngling</b></div>
+    <div class="rankwrap"><div class="rank" id="rankHead">RANK<b id="rankName">Youngling</b></div><img class="rankfig" id="rankFig" alt=""></div>
   </div>
   <div class="mhead">
     <h2 id="mTitle">Operation Twelve</h2>
@@ -352,6 +416,7 @@ function missionProgress(mid){
   // 60% training studs, 40% inspection days.
   return 0.6*studCount(mid)/studMax() + 0.4*Math.min(M.passes.length,S.settings.daysRequired)/S.settings.daysRequired;
 }
+const RANK_FIG={ 'Youngling':'fig-youngling','Cadet':'fig-cadet','Stormtrooper':'fig-trooper','Officer':'fig-officer','Commander':'fig-vader','Grand Moff':'fig-tarkin' };
 function rankFor(mid){
   const M=S.missions[mid]; if(M.complete) return 'Grand Moff';
   const n=studCount(mid);
@@ -359,149 +424,83 @@ function rankFor(mid){
 }
 
 /* =====================================================================
-   DEATH STAR (SVG). A cross-section of the LEGO set, drawn as a blueprint:
-   ten rooms, each worth £100, are built from the bottom deck upwards as
-   money is earned, gaining the model's grey hull and dark interiors. Rooms the current mission will unlock show as yellow
-   scaffolding that fills as the mission progresses.
+   DEATH STAR. Ten rooms of the real set, each worth £100, are built from
+   the bottom deck upwards as money is earned. Rooms the current missions
+   will build show as yellow scaffolding that fills as they progress.
    ===================================================================== */
-const ROOMS = [   // in unlock order (bottom deck first); £100 each
-  { key:'hangar',    name:'Hangar Bay',         accent:'#FFFFFF', scale:1.6 },
-  { key:'compactor', name:'Trash Compactor',    accent:'#C46A3A', short:'Compactor' },
-  { key:'detention', name:'Detention Block',    accent:'#D6DBE2' },
-  { key:'control',   name:'Control Room',       accent:'#E0332E' },
-  { key:'tractor',   name:'Tractor Beam',       accent:'#6FB7FF' },
-  { key:'interrog',  name:'Interrogation Cell', accent:'#9AA1AA', short:'Interrogation' },
-  { key:'chasm',     name:'Chasm Bridge',       accent:'#FFCF00' },
-  { key:'conf',      name:'Conference Room',    accent:'#D6DBE2' },
-  { key:'throne',    name:'Throne Room',        accent:'#4FA3FF', scale:1.25 },
-  { key:'laser',     name:'Superlaser',         accent:'#5DFF6A' }
+const ROOMS = [   // in unlock order (bottom deck first); £100 each.
+  // rects: where the room sits on img/deathstar.webp (1260 × 1100), as [x0, y0, x1, y1].
+  { key:'hangar',    name:'Hangar Bay',         photo:'room-hangar',    rects:[[630,712,1065,1048]] },
+  { key:'compactor', name:'Trash Compactor',    photo:'room-compactor', rects:[[352,882,628,1045]], short:'Compactor' },
+  { key:'detention', name:'Detention Block',    photo:'room-detention', rects:[[232,712,630,882],[188,552,405,705]] },
+  { key:'control',   name:'Control Room',       photo:'room-control',   rects:[[1065,712,1205,882]], short:'Control' },
+  { key:'tractor',   name:'Tractor Beam',       photo:'room-tractor',   rects:[[805,552,1240,705]] },
+  { key:'interrog',  name:'Interrogation Cell', photo:'room-interrog',  rects:[[580,552,805,705]], short:'Interrogation' },
+  { key:'chasm',     name:'Chasm Bridge',       photo:'room-chasm',     rects:[[805,390,1000,552]], short:'Chasm' },
+  { key:'conf',      name:'Conference Room',    photo:'room-conf',      rects:[[1000,390,1240,552]], short:'Conference' },
+  { key:'throne',    name:'Throne Room',        photo:'room-throne',    rects:[[710,75,1120,388],[370,75,710,388]] },
+  { key:'laser',     name:'Superlaser',         photo:'room-laser',     rects:[[0,170,370,390],[188,390,805,552],[405,552,580,705]] }
 ];
 const ROOM_VALUE = CONFIG.prizeTotal / ROOMS.length;
 function roomsFor(fromGBP, toGBP){ return ROOMS.slice(Math.floor(fromGBP/ROOM_VALUE+1e-9), Math.floor(toGBP/ROOM_VALUE+1e-9)).map(r=>r.name); }
 // Describe what a slice of the fund builds, e.g. "the Hangar Bay and the Trash
 // Compactor" or "half of the Detention Block".
+function roomShare(i, fromGBP, toGBP){ return Math.max(0, Math.min(toGBP,(i+1)*ROOM_VALUE)-Math.max(fromGBP,i*ROOM_VALUE))/ROOM_VALUE; }
 function describeBuild(fromGBP, toGBP){
   const out=[];
   ROOMS.forEach((R,i)=>{
-    const ov=Math.min(toGBP,(i+1)*ROOM_VALUE)-Math.max(fromGBP,i*ROOM_VALUE);
-    if(ov<=1e-9) return;
-    const f=ov/ROOM_VALUE;
+    const f=roomShare(i,fromGBP,toGBP); if(f<=1e-9) return;
     out.push((f>0.999?'the ':(Math.abs(f-.5)<1e-6?'half of the ':'part of the '))+R.name);
   });
   return listNames(out);
 }
 function listNames(a){ return a.length<2 ? a.join('') : a.slice(0,-1).join(', ')+' and '+a[a.length-1]; }
 
-// Small line drawings for each room, centred on 0,0.
-const GLYPH = {
-  hangar:   'M0,-13 L0,5 M-15,-5 L-3,5 M15,-5 L3,5 M-6,5 L6,5 L4,10 L-4,10 Z',
-  compactor:'M-14,-10 V10 M14,-10 V10 M-9,0 L-4,0 M-6,-3 L-4,0 L-6,3 M9,0 L4,0 M6,-3 L4,0 L6,3 M-12,8 Q-6,4 0,8 T12,8',
-  detention:'M-12,-10 H12 V10 H-12 Z M-6,-10 V10 M0,-10 V10 M6,-10 V10',
-  control:  'M-14,-10 h8 v20 h-8 z M-4,-10 h8 v20 h-8 z M6,-10 h8 v20 h-8 z M-12,-6 h4 M-2,-6 h4 M8,-6 h4 M-12,0 h4 M-2,0 h4 M8,0 h4',
-  tractor:  'M-4,-13 H4 V13 H-4 Z M-4,-6 H4 M-4,1 H4 M-4,8 H4 M-11,13 H11',
-  interrog: 'M-6,0 A6,6 0 1 0 6,0 A6,6 0 1 0 -6,0 M0,6 V12 M-6,0 H-12 M6,0 H12 M0,-6 V-11',
-  chasm:    'M-16,4 H-6 V12 M16,4 H6 V12 M-6,-12 Q0,-2 6,4',
-  conf:     'M-11,0 A11,5 0 1 0 11,0 A11,5 0 1 0 -11,0 M-15,-7 h3 M-1.5,-9 h3 M12,-7 h3 M-15,7 h3 M12,7 h3',
-  throne:   'M-11,0 A11,11 0 1 0 11,0 A11,11 0 1 0 -11,0 M-6,0 A6,6 0 1 0 6,0 A6,6 0 1 0 -6,0 M0,-11 V11 M-11,0 H11 M-3,4 H3 V11 H-3 Z',
-  laser:    ''   // the dish itself is the drawing for this room
-};
-
 let dsSeq=0;
+// The real set, photographed in cross-section. Unbuilt areas show as a dim
+// blueprint; each room appears in full colour once it has been paid for.
 // pending: [{from, to, p}] slices of the fund that unfinished missions will fill,
 // with p = how far through each mission Xander is (0 to 1).
 function deathStarSVG(earnedGBP, pending, glow){
-  const id='ds'+(dsSeq++), cx=175, cy=165, r=142;
-  const built=Math.floor(earnedGBP/ROOM_VALUE+1e-9);
+  const id='ds'+(dsSeq++), W=1260, H=1100, IMG='img/deathstar.webp';
   const lo=i=>i*ROOM_VALUE, hi=i=>(i+1)*ROOM_VALUE;
   const part=i=>Math.max(0,Math.min(earnedGBP,hi(i))-lo(i))/ROOM_VALUE;          // share of room i paid for
   const pend=i=>pending.reduce((t,g)=>t+Math.max(0,Math.min(g.to,hi(i))-Math.max(g.from,lo(i)))*g.p,0)/ROOM_VALUE;
   const touched=i=>pending.some(g=>g.to>lo(i)+1e-9 && g.from<hi(i)-1e-9);
   const state=i=> part(i)>0.999 ? 'on' : ((touched(i)||part(i)>0) ? 'pend' : 'off');
-  const ST = {
-    on:  { fill:'#14171D', stroke:'#9AA1AA', label:'#E8ECF2', dash:'' },
-    pend:{ fill:'#141826', stroke:'#FFCF00', label:'#FFCF00', dash:'4 3' },
-    off: { fill:'#0B0F18', stroke:'rgba(111,183,255,.38)', label:'rgba(111,183,255,.5)', dash:'3 3' }
-  };
-  // Decks as on the set's cross-section: [top y, height, [room, relative width]...].
-  // Trash compactor bottom left, hangar bottom right, throne room top right.
-  const decks=[
-    [214,80,[[1,.42],[0,.58]]],
-    [160,50,[[2,1],[3,1],[4,1]]],
-    [106,50,[[5,1],[6,1],[7,1.15]]],
-    [50,52,[[9,.42],[8,.58]]]
-  ];
-  let frames='', rooms='', hullTop=null;
-  decks.forEach(([y,h,items])=>{
-    const mid=y+h/2, hw=Math.sqrt(r*r-(mid-cy)**2)+10, gap=4;
-    const tw=items.reduce((t,[,wt])=>t+wt,0), avail=2*hw-gap*(items.length-1);
-    let x=cx-hw;
-    items.forEach(([ri,wt])=>{
-      const w=avail*wt/tw, st=state(ri), s=ST[st], R=ROOMS[ri];
-      if(st==='on'){
-        // Grey hull around a dark interior, as on the model.
-        frames+=`<rect x="${x-4}" y="${y-4}" width="${w+8}" height="${h+8}" fill="#8C939C"/>`;
-        hullTop = hullTop===null ? y-4 : Math.min(hullTop,y-4);
-      }
-      rooms+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${s.fill}" stroke="${st==='on'?'#5B616A':s.stroke}" stroke-width="1" ${s.dash?`stroke-dasharray="${s.dash}"`:''}/>`;
+  const full = earnedGBP >= CONFIG.prizeTotal-1e-9;
+  let clip='', over='', labels='';
+  ROOMS.forEach((R,i)=>{
+    const st=state(i), pf=part(i);
+    R.rects.forEach(([x0,y0,x1,y1])=>{
+      const w=x1-x0, h=y1-y0;
+      if(pf>0) clip+=`<rect x="${x0}" y="${y1-h*pf}" width="${w}" height="${h*pf}"/>`;
+      if(st==='off') over+=`<rect x="${x0+4}" y="${y0+4}" width="${w-8}" height="${h-8}" rx="6" fill="rgba(4,7,14,.38)" stroke="rgba(111,183,255,.6)" stroke-width="3" stroke-dasharray="14 9"/>`;
       if(st==='pend'){
-        // Already-paid part of the room in solid grey, mission progress as yellow above it.
-        const bh=h*part(ri), ph=h*Math.min(1-part(ri),pend(ri));
-        if(bh>0) rooms+=`<rect x="${x}" y="${y+h-bh}" width="${w}" height="${bh}" fill="#4B525C"/>`;
-        if(ph>0) rooms+=`<rect x="${x}" y="${y+h-bh-ph}" width="${w}" height="${ph}" fill="rgba(255,207,0,.22)"/>`;
+        const ph=h*Math.min(1-pf,pend(i));
+        if(ph>0) over+=`<rect x="${x0}" y="${y1-h*pf-ph}" width="${w}" height="${ph}" fill="rgba(255,207,0,.28)"/>`;
+        over+=`<rect x="${x0+3}" y="${y0+3}" width="${w-6}" height="${h-6}" rx="6" fill="none" stroke="#FFCF00" stroke-width="5" stroke-dasharray="18 10"/>`;
       }
-      if(st==='on') rooms+=`<rect x="${x}" y="${y+h-6}" width="${w}" height="6" fill="#3A3F47"/>`;
-      // Centre the drawing and label on the part of the room inside the hull,
-      // and shrink the label if that part is narrow.
-      const chord=yy=>Math.sqrt(Math.max(0,r*r-(yy-cy)**2))-6;
-      const ly=y+h-10, cw=Math.min(chord(y),chord(y+h));
-      const v0=Math.max(x,cx-chord(ly)), v1=Math.min(x+w,cx+chord(ly));
-      const g0=Math.max(x,cx-cw), g1=Math.min(x+w,cx+cw);
-      const fit=t=>Math.min(6.4,(v1-v0-6)/(t.length*0.8));
-      let text = st==='off' ? '£'+((ri+1)*ROOM_VALUE).toLocaleString('en-GB') : R.name.toUpperCase();
-      if(st!=='off' && R.short && fit(text)<5.4) text=R.short.toUpperCase();
-      const fs = fit(text);
-      const ink = st==='on' ? R.accent : s.label;
-      if(GLYPH[R.key]) rooms+=`<path d="${GLYPH[R.key]}" transform="translate(${(g0+g1)/2},${y+h/2-6}) scale(${R.scale||1})" fill="none" stroke="${ink}" stroke-width="${1.4/(R.scale||1)}" stroke-linejoin="round" stroke-linecap="round"/>`;
-      rooms+=`<text x="${(v0+v1)/2}" y="${ly}" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="${fs.toFixed(2)}" font-weight="800" letter-spacing=".3" fill="${s.label}">${text}</text>`;
-      x+=w+gap;
     });
+    if(st!=='on'){
+      const [x0,y0,x1,y1]=R.rects[0], w=x1-x0;
+      let t = st==='off' ? '£'+hi(i).toLocaleString('en-GB') : R.name.toUpperCase();
+      const fit=s=>Math.min(30,(w-40)/(s.length*0.72));
+      if(st!=='off' && R.short && fit(t)<22) t=R.short.toUpperCase();
+      const fs=fit(t), pw=t.length*fs*0.72+26, cx=(x0+x1)/2, cy=y1-fs-14;
+      labels+=`<rect x="${cx-pw/2}" y="${cy-fs*0.8}" width="${pw}" height="${fs*1.5}" rx="${fs*0.75}" fill="rgba(5,7,13,.82)" stroke="${st==='off'?'rgba(111,183,255,.6)':'#FFCF00'}" stroke-width="2"/>
+        <text x="${cx}" y="${cy+fs*0.32}" text-anchor="middle" font-family="Orbitron,sans-serif" font-weight="800" font-size="${fs.toFixed(1)}" fill="${st==='off'?'#9FCBFF':'#FFCF00'}">${t}</text>`;
+    }
   });
-  // Grey outer hull and lower cap grow upwards with the rooms that are built.
-  const hull = hullTop===null ? '' :
-    `<rect x="0" y="${hullTop}" width="350" height="${372-hullTop}" fill="#8C939C" mask="url(#${id}m)"/>`;
-  // The superlaser dish on the upper left, with its green focusing beams.
-  const dSt=state(9), dOn=dSt==='on', dS=ST[dSt];
-  const rim=dOn?'#D6DBE2':dS.stroke, rays=dOn?'#5DFF6A':dS.label;
-  const dish=`<g transform="translate(64,80) rotate(-28)">
-      <line x1="10" y1="0" x2="40" y2="0" stroke="${rim}" stroke-width="3"/>
-      <ellipse cx="0" cy="0" rx="13" ry="30" fill="${dOn?'#9AA1AA':dS.fill}" stroke="${rim}" stroke-width="1.2" ${dS.dash?`stroke-dasharray="${dS.dash}"`:''}/>
-      <ellipse cx="0" cy="0" rx="8" ry="19" fill="${dOn?'#C9CED6':'none'}" stroke="${rim}" stroke-width=".8"/>
-      <g stroke="${rays}" stroke-width="${dOn?1.1:.7}"><line x1="0" y1="-28" x2="-34" y2="0"/><line x1="0" y1="28" x2="-34" y2="0"/><line x1="-8" y1="-14" x2="-34" y2="0"/><line x1="-8" y1="14" x2="-34" y2="0"/></g>
-      ${glow?`<line x1="-34" y1="0" x2="-90" y2="0" stroke="#5DFF6A" stroke-width="3" style="filter:drop-shadow(0 0 4px #5DFF6A)"/>`:''}
-    </g>`;
-  return `<svg viewBox="0 0 350 372" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Death Star, ${built} of ${ROOMS.length} rooms built">
+  const beam = glow ? `<line x1="102" y1="246" x2="0" y2="190" stroke="#5DFF6A" stroke-width="10" stroke-linecap="round" class="beamline"/>` : '';
+  return `<svg viewBox="0 0 ${W} ${H}" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="LEGO Death Star, ${ROOMS.filter((R,i)=>part(i)>0.999).length} of ${ROOMS.length} rooms built">
     <defs>
-      <clipPath id="${id}c"><circle cx="${cx}" cy="${cy}" r="${r}"/></clipPath>
-      <mask id="${id}m"><circle cx="${cx}" cy="${cy}" r="${r}" fill="#fff"/><circle cx="${cx}" cy="${cy}" r="${r-9}" fill="#000"/>
-        <rect x="0" y="296" width="350" height="76" fill="#fff"/><circle cx="${cx}" cy="${cy}" r="${r}" fill="none"/></mask>
+      <filter id="${id}f" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0.064 0.215 0.022 0 0.01  0.085 0.286 0.029 0 0.02  0.132 0.443 0.045 0 0.04  0 0 0 1 0"/></filter>
+      <clipPath id="${id}c">${clip}</clipPath>
     </defs>
-    <circle cx="${cx}" cy="${cy}" r="${r}" fill="#080B13"/>
-    <g clip-path="url(#${id}c)">${hull}${frames}${rooms}</g>
-    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#D6DBE2" stroke-width="1.4"/>
-    ${dish}
-    <path d="M${cx-34},${cy+r-2} L${cx-46},${cy+r+22} H${cx+46} L${cx+34},${cy+r-2}" fill="#080B13" stroke="#D6DBE2" stroke-width="1.2"/>
-    <line x1="${cx-56}" y1="${cy+r+22}" x2="${cx+56}" y2="${cy+r+22}" stroke="#D6DBE2" stroke-width="1.6"/>
-    <g transform="translate(36,302)">
-      <rect width="74" height="22" rx="1.5" fill="#0E1626" stroke="rgba(111,183,255,.6)" stroke-width=".8"/>
-      <text x="6" y="9" font-family="Orbitron,sans-serif" font-size="5.6" font-weight="800" fill="#D6DBE2">DEATH STAR</text>
-      <text x="6" y="17" font-family="Exo 2,sans-serif" font-size="5.4" fill="rgba(214,219,226,.7)">9,023 pieces</text>
-    </g>
-    <g stroke="rgba(214,219,226,.55)" stroke-width=".8" fill="rgba(214,219,226,.7)" font-family="Exo 2,sans-serif" font-size="7">
-      <path d="M14,${cy-r} h8 M18,${cy-r} V${cy+r+22} M14,${cy+r+22} h8" fill="none"/>
-      <text x="0" y="0" transform="translate(12,${cy}) rotate(-90)" text-anchor="middle" stroke="none">70 cm</text>
-      <path d="M${cx-r},356 v-6 M${cx-r},353 H${cx+r} M${cx+r},356 v-6" fill="none"/>
-      <text x="${cx}" y="366" text-anchor="middle" stroke="none">79 cm</text>
-    </g>
+    ${full ? `<image href="${IMG}" width="${W}" height="${H}"/>`
+           : `<image href="${IMG}" width="${W}" height="${H}" filter="url(#${id}f)"/>${clip?`<image href="${IMG}" width="${W}" height="${H}" clip-path="url(#${id}c)"/>`:''}`}
+    ${over}${labels}${beam}
   </svg>`;
 }
 
@@ -568,16 +567,29 @@ function renderHome(){
     const M=S.missions[m.id], locked=m.status!=='active', done=M&&M.complete;
     const p = locked?0:missionProgress(m.id);
     const reward = m.reward ? gbp(m.reward) : (locked ? gbp(total-allocated)+'?' : '');
-    return `<button class="mission ${locked?'locked':''} ${done?'done':''}" ${locked?'disabled':`data-mission="${m.id}"`}>
+    return `<button class="mission studded ${locked?'locked':''} ${done?'done':''}" ${locked?'disabled':`data-mission="${m.id}"`}>
       <div class="num">${locked?'🔒':m.code}</div>
       <div class="body"><div class="t">${m.title}</div><div class="d">${locked?m.short:statusLine(m,M)}</div>
       ${locked?'':`<div class="pbar"><i style="width:${Math.round(p*100)}%"></i></div>`}</div>
       <div class="reward">${reward}</div></button>`;
   }).join('');
+  // Room gallery: built rooms in colour, the rest locked with their price.
+  $('gallery').innerHTML = ROOMS.map((Rm,i)=>{
+    const f=roomShare(i,0,e), inPend=pending.some(g=>roomShare(i,g.from,g.to)>0);
+    const st = f>0.999 ? 'on' : ((f>0||inPend) ? 'pend' : 'off');
+    const tag = st==='on' ? '' : (st==='pend' ? (f>0 ? Math.round(f*100)+'% BUILT' : '🚧 BUILDING') : '🔒 '+gbp((i+1)*ROOM_VALUE));
+    return `<button class="room studded ${st}" ${st==='on'?`data-room="${i}"`:''}><img class="ph" src="img/${Rm.photo}.jpg" alt="" loading="lazy">
+      ${tag?`<span class="tag">${tag}</span>`:''}<div class="nm">${Rm.name}</div></button>`;
+  }).join('');
   // A mission approved in Command controls is celebrated the next time base is shown.
   const fresh=CONFIG.missions.find(m=>S.missions[m.id] && S.missions[m.id].complete && !S.missions[m.id].celebrated);
   if(fresh && $('overlay').classList.contains('hidden')){ S.missions[fresh.id].celebrated=true; save(); setTimeout(()=>celebrate(fresh.id),400); }
 }
+$('gallery').addEventListener('click', e=>{
+  const b=e.target.closest('[data-room]'); if(!b) return; const Rm=ROOMS[+b.dataset.room], o=$('overlay');
+  o.innerHTML=`<div class="viewer"><img src="img/${Rm.photo}.jpg" alt="${Rm.name}"><h2>${Rm.name.toUpperCase()}</h2><button class="cta alt" id="viewOk">CLOSE</button></div>`;
+  o.classList.remove('hidden'); $('viewOk').onclick=()=>o.classList.add('hidden');
+});
 $('missionList').addEventListener('click', e=>{ const b=e.target.closest('[data-mission]'); if(b){ currentMission=b.dataset.mission; show('mission'); } });
 
 /* =====================================================================
@@ -587,6 +599,7 @@ let currentMission='m1';
 function mCfg(){ return CONFIG.missions.find(m=>m.id===currentMission); }
 function renderApproval(cfg, M){
   $('rankHead').firstChild.textContent='STATUS';
+  $('rankFig').src='img/fig-officer.png';
   $('rankName').textContent = M.complete?'Approved':(M.submitted?'With Command':'In progress');
   $('mTitle').textContent=cfg.title; $('mDesc').textContent=cfg.short+'. Reward: '+gbp(cfg.reward)+'.';
   $('factGrid').classList.add('hidden'); $('legend').classList.add('hidden');
@@ -595,8 +608,8 @@ function renderApproval(cfg, M){
     ? `<div class="mode"><div class="ic">✅</div><div><div class="t">Approved by Command</div><div class="d">${gbp(cfg.reward)} added to the Death Star fund.</div></div></div>`
     : M.submitted
     ? `<div class="mode"><div class="ic">📨</div><div><div class="t">Report received</div><div class="d">Command will check your assignment and approve it.</div></div></div>
-       <button class="mode" data-mode="unsubmit"><div class="ic">↩️</div><div><div class="t">Not finished after all?</div><div class="d">Take your report back and keep working.</div></div></button>`
-    : `<button class="mode boss" data-mode="submit"><div class="ic">📨</div><div><div class="t">Report to Command</div><div class="d">Tap when your assignment is finished. Command will check it.${rg?' It builds '+describeBuild(rg[0],rg[1])+'.':''}</div></div></button>`;
+       <button class="mode studded" data-mode="unsubmit"><div class="ic">↩️</div><div><div class="t">Not finished after all?</div><div class="d">Take your report back and keep working.</div></div></button>`
+    : `<button class="mode boss studded" data-mode="submit"><div class="ic">📨</div><div><div class="t">Report to Command</div><div class="d">Tap when your assignment is finished. Command will check it.${rg?' It builds '+describeBuild(rg[0],rg[1])+'.':''}</div></div></button>`;
   $('brief').innerHTML=`<h3>ORDERS FROM COMMAND</h3><p>${cfg.desc}</p>`;
   $('brief').classList.remove('hidden');
 }
@@ -604,6 +617,7 @@ function renderMission(){
   const cfg=mCfg(), M=S.missions[cfg.id], T=cfg.table;
   if(cfg.type==='approval') return renderApproval(cfg, M);
   $('rankHead').firstChild.textContent='RANK';
+  $('rankFig').src='img/'+RANK_FIG[rankFor(cfg.id)]+'.png'; $('rankFig').classList.remove('hidden');
   $('factGrid').classList.remove('hidden'); $('legend').classList.remove('hidden');
   $('mTitle').textContent=cfg.title; $('mDesc').textContent=cfg.desc.replace('3 different days', S.settings.daysRequired+' different day'+(S.settings.daysRequired>1?'s':''));
   $('rankName').textContent=rankFor(cfg.id);
@@ -620,11 +634,11 @@ function renderMission(){
   else if(passedToday) inspD='Passed today. Come back tomorrow for the next inspection.';
   else inspD=`All 12 facts, any order, no mistakes, under ${S.settings.timeLimitSecs} seconds.`;
   $('modes').innerHTML = `
-    <button class="mode" data-mode="brief"><div class="ic">📡</div><div><div class="t">Briefing</div><div class="d">Learn the table and the secret trick.</div></div></button>
-    <button class="mode" data-mode="seq"><div class="ic">🧱</div><div><div class="t">Assembly Line</div><div class="d">In order, 1 × ${T} to 12 × ${T}, with the ladder to help.</div></div></button>
-    <button class="mode" data-mode="drill"><div class="ic">🎯</div><div><div class="t">Target Practice</div><div class="d">All 12 facts, jumbled. This lights the studs.</div></div></button>
-    <button class="mode" data-mode="trench"><div class="ic">🚀</div><div><div class="t">Trench Run</div><div class="d">60 seconds. How many hits? Best: ${M.trenchBest}</div></div></button>
-    <button class="mode boss" data-mode="inspect" ${(ready && (!passedToday || M.complete))?'':'disabled'}><div class="ic">⚫</div><div style="flex:1"><div class="t">Lord Vader's Inspection</div><div class="d">${inspD}</div><div class="days">${dots}</div></div></button>`;
+    <button class="mode studded" data-mode="brief"><div class="ic">📡</div><div><div class="t">Briefing</div><div class="d">Learn the table and the secret trick.</div></div></button>
+    <button class="mode studded" data-mode="seq"><div class="ic">🧱</div><div><div class="t">Assembly Line</div><div class="d">In order, 1 × ${T} to 12 × ${T}, with the ladder to help.</div></div></button>
+    <button class="mode studded" data-mode="drill"><div class="ic">🎯</div><div><div class="t">Target Practice</div><div class="d">All 12 facts, jumbled. This lights the studs.</div></div></button>
+    <button class="mode studded" data-mode="trench"><div class="ic">🚀</div><div><div class="t">Trench Run</div><div class="d">60 seconds. How many hits? Best: ${M.trenchBest}</div></div></button>
+    <button class="mode boss studded" data-mode="inspect" ${(ready && (!passedToday || M.complete))?'':'disabled'}><div class="ic"><img src="img/fig-vader.png" alt=""></div><div style="flex:1"><div class="t">Lord Vader's Inspection</div><div class="d">${inspD}</div><div class="days">${dots}</div></div></button>`;
   $('brief').classList.add('hidden');
 }
 $('modes').addEventListener('click', e=>{
@@ -763,7 +777,7 @@ $('quitBtn').onclick=()=>{ clearInterval(tick); Q=null; show('mission'); };
 
 /* ---------- Keypad and keyboard ---------- */
 $('pad').innerHTML=['7','8','9','4','5','6','1','2','3','del','0','fire'].map(k=>
-  `<button class="key ${k==='fire'?'fire':''} ${k==='del'?'del':''}" data-k="${k}">${k==='del'?'⌫':(k==='fire'?'FIRE':k)}</button>`).join('');
+  `<button class="key studded ${k==='fire'?'fire':''} ${k==='del'?'del':''}" data-k="${k}">${k==='del'?'⌫':(k==='fire'?'FIRE':k)}</button>`).join('');
 $('pad').addEventListener('pointerdown', e=>{ const b=e.target.closest('[data-k]'); if(b){ e.preventDefault(); press(b.dataset.k); } });
 document.addEventListener('keydown', e=>{
   if($('quiz').classList.contains('hidden')) return;
@@ -778,6 +792,8 @@ function celebrate(mid){
   o.innerHTML=`<div class="beam"></div><div class="celebrate">
     <div class="ds">${deathStarSVG(e,[],e>=CONFIG.prizeTotal)}</div>
     <h2>Mission complete</h2>
+    <div class="cthumbs">${ROOMS.map((Rm,i)=>({Rm,f:roomShare(i,e-cfg.reward,e),tot:roomShare(i,0,e)})).filter(x=>x.f>0).map(x=>
+      `<figure><img src="img/${x.Rm.photo}.jpg" alt=""><figcaption>${x.Rm.name.toUpperCase()}${x.tot<0.999?' · '+Math.round(x.tot*100)+'% BUILT':''}</figcaption></figure>`).join('')}</div>
     <div class="amt">+${gbp(cfg.reward)}</div>
     <p>${CONFIG.childName}, ${cfg.doneMsg} You have built ${describeBuild(e-cfg.reward,e)}. The Death Star is now ${Math.round(e/CONFIG.prizeTotal*100)}% built: ${gbp(e)} of ${gbp(CONFIG.prizeTotal)}.</p>
     <button class="cta" id="celebOk">RETURN TO BASE</button></div>`;

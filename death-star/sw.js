@@ -1,13 +1,31 @@
 /* Xander's Death Star: service worker
    Full offline support. Bump CACHE_VERSION whenever the app files change
    so devices pick up the new version. */
-const CACHE_VERSION = 'xds-v5';
+const CACHE_VERSION = 'xds-v6';
 const APP_SHELL = [
   './',
   './index.html',
   './manifest.webmanifest',
   './icons/icon-512.png',
-  './icons/icon-maskable-512.png'
+  './icons/icon-maskable-512.png',
+  './img/deathstar.webp',
+  './img/box.jpg',
+  './img/room-hangar.jpg',
+  './img/room-compactor.jpg',
+  './img/room-detention.jpg',
+  './img/room-control.jpg',
+  './img/room-tractor.jpg',
+  './img/room-interrog.jpg',
+  './img/room-chasm.jpg',
+  './img/room-conf.jpg',
+  './img/room-throne.jpg',
+  './img/room-laser.jpg',
+  './img/fig-youngling.png',
+  './img/fig-cadet.png',
+  './img/fig-trooper.png',
+  './img/fig-officer.png',
+  './img/fig-vader.png',
+  './img/fig-tarkin.png'
 ];
 
 // Pre-cache the app shell on install.
