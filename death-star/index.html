@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Xander's Death Star</title>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Death Star">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#05070D">
+<meta name="description" content="Complete training missions to earn the LEGO Death Star.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icons/icon-512.png" sizes="512x512" type="image/png">
+<link rel="apple-touch-icon" href="icons/icon-512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600;800;900&family=Exo+2:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --space:#05070D;
+    --panel:#121722;
+    --panel2:#1A2130;
+    --line:#2A3345;
+    --steel:#9AA1AA;
+    --steel-dk:#5B616A;
+    --text:#E8ECF2;
+    --soft:#8E98AB;
+    --imperial:#E0332E;
+    --lego:#FFCF00;
+    --laser:#5DFF6A;
+    --holo:#6FB7FF;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+  html,body{min-height:100%;}
+  body{
+    font-family:'Exo 2',sans-serif;color:var(--text);background-color:var(--space);
+    background-image:
+      radial-gradient(1px 1px at 20px 30px,#fff,transparent),
+      radial-gradient(1px 1px at 120px 80px,#cfd8ff,transparent),
+      radial-gradient(1.5px 1.5px at 200px 160px,#fff,transparent),
+      radial-gradient(1px 1px at 60px 200px,#9fb4ff,transparent),
+      radial-gradient(1px 1px at 260px 240px,#fff,transparent),
+      radial-gradient(1px 1px at 170px 20px,#fff,transparent),
+      radial-gradient(ellipse at 50% -10%,#141c33 0%,var(--space) 60%);
+    background-size:280px 280px,280px 280px,280px 280px,280px 280px,280px 280px,280px 280px,100% 100%;
+    background-attachment:fixed;
+    min-height:100vh;padding:env(safe-area-inset-top) 0 48px;
+    user-select:none;-webkit-user-select:none;
+  }
+  .wrap{max-width:600px;margin:0 auto;padding:0 16px;}
+  h1,h2,h3,.orb{font-family:'Orbitron',sans-serif;letter-spacing:.06em;}
+  button{font-family:inherit;color:inherit;cursor:pointer;border:none;background:none;}
+  .hidden{display:none !important;}
+
+  /* ---------- Header ---------- */
+  header{padding:22px 0 6px;text-align:center;}
+  header .kicker{font-family:'Orbitron',sans-serif;font-size:.7rem;color:var(--imperial);letter-spacing:.35em;font-weight:800;}
+  header h1{font-size:1.65rem;font-weight:900;margin-top:4px;text-transform:uppercase;
+    background:linear-gradient(180deg,#fff 0%,#c9ced6 55%,#7f868f 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
+
+  /* ---------- Death Star hero ---------- */
+  .hero{position:relative;margin:8px auto 0;width:min(78vw,330px);aspect-ratio:1;}
+  .hero svg{width:100%;height:100%;display:block;filter:drop-shadow(0 0 28px rgba(111,183,255,.12));}
+  .fund{
+    margin:12px 0 0;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);
+    border-radius:16px;padding:14px 16px;text-align:center;position:relative;overflow:hidden;
+  }
+  .fund .amt{font-family:'Orbitron',sans-serif;font-weight:900;font-size:2rem;color:var(--lego);}
+  .fund .amt small{font-size:1rem;color:var(--soft);font-weight:600;}
+  .fund .lbl{font-size:.85rem;color:var(--soft);margin-top:2px;}
+  .fund .holdbar{position:absolute;left:0;bottom:0;height:3px;width:0;background:var(--holo);}
+  .bricks{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-top:12px;}
+  .brick{position:relative;height:22px;border-radius:3px;background:#20283a;border:1px solid #2f3a50;}
+  .brick::before,.brick::after{content:"";position:absolute;top:-5px;width:34%;height:6px;border-radius:2px 2px 0 0;background:inherit;border:inherit;border-bottom:none;}
+  .brick::before{left:9%;} .brick::after{right:9%;}
+  .brick.on{background:var(--lego);border-color:#c79f00;}
+  .brick.pend{background:repeating-linear-gradient(45deg,rgba(255,207,0,.35) 0 4px,rgba(255,207,0,.08) 4px 8px);border-color:#8a7000;}
+  .bricks-key{display:flex;justify-content:space-between;font-size:.7rem;color:var(--soft);margin-top:6px;}
+
+  /* ---------- Mission cards ---------- */
+  .section-t{font-family:'Orbitron',sans-serif;font-size:.8rem;letter-spacing:.3em;color:var(--soft);margin:24px 2px 10px;font-weight:800;}
+  .mission{
+    width:100%;text-align:left;display:flex;gap:14px;align-items:center;
+    background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);
+    border-left:5px solid var(--imperial);border-radius:14px;padding:14px;margin-bottom:12px;
+  }
+  .mission.done{border-left-color:var(--laser);}
+  .mission.locked{opacity:.55;border-left-color:var(--steel-dk);cursor:default;}
+  .mission .num{font-family:'Orbitron',sans-serif;font-weight:900;font-size:1.6rem;color:var(--imperial);min-width:42px;text-align:center;}
+  .mission.done .num{color:var(--laser);}
+  .mission.locked .num{color:var(--steel-dk);}
+  .mission .body{flex:1;min-width:0;}
+  .mission .t{font-family:'Orbitron',sans-serif;font-weight:800;font-size:1rem;}
+  .mission .d{font-size:.85rem;color:var(--soft);margin-top:2px;}
+  .mission .reward{font-family:'Orbitron',sans-serif;font-weight:800;color:var(--lego);font-size:1rem;white-space:nowrap;}
+  .pbar{height:6px;border-radius:3px;background:#20283a;margin-top:8px;overflow:hidden;}
+  .pbar > i{display:block;height:100%;background:linear-gradient(90deg,var(--imperial),var(--lego));}
+  .mission.done .pbar > i{background:var(--laser);}
+
+  /* ---------- Mission screen ---------- */
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:18px 0 8px;gap:10px;}
+  .back{font-family:'Orbitron',sans-serif;font-size:.8rem;letter-spacing:.1em;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel);}
+  .rank{font-family:'Orbitron',sans-serif;font-size:.75rem;letter-spacing:.12em;color:var(--lego);text-align:right;}
+  .rank b{display:block;color:var(--text);font-size:.95rem;}
+  .mhead h2{font-size:1.35rem;font-weight:900;text-transform:uppercase;}
+  .mhead p{color:var(--soft);font-size:.92rem;margin-top:4px;line-height:1.4;}
+  .factgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px 8px;margin:18px 0 6px;}
+  .fact{position:relative;border-radius:5px;padding:14px 2px 7px;text-align:center;font-family:'Orbitron',sans-serif;font-weight:800;font-size:.8rem;
+    background:#20283a;border:1px solid #2f3a50;color:var(--soft);}
+  .fact .studs{position:absolute;top:-6px;left:0;right:0;display:flex;justify-content:space-around;padding:0 10%;}
+  .fact .studs i{width:24%;height:7px;border-radius:2px 2px 0 0;background:#20283a;border:1px solid #2f3a50;border-bottom:none;}
+  .fact.l1{background:#B40000;border-color:#7d0000;color:#fff;}
+  .fact.l2{background:#F2A900;border-color:#a87500;color:#1a1a1a;}
+  .fact.l3{background:#00852B;border-color:#00561c;color:#fff;}
+  .fact .studs i.lit{background:var(--lego);border-color:#c79f00;}
+  .fact.l3 .studs i.lit{background:var(--laser);border-color:#2fb33a;}
+  .legend{font-size:.75rem;color:var(--soft);text-align:center;margin-bottom:6px;}
+  .modes{display:grid;gap:10px;margin-top:14px;}
+  .mode{display:flex;align-items:center;gap:14px;text-align:left;width:100%;padding:13px 14px;border-radius:12px;
+    background:var(--panel);border:1px solid var(--line);}
+  .mode .ic{font-size:1.5rem;width:36px;text-align:center;}
+  .mode .t{font-family:'Orbitron',sans-serif;font-weight:800;font-size:.92rem;}
+  .mode .d{font-size:.82rem;color:var(--soft);margin-top:2px;}
+  .mode.boss{border:1px solid var(--imperial);background:linear-gradient(180deg,#2a1014,#170a0d);}
+  .mode.boss .t{color:#ff6b66;}
+  .mode[disabled]{opacity:.45;cursor:not-allowed;}
+  .days{display:flex;gap:6px;margin-top:6px;}
+  .days i{width:16px;height:16px;border-radius:50%;border:2px solid var(--imperial);}
+  .days i.on{background:var(--laser);border-color:var(--laser);box-shadow:0 0 8px var(--laser);}
+
+  /* ---------- Briefing ---------- */
+  .brief{background:var(--panel);border:1px solid var(--holo);border-radius:14px;padding:16px;margin-top:14px;
+    box-shadow:0 0 24px rgba(111,183,255,.12) inset;color:#cfe6ff;}
+  .brief h3{font-size:.9rem;color:var(--holo);margin-bottom:10px;}
+  .brief p{font-size:.92rem;line-height:1.5;margin-bottom:10px;}
+  .tbl{display:grid;grid-template-columns:1fr 1fr;gap:6px 18px;font-family:'Orbitron',sans-serif;font-size:1rem;margin:6px 0 12px;}
+  .tbl div{display:flex;justify-content:space-between;border-bottom:1px dashed rgba(111,183,255,.25);padding:4px 0;}
+  .tbl b{color:#fff;}
+
+  /* ---------- Quiz ---------- */
+  .qhud{display:flex;justify-content:space-between;align-items:center;font-family:'Orbitron',sans-serif;font-size:.8rem;color:var(--soft);margin-top:6px;}
+  .qhud b{color:var(--text);font-size:1rem;}
+  .timebar{height:6px;border-radius:3px;background:#20283a;margin-top:8px;overflow:hidden;}
+  .timebar i{display:block;height:100%;width:100%;background:var(--laser);transition:width .2s linear;}
+  .target{margin:22px 0 10px;border-radius:18px;border:1px solid var(--line);background:radial-gradient(circle at 50% 40%,#1b2438,#0c1019 70%);
+    padding:26px 10px 20px;text-align:center;position:relative;overflow:hidden;}
+  .target::before{content:"";position:absolute;inset:12px;border:1px solid rgba(224,51,46,.25);border-radius:12px;pointer-events:none;}
+  .q{font-family:'Orbitron',sans-serif;font-weight:900;font-size:clamp(2.2rem,11vw,3.4rem);}
+  .ans{font-family:'Orbitron',sans-serif;font-weight:800;font-size:clamp(2rem,10vw,3rem);color:var(--lego);min-height:1.3em;margin-top:8px;}
+  .ans.empty{color:#3a4458;}
+  .fb{min-height:1.6em;margin-top:6px;font-family:'Orbitron',sans-serif;font-weight:800;font-size:1rem;}
+  .fb.ok{color:var(--laser);} .fb.no{color:#ff6b66;}
+  .ladder{display:flex;flex-wrap:wrap;justify-content:center;gap:5px;margin-top:10px;}
+  .ladder span{font-family:'Orbitron',sans-serif;font-size:.75rem;padding:4px 7px;border-radius:6px;background:#1a2233;color:var(--holo);}
+  .target.hit{animation:hit .35s ease;}
+  .target.miss{animation:shake .35s ease;}
+  @keyframes hit{0%{box-shadow:0 0 0 0 rgba(93,255,106,.0) inset}40%{box-shadow:0 0 0 999px rgba(93,255,106,.12) inset}100%{box-shadow:none}}
+  @keyframes shake{0%,100%{transform:none}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+  .pad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:8px;}
+  .key{height:62px;border-radius:12px;font-family:'Orbitron',sans-serif;font-weight:800;font-size:1.5rem;
+    background:linear-gradient(180deg,#2a3346,#1b2232);border:1px solid #36415a;box-shadow:0 3px 0 #0a0d14;}
+  .key:active{transform:translateY(2px);box-shadow:0 1px 0 #0a0d14;}
+  .key.fire{background:linear-gradient(180deg,#e0332e,#a01d1a);border-color:#ff5a55;font-size:1rem;letter-spacing:.1em;}
+  .key.del{font-size:1.1rem;color:var(--soft);}
+
+  /* ---------- Results / overlays ---------- */
+  .result{text-align:center;padding-top:24px;}
+  .result .big{font-family:'Orbitron',sans-serif;font-weight:900;font-size:2.6rem;margin:10px 0;}
+  .result .msg{color:var(--soft);font-size:1rem;line-height:1.5;max-width:440px;margin:0 auto;}
+  .cta{display:block;width:100%;margin-top:14px;padding:16px;border-radius:12px;font-family:'Orbitron',sans-serif;font-weight:800;letter-spacing:.08em;
+    background:linear-gradient(180deg,#e0332e,#a01d1a);border:1px solid #ff5a55;}
+  .cta.alt{background:var(--panel);border-color:var(--line);}
+  .misslist{margin:16px auto 0;max-width:360px;text-align:left;}
+  .misslist div{display:flex;justify-content:space-between;padding:7px 10px;border-radius:8px;background:var(--panel);margin-bottom:6px;font-family:'Orbitron',sans-serif;font-size:.85rem;}
+  .misslist div b{color:var(--laser);}
+
+  .overlay{position:fixed;inset:0;z-index:50;background:rgba(3,5,10,.92);display:flex;padding:20px;overflow:auto;}
+  .overlay > .celebrate,.overlay > .parent{margin:auto;}   /* centred, but scrollable from the top when taller than the screen */
+  .celebrate{text-align:center;max-width:460px;}
+  .celebrate .ds{width:min(70vw,280px);margin:0 auto;}
+  .celebrate h2{font-size:1.5rem;color:var(--laser);margin-top:12px;text-transform:uppercase;}
+  .celebrate .amt{font-family:'Orbitron',sans-serif;font-weight:900;font-size:3rem;color:var(--lego);margin:6px 0;}
+  .celebrate p{color:var(--soft);line-height:1.5;}
+  .beam{position:absolute;left:50%;top:0;width:4px;height:0;background:var(--laser);box-shadow:0 0 18px 6px rgba(93,255,106,.6);transform:translateX(-50%);animation:beam 1.4s ease-out forwards;pointer-events:none;}
+  @keyframes beam{to{height:100vh;opacity:0}}
+  .confetti{position:fixed;top:-20px;width:14px;height:9px;border-radius:2px;z-index:60;animation:fall linear forwards;pointer-events:none;}
+  @keyframes fall{to{transform:translateY(110vh) rotate(540deg);}}
+
+  /* ---------- Parent view ---------- */
+  .parent{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:18px;max-width:540px;width:100%;color:var(--text);}
+  .parent h3{font-size:1rem;margin-bottom:12px;}
+  .parent h4{font-family:'Orbitron',sans-serif;font-size:.75rem;letter-spacing:.2em;color:var(--soft);margin:16px 0 8px;}
+  .parent table{width:100%;border-collapse:collapse;font-size:.85rem;}
+  .parent td,.parent th{padding:5px 4px;border-bottom:1px solid var(--line);text-align:left;}
+  .parent th{color:var(--soft);font-weight:700;}
+  .parent .row{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:8px 0;font-size:.9rem;}
+  .parent select{background:var(--panel2);color:var(--text);border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-family:inherit;font-size:.9rem;}
+  .pbtn{padding:9px 12px;border-radius:9px;border:1px solid var(--line);background:var(--panel2);font-size:.85rem;font-weight:700;}
+  .pbtn.danger{border-color:#7d1f1c;color:#ff8a86;}
+  .note{font-size:.78rem;color:var(--soft);line-height:1.45;margin-top:6px;}
+  footer{text-align:center;color:#4a5468;font-size:.72rem;margin-top:28px;}
+
+  /* ---------- Tablet (iPad) ---------- */
+  @media (min-width:700px){
+    html{font-size:19px;}
+    .wrap{max-width:680px;}
+    .hero{width:400px;}
+    .key{height:84px;}
+  }
+</style>
+</head>
+<body>
+
+<!-- ============ HOME ============ -->
+<section id="home" class="wrap">
+  <header>
+    <div class="kicker">IMPERIAL CONSTRUCTION PROJECT</div>
+    <h1>Xander's Death Star</h1>
+  </header>
+  <div class="hero" id="heroDS"></div>
+  <div class="fund" id="fundBox">
+    <div class="amt"><span id="fundAmt">£0</span> <small>of <span id="fundTotal">£1,000</span></small></div>
+    <div class="lbl" id="fundLbl">earned towards the LEGO Death Star</div>
+    <div class="bricks" id="fundBricks"></div>
+    <div class="bricks-key"><span>£0</span><span>each brick = £100</span><span>£1,000</span></div>
+    <div class="holdbar" id="holdBar"></div>
+  </div>
+  <div class="section-t">MISSIONS</div>
+  <div id="missionList"></div>
+  <footer>Hold the money panel for 2 seconds for Command (parent) controls.</footer>
+</section>
+
+<!-- ============ MISSION ============ -->
+<section id="mission" class="wrap hidden">
+  <div class="topbar">
+    <button class="back" data-go="home">◀ BASE</button>
+    <div class="rank">RANK<b id="rankName">Youngling</b></div>
+  </div>
+  <div class="mhead">
+    <h2 id="mTitle">Operation Twelve</h2>
+    <p id="mDesc"></p>
+  </div>
+  <div class="factgrid" id="factGrid"></div>
+  <div class="legend">Each brick has 3 studs. Answer a fact quickly and correctly to light a stud. Light all 36 to unlock Lord Vader's Inspection.</div>
+  <div class="modes" id="modes"></div>
+  <div class="brief hidden" id="brief"></div>
+</section>
+
+<!-- ============ QUIZ ============ -->
+<section id="quiz" class="wrap hidden">
+  <div class="topbar">
+    <button class="back" id="quitBtn">◀ ABORT</button>
+    <div class="rank" id="qMode">DRILL<b id="qModeName">Random Drill</b></div>
+  </div>
+  <div class="qhud"><span>TARGET <b id="qCount">1/12</b></span><span id="qClockWrap">TIME <b id="qClock">0.0</b></span><span>HITS <b id="qHits">0</b></span></div>
+  <div class="timebar" id="timebarWrap"><i id="timebar"></i></div>
+  <div class="target" id="targetBox">
+    <div class="q" id="qText">7 × 12</div>
+    <div class="ans empty" id="qAns">?</div>
+    <div class="fb" id="qFb"></div>
+    <div class="ladder hidden" id="ladder"></div>
+  </div>
+  <div class="pad" id="pad"></div>
+</section>
+
+<!-- ============ RESULT ============ -->
+<section id="result" class="wrap hidden">
+  <div class="result" id="resultBody"></div>
+</section>
+
+<div class="overlay hidden" id="overlay"></div>
+
+<script>
+/* =====================================================================
+   CONFIGURATION. Edit here to change the prize, rewards or rules.
+   ===================================================================== */
+const CONFIG = {
+  childName: 'Xander',
+  prizeName: 'LEGO Death Star',
+  prizeTotal: 1000,                 // £
+  quickSecs: 6,                     // a practice answer this fast lights a stud
+  studsPerFact: 3,
+  missions: [
+    { id:'m1', code:'01', title:'Operation Twelve', short:'Master the 12 times table',
+      desc:'Command needs an engineer who knows every fact in the 12 times table, in any order, at speed. Light all 36 studs in training, then pass Lord Vader\'s Inspection on 3 different days.',
+      reward:200, table:12, status:'active' },
+    { id:'m2', code:'02', title:'Classified', short:'Awaiting orders from Command',
+      reward:null, status:'locked' }
+  ],
+  // Defaults for the final test; a parent can change these in Command controls.
+  inspection: { timeLimitSecs: 60, daysRequired: 3 }
+};
+
+/* =====================================================================
+   STATE (saved on this device)
+   ===================================================================== */
+const STORE_KEY = 'xds-v1';
+function freshMission(){ return { studs:{}, passes:[], complete:false, completedAt:null, paid:false, trenchBest:0, bestInspection:null }; }
+function freshState(){
+  return { missions:{ m1:freshMission() }, settings:{ sound:true, timeLimitSecs:CONFIG.inspection.timeLimitSecs, daysRequired:CONFIG.inspection.daysRequired }, log:[] };
+}
+let S;
+try{ S = JSON.parse(localStorage.getItem(STORE_KEY)) || freshState(); }catch(e){ S = freshState(); }
+CONFIG.missions.forEach(m => { if(m.status==='active' && !S.missions[m.id]) S.missions[m.id] = freshMission(); });
+function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(S)); }catch(e){} }
+
+function today(){ const d=new Date(); return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
+function gbp(n){ return '£'+n.toLocaleString('en-GB'); }
+function $(id){ return document.getElementById(id); }
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+
+/* ---------- Derived numbers ---------- */
+function earned(){ return CONFIG.missions.reduce((t,m)=> t + (m.reward && S.missions[m.id] && S.missions[m.id].complete ? m.reward : 0), 0); }
+function studCount(mid){ const st=S.missions[mid].studs; let n=0; for(let a=1;a<=12;a++) n += (st[a]||0); return n; }
+function studMax(){ return 12*CONFIG.studsPerFact; }
+function missionProgress(mid){
+  const M=S.missions[mid]; if(!M) return 0; if(M.complete) return 1;
+  // 60% training studs, 40% inspection days.
+  return 0.6*studCount(mid)/studMax() + 0.4*Math.min(M.passes.length,S.settings.daysRequired)/S.settings.daysRequired;
+}
+function rankFor(mid){
+  const M=S.missions[mid]; if(M.complete) return 'Grand Moff';
+  const n=studCount(mid);
+  if(n>=36) return 'Commander'; if(n>=27) return 'Officer'; if(n>=18) return 'Stormtrooper'; if(n>=9) return 'Cadet'; return 'Youngling';
+}
+
+/* =====================================================================
+   DEATH STAR (SVG). Panels light up as money is earned; the panels for
+   the mission in progress show as yellow scaffolding.
+   ===================================================================== */
+let dsSeq=0;
+function deathStarSVG(builtFrac, pendFrac, glow){
+  const id='ds'+(dsSeq++), cx=150, cy=150, r=132, cell=12;
+  const cells=[];
+  for(let y=cy+r-cell; y>=cy-r-cell; y-=cell){          // build from the bottom up
+    for(let x=cx-r; x<cx+r; x+=cell){
+      const mx=x+cell/2, my=y+cell/2;
+      if((mx-cx)**2+(my-cy)**2 <= (r+cell*0.4)**2) cells.push([x,y]);
+    }
+  }
+  const N=cells.length, nb=Math.round(N*builtFrac), np=Math.round(N*Math.min(pendFrac,1-builtFrac));
+  const shades=['#9AA1AA','#8C939C','#A6ADB5','#7F868F','#959CA5'];
+  let tiles='';
+  cells.forEach(([x,y],i)=>{
+    if(i<nb){ tiles+=`<rect x="${x}" y="${y}" width="${cell}" height="${cell}" fill="${shades[(i*7+(i>>3))%5]}" stroke="#5B616A" stroke-width=".6"/>`; }
+    else if(i<nb+np){ tiles+=`<rect x="${x+1}" y="${y+1}" width="${cell-2}" height="${cell-2}" fill="rgba(255,207,0,.28)" stroke="#FFCF00" stroke-width=".7"/>`; }
+    else { tiles+=`<rect x="${x}" y="${y}" width="${cell}" height="${cell}" fill="none" stroke="rgba(111,183,255,.16)" stroke-width=".5"/>`; }
+  });
+  // Longitude and latitude wireframe, as on the half-built Death Star.
+  let frame='';
+  [40,80,112].forEach(rx=> frame+=`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${r}" fill="none" stroke="rgba(111,183,255,.28)" stroke-width=".8"/>`);
+  [-90,-45,45,90].forEach(dy=>{ const w=Math.sqrt(r*r-dy*dy); frame+=`<line x1="${cx-w}" y1="${cy+dy}" x2="${cx+w}" y2="${cy+dy}" stroke="rgba(111,183,255,.22)" stroke-width=".8"/>`; });
+  const dishOn = builtFrac >= 0.75;
+  return `<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Death Star ${Math.round(builtFrac*100)}% built">
+    <defs>
+      <clipPath id="${id}c"><circle cx="${cx}" cy="${cy}" r="${r}"/></clipPath>
+      <radialGradient id="${id}s" cx="35%" cy="30%" r="75%">
+        <stop offset="0%" stop-color="#fff" stop-opacity=".22"/><stop offset="55%" stop-color="#000" stop-opacity="0"/><stop offset="100%" stop-color="#000" stop-opacity=".6"/>
+      </radialGradient>
+    </defs>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="#0b0f18"/>
+    <g clip-path="url(#${id}c)">
+      ${tiles}${frame}
+      <rect x="0" y="${cy-3}" width="300" height="6" fill="#2b3038" opacity="${builtFrac>0.45?1:.45}"/>
+      <line x1="0" y1="${cy-3}" x2="300" y2="${cy-3}" stroke="#c9ced6" stroke-width=".5" opacity=".5"/>
+      <g opacity="${dishOn?1:.5}">
+        <circle cx="104" cy="96" r="32" fill="${dishOn?'#6b727b':'none'}" stroke="${dishOn?'#4a5058':'rgba(111,183,255,.5)'}" stroke-width="1.5"/>
+        <circle cx="104" cy="96" r="22" fill="none" stroke="${dishOn?'#4a5058':'rgba(111,183,255,.4)'}" stroke-width="1"/>
+        <circle cx="104" cy="96" r="11" fill="none" stroke="${dishOn?'#4a5058':'rgba(111,183,255,.4)'}" stroke-width="1"/>
+        <circle cx="104" cy="96" r="4" fill="${glow?'#5DFF6A':(dishOn?'#3c4148':'none')}" ${glow?'style="filter:drop-shadow(0 0 6px #5DFF6A)"':''}/>
+      </g>
+      <circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#${id}s)"/>
+    </g>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(111,183,255,.35)" stroke-width="1"/>
+  </svg>`;
+}
+
+/* =====================================================================
+   SOUND (Web Audio, no files needed)
+   ===================================================================== */
+let AC=null;
+function ac(){ if(!S.settings.sound) return null; try{ AC = AC || new (window.AudioContext||window.webkitAudioContext)(); if(AC.state==='suspended') AC.resume(); }catch(e){ return null; } return AC; }
+function tone(freq, dur, type, when, vol, slideTo){
+  const c=ac(); if(!c) return; const t=c.currentTime+(when||0);
+  const o=c.createOscillator(), g=c.createGain(); o.type=type||'square';
+  o.frequency.setValueAtTime(freq,t); if(slideTo) o.frequency.exponentialRampToValueAtTime(slideTo,t+dur);
+  g.gain.setValueAtTime(vol||0.08,t); g.gain.exponentialRampToValueAtTime(0.0001,t+dur);
+  o.connect(g); g.connect(c.destination); o.start(t); o.stop(t+dur+0.02);
+}
+const sfx = {
+  laser(){ tone(1400,.16,'sawtooth',0,.06,180); },
+  miss(){ tone(120,.35,'square',0,.07,70); },
+  key(){ tone(660,.04,'square',0,.025); },
+  march(){ // the opening of the Imperial March
+    const G=392,Eb=311.1,Bb=466.2, q=.42;
+    [[G,0,q],[G,q,q],[G,2*q,q],[Eb,3*q,q*.75],[Bb,3.75*q,q*.25],[G,4*q,q],[Eb,5*q,q*.75],[Bb,5.75*q,q*.25],[G,6*q,q*1.6]]
+      .forEach(([f,w,d])=>tone(f,d*.95,'sawtooth',w,.07));
+  }
+};
+
+/* =====================================================================
+   NAVIGATION
+   ===================================================================== */
+const SCREENS=['home','mission','quiz','result'];
+function show(name){ SCREENS.forEach(s=>$(s).classList.toggle('hidden', s!==name)); window.scrollTo(0,0); if(name==='home') renderHome(); if(name==='mission') renderMission(); }
+document.addEventListener('click', e=>{ const b=e.target.closest('[data-go]'); if(b) show(b.dataset.go); });
+
+/* =====================================================================
+   HOME
+   ===================================================================== */
+function renderHome(){
+  const e=earned(), total=CONFIG.prizeTotal;
+  const active=CONFIG.missions.find(m=>m.status==='active' && !S.missions[m.id].complete && m.reward);
+  const pend = active ? (active.reward/total)*missionProgress(active.id) : 0;
+  $('heroDS').innerHTML = deathStarSVG(e/total, pend, e>=total);
+  $('fundAmt').textContent=gbp(e); $('fundTotal').textContent=gbp(total);
+  $('fundLbl').textContent = e>=total ? 'The Death Star is fully operational. Collect your prize!' :
+    `earned towards the ${CONFIG.prizeName} (${Math.round(e/total*100)}% built)`;
+  let br=''; for(let i=0;i<10;i++){ const lo=i*100; br+=`<div class="brick ${e>lo?'on':(active && e+active.reward>lo?'pend':'')}"></div>`; }
+  $('fundBricks').innerHTML=br;
+
+  const allocated = CONFIG.missions.reduce((t,m)=>t+(m.reward||0),0);
+  $('missionList').innerHTML = CONFIG.missions.map(m=>{
+    const M=S.missions[m.id], locked=m.status!=='active', done=M&&M.complete;
+    const p = locked?0:missionProgress(m.id);
+    const reward = m.reward ? gbp(m.reward) : (locked ? gbp(total-allocated)+'?' : '');
+    return `<button class="mission ${locked?'locked':''} ${done?'done':''}" ${locked?'disabled':`data-mission="${m.id}"`}>
+      <div class="num">${locked?'🔒':m.code}</div>
+      <div class="body"><div class="t">${m.title}</div><div class="d">${done?'Mission complete. '+gbp(m.reward)+' earned'+(M.paid?' and paid.':'.'):m.short}</div>
+      ${locked?'':`<div class="pbar"><i style="width:${Math.round(p*100)}%"></i></div>`}</div>
+      <div class="reward">${reward}</div></button>`;
+  }).join('');
+}
+$('missionList').addEventListener('click', e=>{ const b=e.target.closest('[data-mission]'); if(b){ currentMission=b.dataset.mission; show('mission'); } });
+
+/* =====================================================================
+   MISSION SCREEN
+   ===================================================================== */
+let currentMission='m1';
+function mCfg(){ return CONFIG.missions.find(m=>m.id===currentMission); }
+function renderMission(){
+  const cfg=mCfg(), M=S.missions[cfg.id], T=cfg.table;
+  $('mTitle').textContent=cfg.title; $('mDesc').textContent=cfg.desc.replace('3 different days', S.settings.daysRequired+' different day'+(S.settings.daysRequired>1?'s':''));
+  $('rankName').textContent=rankFor(cfg.id);
+  let g=''; for(let a=1;a<=12;a++){ const l=M.studs[a]||0;
+    g+=`<div class="fact l${l}"><div class="studs">${[0,1,2].map(i=>`<i class="${i<l?'lit':''}"></i>`).join('')}</div>${a} × ${T}</div>`; }
+  $('factGrid').innerHTML=g;
+
+  const ready = studCount(cfg.id)>=studMax();
+  const passedToday = M.passes.includes(today());
+  const dots = Array.from({length:S.settings.daysRequired},(_,i)=>`<i class="${i<M.passes.length?'on':''}"></i>`).join('');
+  let inspD;
+  if(M.complete) inspD='Passed. Mission complete. Take it again any time to stay sharp.';
+  else if(!ready) inspD=`Locked. Light all 36 studs first (${studCount(cfg.id)}/36).`;
+  else if(passedToday) inspD='Passed today. Come back tomorrow for the next inspection.';
+  else inspD=`All 12 facts, any order, no mistakes, under ${S.settings.timeLimitSecs} seconds.`;
+  $('modes').innerHTML = `
+    <button class="mode" data-mode="brief"><div class="ic">📡</div><div><div class="t">Briefing</div><div class="d">Learn the table and the secret trick.</div></div></button>
+    <button class="mode" data-mode="seq"><div class="ic">🧱</div><div><div class="t">Assembly Line</div><div class="d">In order, 1 × ${T} to 12 × ${T}, with the ladder to help.</div></div></button>
+    <button class="mode" data-mode="drill"><div class="ic">🎯</div><div><div class="t">Target Practice</div><div class="d">All 12 facts, jumbled. This lights the studs.</div></div></button>
+    <button class="mode" data-mode="trench"><div class="ic">🚀</div><div><div class="t">Trench Run</div><div class="d">60 seconds. How many hits? Best: ${M.trenchBest}</div></div></button>
+    <button class="mode boss" data-mode="inspect" ${(ready && (!passedToday || M.complete))?'':'disabled'}><div class="ic">⚫</div><div style="flex:1"><div class="t">Lord Vader's Inspection</div><div class="d">${inspD}</div><div class="days">${dots}</div></div></button>`;
+  $('brief').classList.add('hidden');
+}
+$('modes').addEventListener('click', e=>{
+  const b=e.target.closest('[data-mode]'); if(!b || b.disabled) return;
+  if(b.dataset.mode==='brief') return toggleBrief();
+  startQuiz(b.dataset.mode);
+});
+function toggleBrief(){
+  const el=$('brief'), T=mCfg().table;
+  if(!el.classList.contains('hidden')){ el.classList.add('hidden'); return; }
+  let rows=''; for(let a=1;a<=12;a++) rows+=`<div><span>${a} × ${T}</span><b>${a*T}</b></div>`;
+  el.innerHTML=`<h3>INCOMING TRANSMISSION</h3>
+    <p><b>The secret trick:</b> 12 times a number is 10 times it, plus 2 times it. So 7 × 12 is 70 + 14 = 84.</p>
+    <div class="tbl">${rows}</div>
+    <p><b>Spot the pattern:</b> the answers go up by 12 each time, and the last digits go 2, 4, 6, 8, 0 and then repeat.</p>
+    <p><b>Turn it round:</b> 7 × 12 is the same as 12 × 7. Learn one and you know both.</p>`;
+  el.classList.remove('hidden'); el.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+/* =====================================================================
+   QUIZ ENGINE
+   modes: seq (in order, ladder hint), drill (12 jumbled, misses come back),
+          trench (60s sprint), inspect (12 jumbled, no misses, time limit)
+   ===================================================================== */
+let Q=null, tick=null;
+function makeQ(a){ const T=mCfg().table, flip=Math.random()<0.5; return { a, text: flip?`${T} × ${a}`:`${a} × ${T}`, answer:a*T }; }
+function weightedPick(last){
+  const st=S.missions[currentMission].studs; const pool=[];
+  for(let a=1;a<=12;a++){ if(a===last) continue; const w=4-(st[a]||0); for(let k=0;k<w;k++) pool.push(a); }
+  return pool[Math.floor(Math.random()*pool.length)];
+}
+function startQuiz(mode){
+  const names={seq:['TRAINING','Assembly Line'],drill:['TRAINING','Target Practice'],trench:['SPRINT','Trench Run'],inspect:['FINAL TEST','Lord Vader\'s Inspection']};
+  const facts=[1,2,3,4,5,6,7,8,9,10,11,12];
+  Q={ mode, queue: mode==='seq'?facts.map(a=>({a,text:`${a} × ${mCfg().table}`,answer:a*mCfg().table})):(mode==='trench'?[]:shuffle(facts).map(makeQ)),
+      i:0, hits:0, attempts:0, misses:[], input:'', start:performance.now(), lock:false, qStart:performance.now(), failed:false };
+  if(mode==='trench') Q.queue.push(makeQ(weightedPick()));
+  $('qMode').firstChild.textContent=names[mode][0]; $('qModeName').textContent=names[mode][1];
+  $('timebarWrap').classList.toggle('hidden', !(mode==='trench'||mode==='inspect'));
+  show('quiz'); nextQ();
+  clearInterval(tick); tick=setInterval(updateClock,100); updateClock();
+}
+function limitSecs(){ return Q.mode==='trench'?60:(Q.mode==='inspect'?S.settings.timeLimitSecs:null); }
+function elapsed(){ return (performance.now()-Q.start)/1000; }
+function updateClock(){
+  if(!Q) return; const el=elapsed(), lim=limitSecs();
+  $('qClock').textContent = lim ? Math.max(0,lim-el).toFixed(1) : el.toFixed(1);
+  if(lim){ const f=Math.max(0,1-el/lim); const bar=$('timebar'); bar.style.width=(f*100)+'%'; bar.style.background = f>.5?'var(--laser)':(f>.2?'var(--lego)':'var(--imperial)'); }
+  if(lim && el>=lim && !Q.lock){ if(Q.mode==='trench') finishQuiz(); else { Q.failed='time'; finishQuiz(); } }
+}
+function nextQ(){
+  const q=Q.queue[Q.i]; Q.input=''; Q.lock=false; Q.qStart=performance.now();
+  $('qText').textContent=q.text; renderAns(); $('qFb').textContent=''; $('qFb').className='fb';
+  $('qCount').textContent = Q.mode==='trench' ? (Q.i+1) : `${Math.min(Q.i+1,Q.queue.length)}/${Q.queue.length}`;
+  $('qHits').textContent=Q.hits;
+  const lad=$('ladder');
+  if(Q.mode==='seq'){ const T=mCfg().table; lad.innerHTML=Array.from({length:q.a-1},(_,k)=>`<span>${(k+1)*T}</span>`).join('')+'<span>?</span>'; lad.classList.remove('hidden'); }
+  else lad.classList.add('hidden');
+}
+function renderAns(){ const a=$('qAns'); a.textContent=Q.input||'?'; a.classList.toggle('empty',!Q.input); }
+function press(k){
+  if(!Q || Q.lock) return;
+  if(k==='del'){ Q.input=Q.input.slice(0,-1); renderAns(); return; }
+  if(k==='fire'){ if(Q.input) submit(); return; }
+  if(Q.input.length<4){ Q.input+=k; sfx.key(); renderAns(); }
+}
+function bump(a, d){ const st=S.missions[currentMission].studs; st[a]=Math.max(0,Math.min(CONFIG.studsPerFact,(st[a]||0)+d)); }
+function submit(){
+  const q=Q.queue[Q.i], ok = parseInt(Q.input,10)===q.answer, secs=(performance.now()-Q.qStart)/1000;
+  Q.lock=true; Q.attempts++; Q.lastAt=performance.now();
+  const box=$('targetBox'); box.classList.remove('hit','miss'); void box.offsetWidth;
+  if(ok){
+    Q.hits++; sfx.laser(); box.classList.add('hit');
+    $('qFb').textContent = ['Direct hit!','Impressive.','Most impressive.','Target destroyed!','On target!'][Math.floor(Math.random()*5)];
+    $('qFb').className='fb ok';
+    if(Q.mode==='seq'){ if(!(S.missions[currentMission].studs[q.a]>0) && secs<=CONFIG.quickSecs) bump(q.a,1); }
+    else if(Q.mode!=='inspect' && secs<=CONFIG.quickSecs) bump(q.a,1);
+  } else {
+    sfx.miss(); box.classList.add('miss');
+    $('qFb').textContent=`Missed. ${q.text} = ${q.answer}`; $('qFb').className='fb no';
+    Q.misses.push(q.text+' = '+q.answer);
+    if(Q.mode!=='inspect') bump(q.a,-1);
+    if(Q.mode==='drill'||Q.mode==='seq') Q.queue.push({...q});   // try it again at the end
+    if(Q.mode==='inspect') Q.failed='miss';
+  }
+  save();
+  $('qHits').textContent=Q.hits;
+  setTimeout(()=>{
+    if(!Q) return;
+    if(Q.failed){ finishQuiz(); return; }
+    Q.i++;
+    if(Q.mode==='trench') Q.queue.push(makeQ(weightedPick(q.a)));
+    if(Q.i>=Q.queue.length) finishQuiz(); else nextQ();
+  }, ok?450:1700);
+}
+function finishQuiz(){
+  clearInterval(tick); const R=Q; Q=null; if(!R) return;
+  const M=S.missions[currentMission], cfg=mCfg();
+  const secs = ((R.lastAt||performance.now())-R.start)/1000;   // stop the clock at the last answer, not after the feedback pause
+  S.log.unshift({ date:today(), time:new Date().toTimeString().slice(0,5), mode:R.mode, hits:R.hits, attempts:R.attempts, secs:Math.round(secs*10)/10, passed: R.mode==='inspect' ? !R.failed : null });
+  S.log = S.log.slice(0,200);
+  let html='', justCompleted=false;
+  if(R.mode==='inspect'){
+    if(!R.failed && secs<=S.settings.timeLimitSecs){
+      if(!M.passes.includes(today())) M.passes.push(today());
+      if(!M.bestInspection || secs<M.bestInspection) M.bestInspection=Math.round(secs*10)/10;
+      if(!M.complete && M.passes.length>=S.settings.daysRequired){ M.complete=true; M.completedAt=today(); justCompleted=true; }
+      const left=S.settings.daysRequired-M.passes.length;
+      html=`<h2 style="color:var(--laser)">INSPECTION PASSED</h2><div class="big">${secs.toFixed(1)}s</div>
+        <p class="msg">${M.complete ? (justCompleted?'Lord Vader is pleased.':'Still razor sharp. Lord Vader approves.') :
+          `Lord Vader is satisfied, for now. Pass ${left} more inspection${left>1?'s':''} on ${left>1?'different days':'another day'} to complete the mission.`}</p>`;
+      sfx.march();
+    } else {
+      html=`<h2 style="color:#ff6b66">INSPECTION FAILED</h2><div class="big">${R.failed==='time'?'Out of time':'Missed one'}</div>
+        <p class="msg">${R.failed==='time'?`You need all 12 in under ${S.settings.timeLimitSecs} seconds.`:'The Inspection needs a perfect score.'} Practise a little more and try again. You can retake it as often as you like.</p>`;
+    }
+  } else if(R.mode==='trench'){
+    const best = R.hits>M.trenchBest; if(best) M.trenchBest=R.hits;
+    html=`<h2>TRENCH RUN OVER</h2><div class="big">${R.hits} hits</div><p class="msg">${best?'New personal best!':'Your best is '+M.trenchBest+'.'} ${R.attempts-R.hits?`${R.attempts-R.hits} missed.`:'No misses at all.'}</p>`;
+  } else {
+    html=`<h2>${R.misses.length?'TRAINING COMPLETE':'PERFECT RUN'}</h2><div class="big">${12}/${12 + R.misses.length}</div>
+      <p class="msg">Studs lit: ${studCount(currentMission)} of 36. ${studCount(currentMission)>=36?'Lord Vader\'s Inspection is unlocked.':'Fast, correct answers light the studs.'}</p>`;
+  }
+  if(R.misses.length) html+=`<div class="misslist">${R.misses.map(m=>{ const [l,r]=m.split(' = '); return `<div><span>${l}</span><b>${r}</b></div>`; }).join('')}</div>`;
+  html+=`<button class="cta" id="againBtn">GO AGAIN</button><button class="cta alt" data-go="mission">MISSION SCREEN</button>`;
+  save();
+  $('resultBody').innerHTML=html; show('result');
+  $('againBtn').onclick=()=>{ if(R.mode==='inspect' && M.passes.includes(today()) && !M.complete) show('mission'); else startQuiz(R.mode); };
+  if(justCompleted) setTimeout(celebrate, 900);
+}
+$('quitBtn').onclick=()=>{ clearInterval(tick); Q=null; show('mission'); };
+
+/* ---------- Keypad and keyboard ---------- */
+$('pad').innerHTML=['7','8','9','4','5','6','1','2','3','del','0','fire'].map(k=>
+  `<button class="key ${k==='fire'?'fire':''} ${k==='del'?'del':''}" data-k="${k}">${k==='del'?'⌫':(k==='fire'?'FIRE':k)}</button>`).join('');
+$('pad').addEventListener('pointerdown', e=>{ const b=e.target.closest('[data-k]'); if(b){ e.preventDefault(); press(b.dataset.k); } });
+document.addEventListener('keydown', e=>{
+  if($('quiz').classList.contains('hidden')) return;
+  if(/^[0-9]$/.test(e.key)) press(e.key); else if(e.key==='Backspace') press('del'); else if(e.key==='Enter') press('fire');
+});
+
+/* =====================================================================
+   CELEBRATION
+   ===================================================================== */
+function celebrate(){
+  const cfg=mCfg(), e=earned(), o=$('overlay');
+  o.innerHTML=`<div class="beam"></div><div class="celebrate">
+    <div class="ds">${deathStarSVG(e/CONFIG.prizeTotal,0,true)}</div>
+    <h2>Mission complete</h2>
+    <div class="amt">+${gbp(cfg.reward)}</div>
+    <p>${CONFIG.childName}, you have mastered the ${cfg.table} times table. The Death Star is now ${Math.round(e/CONFIG.prizeTotal*100)}% built: ${gbp(e)} of ${gbp(CONFIG.prizeTotal)}.</p>
+    <button class="cta" id="celebOk">RETURN TO BASE</button></div>`;
+  o.classList.remove('hidden'); sfx.march();
+  const cols=['#FFCF00','#E0332E','#0055BF','#00852B','#9AA1AA','#fff'];
+  for(let i=0;i<70;i++){ const c=document.createElement('div'); c.className='confetti';
+    c.style.left=Math.random()*100+'vw'; c.style.background=cols[i%cols.length]; c.style.animationDuration=(2.5+Math.random()*2.5)+'s'; c.style.animationDelay=(Math.random()*1.2)+'s';
+    document.body.appendChild(c); setTimeout(()=>c.remove(),6500); }
+  $('celebOk').onclick=()=>{ o.classList.add('hidden'); show('home'); };
+}
+
+/* =====================================================================
+   COMMAND (PARENT) CONTROLS: hold the money panel for 2 seconds
+   ===================================================================== */
+(function(){
+  const box=$('fundBox'), bar=$('holdBar'); let t0=null, raf=null;
+  function stop(){ t0=null; cancelAnimationFrame(raf); bar.style.width='0'; }
+  function step(){ if(t0===null) return; const f=Math.min(1,(performance.now()-t0)/2000); bar.style.width=(f*100)+'%'; if(f>=1){ stop(); openParent(); } else raf=requestAnimationFrame(step); }
+  box.addEventListener('pointerdown', ()=>{ t0=performance.now(); raf=requestAnimationFrame(step); });
+  ['pointerup','pointerleave','pointercancel'].forEach(ev=>box.addEventListener(ev,stop));
+  box.addEventListener('contextmenu', e=>e.preventDefault());
+})();
+function openParent(){
+  const M=S.missions.m1, cfg=CONFIG.missions[0], o=$('overlay');
+  const mode={seq:'Assembly',drill:'Target',trench:'Trench',inspect:'Inspection'};
+  const studRows=[1,2,3,4,5,6,7,8,9,10,11,12].map(a=>`<td style="text-align:center">${a}<br><b style="color:${['#8E98AB','#ff6b66','#FFCF00','#5DFF6A'][M.studs[a]||0]}">${M.studs[a]||0}</b></td>`).join('');
+  const logRows=S.log.slice(0,15).map(l=>`<tr><td>${l.date.slice(5)} ${l.time||''}</td><td>${mode[l.mode]}</td><td>${l.hits}/${l.attempts}</td><td>${l.secs}s</td><td>${l.passed===null?'':(l.passed?'✅':'❌')}</td></tr>`).join('') || '<tr><td colspan="5">No sessions yet.</td></tr>';
+  const opt=(vals,cur,suf)=>vals.map(v=>`<option value="${v}" ${v==cur?'selected':''}>${v}${suf}</option>`).join('');
+  o.innerHTML=`<div class="parent">
+    <h3>COMMAND CONTROLS</h3>
+    <div class="row"><span>Earned</span><b>${gbp(earned())} of ${gbp(CONFIG.prizeTotal)}</b></div>
+    <h4>MISSION 1: ${cfg.title.toUpperCase()}</h4>
+    <div class="row"><span>Status</span><b>${M.complete?'Complete ('+M.completedAt+')':Math.round(missionProgress('m1')*100)+'% in progress'}</b></div>
+    <div class="row"><span>Inspections passed</span><b>${M.passes.length? M.passes.join(', ') : 'none yet'}</b></div>
+    <div class="row"><span>Best inspection time</span><b>${M.bestInspection?M.bestInspection+'s':'n/a'}</b></div>
+    <div class="row"><span>Trench Run best</span><b>${M.trenchBest} hits</b></div>
+    <table><tr>${studRows}</tr></table>
+    <div class="note">Studs lit per fact (0 to 3). A stud lights for a correct answer within ${CONFIG.quickSecs} seconds in training, and goes out for a wrong one.</div>
+    ${M.complete?`<div class="row" style="margin-top:12px"><span>${gbp(cfg.reward)} paid into the Death Star fund?</span><button class="pbtn" id="paidBtn">${M.paid?'Paid ✅ (undo)':'Mark as paid'}</button></div>`:''}
+    <h4>INSPECTION RULES</h4>
+    <div class="row"><span>Time limit for all 12</span><select id="setTime">${opt([45,60,75,90,120],S.settings.timeLimitSecs,' s')}</select></div>
+    <div class="row"><span>Passes needed (on different days)</span><select id="setDays">${opt([1,2,3,4,5],S.settings.daysRequired,'')}</select></div>
+    <div class="row"><span>Sound</span><button class="pbtn" id="sndBtn">${S.settings.sound?'On':'Off'}</button></div>
+    <h4>RECENT SESSIONS</h4>
+    <table><tr><th>When</th><th>Mode</th><th>Right</th><th>Time</th><th></th></tr>${logRows}</table>
+    <h4>RESET</h4>
+    <div class="row"><span>Wipe Mission 1 progress</span><button class="pbtn danger" id="resetBtn">Reset</button></div>
+    <div class="note">Progress is saved on this device only. Clearing Safari's website data will erase it.</div>
+    <button class="cta alt" id="closeParent">CLOSE</button></div>`;
+  o.classList.remove('hidden');
+  $('closeParent').onclick=()=>{ o.classList.add('hidden'); renderHome(); };
+  $('setTime').onchange=e=>{ S.settings.timeLimitSecs=+e.target.value; save(); };
+  $('setDays').onchange=e=>{ S.settings.daysRequired=+e.target.value; if(!M.complete && M.passes.length>=S.settings.daysRequired && studCount('m1')>=studMax()){ M.complete=true; M.completedAt=today(); } save(); openParent(); };
+  $('sndBtn').onclick=()=>{ S.settings.sound=!S.settings.sound; save(); openParent(); };
+  if($('paidBtn')) $('paidBtn').onclick=()=>{ M.paid=!M.paid; save(); openParent(); };
+  $('resetBtn').onclick=()=>{ if(confirm('Wipe all Mission 1 progress, including any completed reward? This cannot be undone.')){ S.missions.m1=freshMission(); save(); openParent(); } };
+}
+
+/* ---------- Boot ---------- */
+show('home');
+if('serviceWorker' in navigator){ window.addEventListener('load', ()=>navigator.serviceWorker.register('sw.js').catch(()=>{})); }
+</script>
+</body>
+</html>
