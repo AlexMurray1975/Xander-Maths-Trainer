@@ -3,13 +3,17 @@
 An installable, offline web app (PWA) that turns Xander's learning into building the
 **LEGO Star Wars Death Star** (£1,000). Each mission completed adds money to the
 Death Star fund, and the Death Star on the home screen is built up panel by panel as
-the fund grows.
+the fund grows. The centrepiece is a blueprint cross-section of the set with ten
+rooms, each worth £100, which light up from the bottom deck upwards: Hangar Bay,
+Detention Block, Trash Compactor, Interrogation Cell, Turbolaser, Tractor Beam, Chasm
+Bridge, Conference Room, Throne Room and, at £1,000, the Superlaser. Rooms the current
+mission will build show as yellow scaffolding that fills as the mission progresses.
 
 ## Missions
 
 | # | Mission | Reward | Status |
 |---|---------|--------|--------|
-| 1 | **Operation Twelve**: master the 12 times table | £200 (20%) | Live |
+| 1 | **Operation Twelve**: master the 12 times table | £200 (Hangar Bay, Detention Block) | Live |
 | 2 | Classified | up to £800 | Awaiting orders |
 
 ### How Mission 1 is earned

@@ -42,8 +42,10 @@
       radial-gradient(1px 1px at 60px 200px,#9fb4ff,transparent),
       radial-gradient(1px 1px at 260px 240px,#fff,transparent),
       radial-gradient(1px 1px at 170px 20px,#fff,transparent),
+      radial-gradient(ellipse 55% 35% at 0% 88%,rgba(224,51,46,.20),transparent 70%),
+      radial-gradient(ellipse 50% 35% at 0% 50%,rgba(50,100,220,.18),transparent 70%),
       radial-gradient(ellipse at 50% -10%,#141c33 0%,var(--space) 60%);
-    background-size:280px 280px,280px 280px,280px 280px,280px 280px,280px 280px,280px 280px,100% 100%;
+    background-size:280px 280px,280px 280px,280px 280px,280px 280px,280px 280px,280px 280px,100% 100%,100% 100%,100% 100%;
     background-attachment:fixed;
     min-height:100vh;padding:env(safe-area-inset-top) 0 48px;
     user-select:none;-webkit-user-select:none;
@@ -60,7 +62,7 @@
     background:linear-gradient(180deg,#fff 0%,#c9ced6 55%,#7f868f 100%);-webkit-background-clip:text;background-clip:text;color:transparent;}
 
   /* ---------- Death Star hero ---------- */
-  .hero{position:relative;margin:8px auto 0;width:min(78vw,330px);aspect-ratio:1;}
+  .hero{position:relative;margin:8px auto 0;width:min(86vw,360px);aspect-ratio:350/372;}
   .hero svg{width:100%;height:100%;display:block;filter:drop-shadow(0 0 28px rgba(111,183,255,.12));}
   .fund{
     margin:12px 0 0;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);
@@ -76,6 +78,8 @@
   .brick::before{left:9%;} .brick::after{right:9%;}
   .brick.on{background:var(--lego);border-color:#c79f00;}
   .brick.pend{background:repeating-linear-gradient(45deg,rgba(255,207,0,.35) 0 4px,rgba(255,207,0,.08) 4px 8px);border-color:#8a7000;}
+  .rooms{font-size:.82rem;color:var(--soft);margin-top:10px;line-height:1.45;}
+  .rooms b{color:var(--text);} .rooms b.y{color:var(--lego);}
   .bricks-key{display:flex;justify-content:space-between;font-size:.7rem;color:var(--soft);margin-top:6px;}
 
   /* ---------- Mission cards ---------- */
@@ -205,7 +209,7 @@
   @media (min-width:700px){
     html{font-size:19px;}
     .wrap{max-width:680px;}
-    .hero{width:400px;}
+    .hero{width:440px;}
     .key{height:84px;}
   }
 </style>
@@ -223,7 +227,8 @@
     <div class="amt"><span id="fundAmt">£0</span> <small>of <span id="fundTotal">£1,000</span></small></div>
     <div class="lbl" id="fundLbl">earned towards the LEGO Death Star</div>
     <div class="bricks" id="fundBricks"></div>
-    <div class="bricks-key"><span>£0</span><span>each brick = £100</span><span>£1,000</span></div>
+    <div class="bricks-key"><span>£0</span><span>each brick = one room (£100)</span><span>£1,000</span></div>
+    <div class="rooms" id="roomsLbl"></div>
     <div class="holdbar" id="holdBar"></div>
   </div>
   <div class="section-t">MISSIONS</div>
@@ -312,6 +317,8 @@ function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.rand
 
 /* ---------- Derived numbers ---------- */
 function earned(){ return CONFIG.missions.reduce((t,m)=> t + (m.reward && S.missions[m.id] && S.missions[m.id].complete ? m.reward : 0), 0); }
+// Money already earned before this mission, so we know which rooms it builds.
+function missionStartGBP(mid){ let t=0; for(const m of CONFIG.missions){ if(m.id===mid) return t; t+=m.reward||0; } return t; }
 function studCount(mid){ const st=S.missions[mid].studs; let n=0; for(let a=1;a<=12;a++) n += (st[a]||0); return n; }
 function studMax(){ return 12*CONFIG.studsPerFact; }
 function missionProgress(mid){
@@ -326,53 +333,102 @@ function rankFor(mid){
 }
 
 /* =====================================================================
-   DEATH STAR (SVG). Panels light up as money is earned; the panels for
-   the mission in progress show as yellow scaffolding.
+   DEATH STAR (SVG). A blueprint cross-section of the LEGO set: ten rooms,
+   each worth £100, light up from the bottom deck upwards as money is
+   earned. Rooms the current mission will unlock show as yellow
+   scaffolding that fills as the mission progresses.
    ===================================================================== */
+const ROOMS = [   // in unlock order; £100 each
+  { key:'hangar',    name:'Hangar Bay' },
+  { key:'detention', name:'Detention Block' },
+  { key:'compactor', name:'Trash Compactor' },
+  { key:'interrog',  name:'Interrogation Cell' },
+  { key:'turbo',     name:'Turbolaser' },
+  { key:'tractor',   name:'Tractor Beam' },
+  { key:'chasm',     name:'Chasm Bridge' },
+  { key:'conf',      name:'Conference Room' },
+  { key:'throne',    name:'Throne Room' },
+  { key:'dish',      name:'Superlaser' }
+];
+const ROOM_VALUE = CONFIG.prizeTotal / ROOMS.length;
+function roomsFor(fromGBP, toGBP){ return ROOMS.slice(Math.floor(fromGBP/ROOM_VALUE+1e-9), Math.floor(toGBP/ROOM_VALUE+1e-9)).map(r=>r.name); }
+function listNames(a){ return a.length<2 ? a.join('') : a.slice(0,-1).join(', ')+' and '+a[a.length-1]; }
+
+// Small line drawings for each room, centred on 0,0.
+const GLYPH = {
+  hangar:   'M0,-13 L0,5 M-15,-5 L-3,5 M15,-5 L3,5 M-6,5 L6,5 L4,10 L-4,10 Z',
+  detention:'M-12,-10 H12 V10 H-12 Z M-6,-10 V10 M0,-10 V10 M6,-10 V10',
+  compactor:'M-14,-10 V10 M14,-10 V10 M-9,0 L-4,0 M-6,-3 L-4,0 L-6,3 M9,0 L4,0 M6,-3 L4,0 L6,3 M-12,8 Q-6,4 0,8 T12,8',
+  interrog: 'M-6,0 A6,6 0 1 0 6,0 A6,6 0 1 0 -6,0 M0,6 V12 M-6,0 H-12 M6,0 H12 M0,-6 V-11',
+  turbo:    'M-10,8 H10 L6,0 H-6 Z M-3,0 L-12,-10 M3,0 L-6,-12',
+  tractor:  'M-4,-13 H4 V13 H-4 Z M-4,-6 H4 M-4,1 H4 M-4,8 H4 M-11,13 H11',
+  chasm:    'M-16,4 H-6 V12 M16,4 H6 V12 M-6,-12 Q0,-2 6,4',
+  conf:     'M-11,0 A11,5 0 1 0 11,0 A11,5 0 1 0 -11,0 M-15,-7 h3 M-1.5,-9 h3 M12,-7 h3 M-15,7 h3 M12,7 h3',
+  throne:   'M-11,0 A11,11 0 1 0 11,0 A11,11 0 1 0 -11,0 M-6,0 A6,6 0 1 0 6,0 A6,6 0 1 0 -6,0 M0,-11 V11 M-11,0 H11 M-3,4 H3 V11 H-3 Z'
+};
+
 let dsSeq=0;
-function deathStarSVG(builtFrac, pendFrac, glow){
-  const id='ds'+(dsSeq++), cx=150, cy=150, r=132, cell=12;
-  const cells=[];
-  for(let y=cy+r-cell; y>=cy-r-cell; y-=cell){          // build from the bottom up
-    for(let x=cx-r; x<cx+r; x+=cell){
-      const mx=x+cell/2, my=y+cell/2;
-      if((mx-cx)**2+(my-cy)**2 <= (r+cell*0.4)**2) cells.push([x,y]);
-    }
-  }
-  const N=cells.length, nb=Math.round(N*builtFrac), np=Math.round(N*Math.min(pendFrac,1-builtFrac));
-  const shades=['#9AA1AA','#8C939C','#A6ADB5','#7F868F','#959CA5'];
-  let tiles='';
-  cells.forEach(([x,y],i)=>{
-    if(i<nb){ tiles+=`<rect x="${x}" y="${y}" width="${cell}" height="${cell}" fill="${shades[(i*7+(i>>3))%5]}" stroke="#5B616A" stroke-width=".6"/>`; }
-    else if(i<nb+np){ tiles+=`<rect x="${x+1}" y="${y+1}" width="${cell-2}" height="${cell-2}" fill="rgba(255,207,0,.28)" stroke="#FFCF00" stroke-width=".7"/>`; }
-    else { tiles+=`<rect x="${x}" y="${y}" width="${cell}" height="${cell}" fill="none" stroke="rgba(111,183,255,.16)" stroke-width=".5"/>`; }
+function deathStarSVG(earnedGBP, pendRooms, pendProgress, glow){
+  const id='ds'+(dsSeq++), cx=175, cy=165, r=142;
+  const built=Math.floor(earnedGBP/ROOM_VALUE+1e-9);
+  const state=i=> i<built ? 'on' : (i<built+pendRooms ? 'pend' : 'off');
+  const ST = {
+    on:  { fill:'#4B525C', stroke:'#D6DBE2', ink:'#FFFFFF', dash:'' },
+    pend:{ fill:'#141826', stroke:'#FFCF00', ink:'#FFCF00', dash:'4 3' },
+    off: { fill:'#0B0F18', stroke:'rgba(111,183,255,.38)', ink:'rgba(111,183,255,.45)', dash:'3 3' }
+  };
+  // Decks, bottom to top, as on the set's cross-section. [top y, height, rooms in this deck]
+  const decks=[[216,52,[0,1]],[160,52,[2,3,4]],[104,52,[5,6,7]],[48,52,[8]]];
+  let rooms='';
+  decks.forEach(([y,h,idx])=>{
+    const mid=y+h/2, hw=Math.sqrt(r*r-(mid-cy)**2)+8, gap=4;
+    const w=(2*hw-gap*(idx.length-1))/idx.length;
+    idx.forEach((ri,k)=>{
+      const x=cx-hw+k*(w+gap), s=ST[state(ri)], c=x+w/2;
+      rooms+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${s.fill}" stroke="${s.stroke}" stroke-width="1" ${s.dash?`stroke-dasharray="${s.dash}"`:''}/>`;
+      if(state(ri)==='pend' && pendProgress>0){
+        const ph=h*Math.min(1,pendProgress);
+        rooms+=`<rect x="${x}" y="${y+h-ph}" width="${w}" height="${ph}" fill="rgba(255,207,0,.22)"/>`;
+      }
+      if(state(ri)==='on') rooms+=`<line x1="${x}" y1="${y+h-5}" x2="${x+w}" y2="${y+h-5}" stroke="#2C3139" stroke-width="2"/>`;
+      rooms+=`<path d="${GLYPH[ROOMS[ri].key]}" transform="translate(${c},${y+h/2-6})" fill="none" stroke="${s.ink}" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"/>`;
+      rooms+=`<text x="${c}" y="${y+h-9}" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="${ROOMS[ri].name.length>14?5.6:6.4}" font-weight="800" letter-spacing=".3" fill="${s.ink}">${state(ri)==='off'?'£'+((ri+1)*ROOM_VALUE):ROOMS[ri].name.toUpperCase()}</text>`;
+    });
   });
-  // Longitude and latitude wireframe, as on the half-built Death Star.
-  let frame='';
-  [40,80,112].forEach(rx=> frame+=`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${r}" fill="none" stroke="rgba(111,183,255,.28)" stroke-width=".8"/>`);
-  [-90,-45,45,90].forEach(dy=>{ const w=Math.sqrt(r*r-dy*dy); frame+=`<line x1="${cx-w}" y1="${cy+dy}" x2="${cx+w}" y2="${cy+dy}" stroke="rgba(111,183,255,.22)" stroke-width=".8"/>`; });
-  const dishOn = builtFrac >= 0.75;
-  return `<svg viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Death Star ${Math.round(builtFrac*100)}% built">
-    <defs>
-      <clipPath id="${id}c"><circle cx="${cx}" cy="${cy}" r="${r}"/></clipPath>
-      <radialGradient id="${id}s" cx="35%" cy="30%" r="75%">
-        <stop offset="0%" stop-color="#fff" stop-opacity=".22"/><stop offset="55%" stop-color="#000" stop-opacity="0"/><stop offset="100%" stop-color="#000" stop-opacity=".6"/>
-      </radialGradient>
-    </defs>
-    <circle cx="${cx}" cy="${cy}" r="${r}" fill="#0b0f18"/>
-    <g clip-path="url(#${id}c)">
-      ${tiles}${frame}
-      <rect x="0" y="${cy-3}" width="300" height="6" fill="#2b3038" opacity="${builtFrac>0.45?1:.45}"/>
-      <line x1="0" y1="${cy-3}" x2="300" y2="${cy-3}" stroke="#c9ced6" stroke-width=".5" opacity=".5"/>
-      <g opacity="${dishOn?1:.5}">
-        <circle cx="104" cy="96" r="32" fill="${dishOn?'#6b727b':'none'}" stroke="${dishOn?'#4a5058':'rgba(111,183,255,.5)'}" stroke-width="1.5"/>
-        <circle cx="104" cy="96" r="22" fill="none" stroke="${dishOn?'#4a5058':'rgba(111,183,255,.4)'}" stroke-width="1"/>
-        <circle cx="104" cy="96" r="11" fill="none" stroke="${dishOn?'#4a5058':'rgba(111,183,255,.4)'}" stroke-width="1"/>
-        <circle cx="104" cy="96" r="4" fill="${glow?'#5DFF6A':(dishOn?'#3c4148':'none')}" ${glow?'style="filter:drop-shadow(0 0 6px #5DFF6A)"':''}/>
-      </g>
-      <circle cx="${cx}" cy="${cy}" r="${r}" fill="url(#${id}s)"/>
+  // The superlaser dish, set at an angle on the upper left like the blueprint.
+  const ds=ST[state(9)], core=glow?'#5DFF6A':(state(9)==='on'?'#2C3139':'none');
+  const dish=`<g transform="translate(62,78) rotate(-28)">
+      <line x1="16" y1="0" x2="38" y2="0" stroke="${ds.stroke}" stroke-width="2"/>
+      <ellipse cx="0" cy="0" rx="13" ry="30" fill="${ds.fill}" stroke="${ds.stroke}" stroke-width="1.2" ${ds.dash?`stroke-dasharray="${ds.dash}"`:''}/>
+      <ellipse cx="0" cy="0" rx="8" ry="19" fill="none" stroke="${ds.ink}" stroke-width=".8"/>
+      <line x1="0" y1="-30" x2="18" y2="0" stroke="${ds.ink}" stroke-width=".7"/><line x1="0" y1="30" x2="18" y2="0" stroke="${ds.ink}" stroke-width=".7"/>
+      <line x1="-12" y1="-12" x2="18" y2="0" stroke="${ds.ink}" stroke-width=".7"/><line x1="-12" y1="12" x2="18" y2="0" stroke="${ds.ink}" stroke-width=".7"/>
+      <circle cx="18" cy="0" r="3.2" fill="${core}" stroke="${ds.ink}" stroke-width=".8" ${glow?'style="filter:drop-shadow(0 0 5px #5DFF6A)"':''}/>
+      ${glow?`<line x1="18" y1="0" x2="-60" y2="0" stroke="#5DFF6A" stroke-width="2.5" opacity=".85" style="filter:drop-shadow(0 0 4px #5DFF6A)"/>`:''}
+    </g>`;
+  // Lower decks and reactor (structure, not rooms).
+  let base='';
+  [276,288].forEach(y=>{ const w=Math.sqrt(r*r-(y-cy)**2); base+=`<line x1="${cx-w}" y1="${y}" x2="${cx+w}" y2="${y}" stroke="rgba(111,183,255,.3)" stroke-width=".8"/>`; });
+  for(let x=cx-60;x<=cx+60;x+=12) base+=`<line x1="${x}" y1="272" x2="${x}" y2="300" stroke="rgba(111,183,255,.18)" stroke-width=".6"/>`;
+  return `<svg viewBox="0 0 350 372" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Death Star blueprint, ${built} of ${ROOMS.length} rooms built">
+    <defs><clipPath id="${id}c"><circle cx="${cx}" cy="${cy}" r="${r}"/></clipPath></defs>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="#080B13"/>
+    <g clip-path="url(#${id}c)">${base}${rooms}
+      <rect x="${cx-r}" y="22" width="${2*r}" height="24" fill="none"/>
+      <path d="M${cx-30},44 h60 l-6,-10 h-48 z" fill="none" stroke="${ST[state(8)].ink}" stroke-width=".8"/>
     </g>
-    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="rgba(111,183,255,.35)" stroke-width="1"/>
+    <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#D6DBE2" stroke-width="1.4"/>
+    <circle cx="${cx}" cy="${cy}" r="${r-4}" fill="none" stroke="rgba(214,219,226,.35)" stroke-width=".6"/>
+    ${dish}
+    <text x="52" y="38" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="6.4" font-weight="800" fill="${ds.ink}">${state(9)==='off'?'£'+CONFIG.prizeTotal.toLocaleString('en-GB'):(state(9)==='pend'?'SUPERLASER':'')}</text>
+    <path d="M${cx-34},${cy+r-2} L${cx-46},${cy+r+22} H${cx+46} L${cx+34},${cy+r-2}" fill="#080B13" stroke="#D6DBE2" stroke-width="1.2"/>
+    <line x1="${cx-56}" y1="${cy+r+22}" x2="${cx+56}" y2="${cy+r+22}" stroke="#D6DBE2" stroke-width="1.6"/>
+    <g stroke="rgba(214,219,226,.55)" stroke-width=".8" fill="rgba(214,219,226,.7)" font-family="Exo 2,sans-serif" font-size="7">
+      <path d="M14,${cy-r} h8 M18,${cy-r} V${cy+r+22} M14,${cy+r+22} h8" fill="none"/>
+      <text x="0" y="0" transform="translate(12,${cy}) rotate(-90)" text-anchor="middle" stroke="none">70 cm</text>
+      <path d="M${cx-r},356 v-6 M${cx-r},353 H${cx+r} M${cx+r},356 v-6" fill="none"/>
+      <text x="${cx}" y="366" text-anchor="middle" stroke="none">79 cm</text>
+    </g>
   </svg>`;
 }
 
@@ -412,13 +468,16 @@ document.addEventListener('click', e=>{ const b=e.target.closest('[data-go]'); i
 function renderHome(){
   const e=earned(), total=CONFIG.prizeTotal;
   const active=CONFIG.missions.find(m=>m.status==='active' && !S.missions[m.id].complete && m.reward);
-  const pend = active ? (active.reward/total)*missionProgress(active.id) : 0;
-  $('heroDS').innerHTML = deathStarSVG(e/total, pend, e>=total);
+  const pendRooms = active ? roomsFor(e, e+active.reward).length : 0;
+  $('heroDS').innerHTML = deathStarSVG(e, pendRooms, active?missionProgress(active.id):0, e>=total);
   $('fundAmt').textContent=gbp(e); $('fundTotal').textContent=gbp(total);
   $('fundLbl').textContent = e>=total ? 'The Death Star is fully operational. Collect your prize!' :
     `earned towards the ${CONFIG.prizeName} (${Math.round(e/total*100)}% built)`;
   let br=''; for(let i=0;i<10;i++){ const lo=i*100; br+=`<div class="brick ${e>lo?'on':(active && e+active.reward>lo?'pend':'')}"></div>`; }
   $('fundBricks').innerHTML=br;
+  const got=roomsFor(0,e), next=active?roomsFor(e,e+active.reward):[];
+  $('roomsLbl').innerHTML = (got.length?`Rooms built: <b>${listNames(got)}</b>. `:'')+
+    (next.length?`Next to build: <b class="y">${listNames(next)}</b>.`:(e>=total?'':'More rooms unlock with the next mission.'));
 
   const allocated = CONFIG.missions.reduce((t,m)=>t+(m.reward||0),0);
   $('missionList').innerHTML = CONFIG.missions.map(m=>{
@@ -427,7 +486,7 @@ function renderHome(){
     const reward = m.reward ? gbp(m.reward) : (locked ? gbp(total-allocated)+'?' : '');
     return `<button class="mission ${locked?'locked':''} ${done?'done':''}" ${locked?'disabled':`data-mission="${m.id}"`}>
       <div class="num">${locked?'🔒':m.code}</div>
-      <div class="body"><div class="t">${m.title}</div><div class="d">${done?'Mission complete. '+gbp(m.reward)+' earned'+(M.paid?' and paid.':'.'):m.short}</div>
+      <div class="body"><div class="t">${m.title}</div><div class="d">${done?'Mission complete. '+gbp(m.reward)+' earned'+(M.paid?' and paid.':'.'):m.short+(m.reward?'. Builds the '+listNames(roomsFor(missionStartGBP(m.id),missionStartGBP(m.id)+m.reward))+'.':'')}</div>
       ${locked?'':`<div class="pbar"><i style="width:${Math.round(p*100)}%"></i></div>`}</div>
       <div class="reward">${reward}</div></button>`;
   }).join('');
@@ -608,10 +667,10 @@ document.addEventListener('keydown', e=>{
 function celebrate(){
   const cfg=mCfg(), e=earned(), o=$('overlay');
   o.innerHTML=`<div class="beam"></div><div class="celebrate">
-    <div class="ds">${deathStarSVG(e/CONFIG.prizeTotal,0,true)}</div>
+    <div class="ds">${deathStarSVG(e,0,0,e>=CONFIG.prizeTotal)}</div>
     <h2>Mission complete</h2>
     <div class="amt">+${gbp(cfg.reward)}</div>
-    <p>${CONFIG.childName}, you have mastered the ${cfg.table} times table. The Death Star is now ${Math.round(e/CONFIG.prizeTotal*100)}% built: ${gbp(e)} of ${gbp(CONFIG.prizeTotal)}.</p>
+    <p>${CONFIG.childName}, you have mastered the ${cfg.table} times table. You have built the ${listNames(roomsFor(e-cfg.reward,e))}. The Death Star is now ${Math.round(e/CONFIG.prizeTotal*100)}% built: ${gbp(e)} of ${gbp(CONFIG.prizeTotal)}.</p>
     <button class="cta" id="celebOk">RETURN TO BASE</button></div>`;
   o.classList.remove('hidden'); sfx.march();
   const cols=['#FFCF00','#E0332E','#0055BF','#00852B','#9AA1AA','#fff'];
