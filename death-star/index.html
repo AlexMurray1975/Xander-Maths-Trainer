@@ -333,22 +333,22 @@ function rankFor(mid){
 }
 
 /* =====================================================================
-   DEATH STAR (SVG). A blueprint cross-section of the LEGO set: ten rooms,
-   each worth £100, light up from the bottom deck upwards as money is
-   earned. Rooms the current mission will unlock show as yellow
+   DEATH STAR (SVG). A cross-section of the LEGO set, drawn as a blueprint:
+   ten rooms, each worth £100, are built from the bottom deck upwards as
+   money is earned, gaining the model's grey hull and dark interiors. Rooms the current mission will unlock show as yellow
    scaffolding that fills as the mission progresses.
    ===================================================================== */
-const ROOMS = [   // in unlock order; £100 each
-  { key:'hangar',    name:'Hangar Bay' },
-  { key:'detention', name:'Detention Block' },
-  { key:'compactor', name:'Trash Compactor' },
-  { key:'interrog',  name:'Interrogation Cell' },
-  { key:'turbo',     name:'Turbolaser' },
-  { key:'tractor',   name:'Tractor Beam' },
-  { key:'chasm',     name:'Chasm Bridge' },
-  { key:'conf',      name:'Conference Room' },
-  { key:'throne',    name:'Throne Room' },
-  { key:'dish',      name:'Superlaser' }
+const ROOMS = [   // in unlock order (bottom deck first); £100 each
+  { key:'hangar',    name:'Hangar Bay',         accent:'#FFFFFF', scale:1.6 },
+  { key:'compactor', name:'Trash Compactor',    accent:'#C46A3A', short:'Compactor' },
+  { key:'detention', name:'Detention Block',    accent:'#D6DBE2' },
+  { key:'control',   name:'Control Room',       accent:'#E0332E' },
+  { key:'tractor',   name:'Tractor Beam',       accent:'#6FB7FF' },
+  { key:'interrog',  name:'Interrogation Cell', accent:'#9AA1AA', short:'Interrogation' },
+  { key:'chasm',     name:'Chasm Bridge',       accent:'#FFCF00' },
+  { key:'conf',      name:'Conference Room',    accent:'#D6DBE2' },
+  { key:'throne',    name:'Throne Room',        accent:'#4FA3FF', scale:1.25 },
+  { key:'laser',     name:'Superlaser',         accent:'#5DFF6A' }
 ];
 const ROOM_VALUE = CONFIG.prizeTotal / ROOMS.length;
 function roomsFor(fromGBP, toGBP){ return ROOMS.slice(Math.floor(fromGBP/ROOM_VALUE+1e-9), Math.floor(toGBP/ROOM_VALUE+1e-9)).map(r=>r.name); }
@@ -357,14 +357,15 @@ function listNames(a){ return a.length<2 ? a.join('') : a.slice(0,-1).join(', ')
 // Small line drawings for each room, centred on 0,0.
 const GLYPH = {
   hangar:   'M0,-13 L0,5 M-15,-5 L-3,5 M15,-5 L3,5 M-6,5 L6,5 L4,10 L-4,10 Z',
-  detention:'M-12,-10 H12 V10 H-12 Z M-6,-10 V10 M0,-10 V10 M6,-10 V10',
   compactor:'M-14,-10 V10 M14,-10 V10 M-9,0 L-4,0 M-6,-3 L-4,0 L-6,3 M9,0 L4,0 M6,-3 L4,0 L6,3 M-12,8 Q-6,4 0,8 T12,8',
-  interrog: 'M-6,0 A6,6 0 1 0 6,0 A6,6 0 1 0 -6,0 M0,6 V12 M-6,0 H-12 M6,0 H12 M0,-6 V-11',
-  turbo:    'M-10,8 H10 L6,0 H-6 Z M-3,0 L-12,-10 M3,0 L-6,-12',
+  detention:'M-12,-10 H12 V10 H-12 Z M-6,-10 V10 M0,-10 V10 M6,-10 V10',
+  control:  'M-14,-10 h8 v20 h-8 z M-4,-10 h8 v20 h-8 z M6,-10 h8 v20 h-8 z M-12,-6 h4 M-2,-6 h4 M8,-6 h4 M-12,0 h4 M-2,0 h4 M8,0 h4',
   tractor:  'M-4,-13 H4 V13 H-4 Z M-4,-6 H4 M-4,1 H4 M-4,8 H4 M-11,13 H11',
+  interrog: 'M-6,0 A6,6 0 1 0 6,0 A6,6 0 1 0 -6,0 M0,6 V12 M-6,0 H-12 M6,0 H12 M0,-6 V-11',
   chasm:    'M-16,4 H-6 V12 M16,4 H6 V12 M-6,-12 Q0,-2 6,4',
   conf:     'M-11,0 A11,5 0 1 0 11,0 A11,5 0 1 0 -11,0 M-15,-7 h3 M-1.5,-9 h3 M12,-7 h3 M-15,7 h3 M12,7 h3',
-  throne:   'M-11,0 A11,11 0 1 0 11,0 A11,11 0 1 0 -11,0 M-6,0 A6,6 0 1 0 6,0 A6,6 0 1 0 -6,0 M0,-11 V11 M-11,0 H11 M-3,4 H3 V11 H-3 Z'
+  throne:   'M-11,0 A11,11 0 1 0 11,0 A11,11 0 1 0 -11,0 M-6,0 A6,6 0 1 0 6,0 A6,6 0 1 0 -6,0 M0,-11 V11 M-11,0 H11 M-3,4 H3 V11 H-3 Z',
+  laser:    ''   // the dish itself is the drawing for this room
 };
 
 let dsSeq=0;
@@ -373,56 +374,82 @@ function deathStarSVG(earnedGBP, pendRooms, pendProgress, glow){
   const built=Math.floor(earnedGBP/ROOM_VALUE+1e-9);
   const state=i=> i<built ? 'on' : (i<built+pendRooms ? 'pend' : 'off');
   const ST = {
-    on:  { fill:'#4B525C', stroke:'#D6DBE2', ink:'#FFFFFF', dash:'' },
-    pend:{ fill:'#141826', stroke:'#FFCF00', ink:'#FFCF00', dash:'4 3' },
-    off: { fill:'#0B0F18', stroke:'rgba(111,183,255,.38)', ink:'rgba(111,183,255,.45)', dash:'3 3' }
+    on:  { fill:'#14171D', stroke:'#9AA1AA', label:'#E8ECF2', dash:'' },
+    pend:{ fill:'#141826', stroke:'#FFCF00', label:'#FFCF00', dash:'4 3' },
+    off: { fill:'#0B0F18', stroke:'rgba(111,183,255,.38)', label:'rgba(111,183,255,.5)', dash:'3 3' }
   };
-  // Decks, bottom to top, as on the set's cross-section. [top y, height, rooms in this deck]
-  const decks=[[216,52,[0,1]],[160,52,[2,3,4]],[104,52,[5,6,7]],[48,52,[8]]];
-  let rooms='';
-  decks.forEach(([y,h,idx])=>{
-    const mid=y+h/2, hw=Math.sqrt(r*r-(mid-cy)**2)+8, gap=4;
-    const w=(2*hw-gap*(idx.length-1))/idx.length;
-    idx.forEach((ri,k)=>{
-      const x=cx-hw+k*(w+gap), s=ST[state(ri)], c=x+w/2;
-      rooms+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${s.fill}" stroke="${s.stroke}" stroke-width="1" ${s.dash?`stroke-dasharray="${s.dash}"`:''}/>`;
-      if(state(ri)==='pend' && pendProgress>0){
+  // Decks as on the set's cross-section: [top y, height, [room, relative width]...].
+  // Trash compactor bottom left, hangar bottom right, throne room top right.
+  const decks=[
+    [214,80,[[1,.42],[0,.58]]],
+    [160,50,[[2,1],[3,1],[4,1]]],
+    [106,50,[[5,1],[6,1],[7,1.15]]],
+    [50,52,[[9,.42],[8,.58]]]
+  ];
+  let frames='', rooms='', hullTop=null;
+  decks.forEach(([y,h,items])=>{
+    const mid=y+h/2, hw=Math.sqrt(r*r-(mid-cy)**2)+10, gap=4;
+    const tw=items.reduce((t,[,wt])=>t+wt,0), avail=2*hw-gap*(items.length-1);
+    let x=cx-hw;
+    items.forEach(([ri,wt])=>{
+      const w=avail*wt/tw, st=state(ri), s=ST[st], R=ROOMS[ri];
+      if(st==='on'){
+        // Grey hull around a dark interior, as on the model.
+        frames+=`<rect x="${x-4}" y="${y-4}" width="${w+8}" height="${h+8}" fill="#8C939C"/>`;
+        hullTop = hullTop===null ? y-4 : Math.min(hullTop,y-4);
+      }
+      rooms+=`<rect x="${x}" y="${y}" width="${w}" height="${h}" fill="${s.fill}" stroke="${st==='on'?'#5B616A':s.stroke}" stroke-width="1" ${s.dash?`stroke-dasharray="${s.dash}"`:''}/>`;
+      if(st==='pend' && pendProgress>0){
         const ph=h*Math.min(1,pendProgress);
         rooms+=`<rect x="${x}" y="${y+h-ph}" width="${w}" height="${ph}" fill="rgba(255,207,0,.22)"/>`;
       }
-      if(state(ri)==='on') rooms+=`<line x1="${x}" y1="${y+h-5}" x2="${x+w}" y2="${y+h-5}" stroke="#2C3139" stroke-width="2"/>`;
-      rooms+=`<path d="${GLYPH[ROOMS[ri].key]}" transform="translate(${c},${y+h/2-6})" fill="none" stroke="${s.ink}" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"/>`;
-      rooms+=`<text x="${c}" y="${y+h-9}" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="${ROOMS[ri].name.length>14?5.6:6.4}" font-weight="800" letter-spacing=".3" fill="${s.ink}">${state(ri)==='off'?'£'+((ri+1)*ROOM_VALUE):ROOMS[ri].name.toUpperCase()}</text>`;
+      if(st==='on') rooms+=`<rect x="${x}" y="${y+h-6}" width="${w}" height="6" fill="#3A3F47"/>`;
+      // Centre the drawing and label on the part of the room inside the hull,
+      // and shrink the label if that part is narrow.
+      const chord=yy=>Math.sqrt(Math.max(0,r*r-(yy-cy)**2))-6;
+      const ly=y+h-10, cw=Math.min(chord(y),chord(y+h));
+      const v0=Math.max(x,cx-chord(ly)), v1=Math.min(x+w,cx+chord(ly));
+      const g0=Math.max(x,cx-cw), g1=Math.min(x+w,cx+cw);
+      const fit=t=>Math.min(6.4,(v1-v0-6)/(t.length*0.8));
+      let text = st==='off' ? '£'+((ri+1)*ROOM_VALUE).toLocaleString('en-GB') : R.name.toUpperCase();
+      if(st!=='off' && R.short && fit(text)<5.4) text=R.short.toUpperCase();
+      const fs = fit(text);
+      const ink = st==='on' ? R.accent : s.label;
+      if(GLYPH[R.key]) rooms+=`<path d="${GLYPH[R.key]}" transform="translate(${(g0+g1)/2},${y+h/2-6}) scale(${R.scale||1})" fill="none" stroke="${ink}" stroke-width="${1.4/(R.scale||1)}" stroke-linejoin="round" stroke-linecap="round"/>`;
+      rooms+=`<text x="${(v0+v1)/2}" y="${ly}" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="${fs.toFixed(2)}" font-weight="800" letter-spacing=".3" fill="${s.label}">${text}</text>`;
+      x+=w+gap;
     });
   });
-  // The superlaser dish, set at an angle on the upper left like the blueprint.
-  const ds=ST[state(9)], core=glow?'#5DFF6A':(state(9)==='on'?'#2C3139':'none');
-  const dish=`<g transform="translate(62,78) rotate(-28)">
-      <line x1="16" y1="0" x2="38" y2="0" stroke="${ds.stroke}" stroke-width="2"/>
-      <ellipse cx="0" cy="0" rx="13" ry="30" fill="${ds.fill}" stroke="${ds.stroke}" stroke-width="1.2" ${ds.dash?`stroke-dasharray="${ds.dash}"`:''}/>
-      <ellipse cx="0" cy="0" rx="8" ry="19" fill="none" stroke="${ds.ink}" stroke-width=".8"/>
-      <line x1="0" y1="-30" x2="18" y2="0" stroke="${ds.ink}" stroke-width=".7"/><line x1="0" y1="30" x2="18" y2="0" stroke="${ds.ink}" stroke-width=".7"/>
-      <line x1="-12" y1="-12" x2="18" y2="0" stroke="${ds.ink}" stroke-width=".7"/><line x1="-12" y1="12" x2="18" y2="0" stroke="${ds.ink}" stroke-width=".7"/>
-      <circle cx="18" cy="0" r="3.2" fill="${core}" stroke="${ds.ink}" stroke-width=".8" ${glow?'style="filter:drop-shadow(0 0 5px #5DFF6A)"':''}/>
-      ${glow?`<line x1="18" y1="0" x2="-60" y2="0" stroke="#5DFF6A" stroke-width="2.5" opacity=".85" style="filter:drop-shadow(0 0 4px #5DFF6A)"/>`:''}
+  // Grey outer hull and lower cap grow upwards with the rooms that are built.
+  const hull = hullTop===null ? '' :
+    `<rect x="0" y="${hullTop}" width="350" height="${372-hullTop}" fill="#8C939C" mask="url(#${id}m)"/>`;
+  // The superlaser dish on the upper left, with its green focusing beams.
+  const dSt=state(9), dOn=dSt==='on', dS=ST[dSt];
+  const rim=dOn?'#D6DBE2':dS.stroke, rays=dOn?'#5DFF6A':dS.label;
+  const dish=`<g transform="translate(64,80) rotate(-28)">
+      <line x1="10" y1="0" x2="40" y2="0" stroke="${rim}" stroke-width="3"/>
+      <ellipse cx="0" cy="0" rx="13" ry="30" fill="${dOn?'#9AA1AA':dS.fill}" stroke="${rim}" stroke-width="1.2" ${dS.dash?`stroke-dasharray="${dS.dash}"`:''}/>
+      <ellipse cx="0" cy="0" rx="8" ry="19" fill="${dOn?'#C9CED6':'none'}" stroke="${rim}" stroke-width=".8"/>
+      <g stroke="${rays}" stroke-width="${dOn?1.1:.7}"><line x1="0" y1="-28" x2="-34" y2="0"/><line x1="0" y1="28" x2="-34" y2="0"/><line x1="-8" y1="-14" x2="-34" y2="0"/><line x1="-8" y1="14" x2="-34" y2="0"/></g>
+      ${glow?`<line x1="-34" y1="0" x2="-90" y2="0" stroke="#5DFF6A" stroke-width="3" style="filter:drop-shadow(0 0 4px #5DFF6A)"/>`:''}
     </g>`;
-  // Lower decks and reactor (structure, not rooms).
-  let base='';
-  [276,288].forEach(y=>{ const w=Math.sqrt(r*r-(y-cy)**2); base+=`<line x1="${cx-w}" y1="${y}" x2="${cx+w}" y2="${y}" stroke="rgba(111,183,255,.3)" stroke-width=".8"/>`; });
-  for(let x=cx-60;x<=cx+60;x+=12) base+=`<line x1="${x}" y1="272" x2="${x}" y2="300" stroke="rgba(111,183,255,.18)" stroke-width=".6"/>`;
-  return `<svg viewBox="0 0 350 372" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Death Star blueprint, ${built} of ${ROOMS.length} rooms built">
-    <defs><clipPath id="${id}c"><circle cx="${cx}" cy="${cy}" r="${r}"/></clipPath></defs>
+  return `<svg viewBox="0 0 350 372" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Death Star, ${built} of ${ROOMS.length} rooms built">
+    <defs>
+      <clipPath id="${id}c"><circle cx="${cx}" cy="${cy}" r="${r}"/></clipPath>
+      <mask id="${id}m"><circle cx="${cx}" cy="${cy}" r="${r}" fill="#fff"/><circle cx="${cx}" cy="${cy}" r="${r-9}" fill="#000"/>
+        <rect x="0" y="296" width="350" height="76" fill="#fff"/><circle cx="${cx}" cy="${cy}" r="${r}" fill="none"/></mask>
+    </defs>
     <circle cx="${cx}" cy="${cy}" r="${r}" fill="#080B13"/>
-    <g clip-path="url(#${id}c)">${base}${rooms}
-      <rect x="${cx-r}" y="22" width="${2*r}" height="24" fill="none"/>
-      <path d="M${cx-30},44 h60 l-6,-10 h-48 z" fill="none" stroke="${ST[state(8)].ink}" stroke-width=".8"/>
-    </g>
+    <g clip-path="url(#${id}c)">${hull}${frames}${rooms}</g>
     <circle cx="${cx}" cy="${cy}" r="${r}" fill="none" stroke="#D6DBE2" stroke-width="1.4"/>
-    <circle cx="${cx}" cy="${cy}" r="${r-4}" fill="none" stroke="rgba(214,219,226,.35)" stroke-width=".6"/>
     ${dish}
-    <text x="52" y="38" text-anchor="middle" font-family="Orbitron,sans-serif" font-size="6.4" font-weight="800" fill="${ds.ink}">${state(9)==='off'?'£'+CONFIG.prizeTotal.toLocaleString('en-GB'):(state(9)==='pend'?'SUPERLASER':'')}</text>
     <path d="M${cx-34},${cy+r-2} L${cx-46},${cy+r+22} H${cx+46} L${cx+34},${cy+r-2}" fill="#080B13" stroke="#D6DBE2" stroke-width="1.2"/>
     <line x1="${cx-56}" y1="${cy+r+22}" x2="${cx+56}" y2="${cy+r+22}" stroke="#D6DBE2" stroke-width="1.6"/>
+    <g transform="translate(36,302)">
+      <rect width="74" height="22" rx="1.5" fill="#0E1626" stroke="rgba(111,183,255,.6)" stroke-width=".8"/>
+      <text x="6" y="9" font-family="Orbitron,sans-serif" font-size="5.6" font-weight="800" fill="#D6DBE2">DEATH STAR</text>
+      <text x="6" y="17" font-family="Exo 2,sans-serif" font-size="5.4" fill="rgba(214,219,226,.7)">9,023 pieces</text>
+    </g>
     <g stroke="rgba(214,219,226,.55)" stroke-width=".8" fill="rgba(214,219,226,.7)" font-family="Exo 2,sans-serif" font-size="7">
       <path d="M14,${cy-r} h8 M18,${cy-r} V${cy+r+22} M14,${cy+r+22} h8" fill="none"/>
       <text x="0" y="0" transform="translate(12,${cy}) rotate(-90)" text-anchor="middle" stroke="none">70 cm</text>
