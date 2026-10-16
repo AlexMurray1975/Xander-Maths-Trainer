@@ -19,23 +19,30 @@ Images in `img/` are LEGO product photographs, for private family use only.
 
 | # | Mission | Reward | Status |
 |---|---------|--------|--------|
-| 1 | **Operation Twelve**: master the 12 times table | £200 (Hangar Bay, Trash Compactor) | Live |
+| 1 | **Operation Twelve**: master every times table up to 12 × 12 | £200 (Hangar Bay, Trash Compactor) | Live |
 | 2 | **Imperial Dispatch**: complete an English assignment | £50 (half of the Detention Block) | Live |
 | 3 | Classified | up to £750 | Awaiting orders |
 
 ### How Mission 1 is earned
 
-1. **Training.** Each of the 12 facts (1 × 12 to 12 × 12) is a LEGO brick with 3 studs.
-   A correct answer within 6 seconds lights a stud; a wrong answer puts one out.
-   Modes: *Briefing* (the table and the 10× + 2× trick), *Assembly Line* (in order, with
-   a counting ladder), *Target Practice* (jumbled, misses come back), and *Trench Run*
-   (60-second sprint, personal best recorded).
-2. **Lord Vader's Inspection** unlocks when all 36 studs are lit: all 12 facts in a random
-   order (either way round, e.g. 12 × 7 or 7 × 12), no mistakes, within 60 seconds.
-3. Passing the Inspection on **3 different days** completes the mission and releases the £200.
-   Requiring separate days checks that the table has been learned, not crammed.
+The mission screen shows the full 12 × 12 grid. Xander works through it one **series** at a
+time, in this order (set in `CONFIG.seriesOrder`): the 1s and 10s first as early wins, then
+the squares, then the 2, 5, 11, 3, 4, 9, 6, 8, 7 and 12 times tables.
 
-The time limit and number of days can be changed in Command controls.
+1. **Training.** Each series has a *Briefing* (its 12 facts and a trick), *Assembly Line* (in
+   order, with a counting ladder) and *Target Practice* (jumbled, misses come back). Each fact
+   has 3 studs: a correct answer within 6 seconds lights one, a wrong one puts one out. Facts
+   are shared, so 3 × 7 and 7 × 3 count as one; on the grid, coloured squares show studs lit.
+2. **Series Check.** All 12 facts of the series, jumbled, no mistakes, within 60 seconds.
+   Passing it nails the series and greys it out on the 12 × 12 grid (a times table greys its
+   row and column; the squares grey the diagonal).
+3. **Lord Vader's Inspection** unlocks when the whole grid is grey: 24 facts from the whole
+   grid, no mistakes, at the same pace (120 seconds). Passing it on **3 different days**
+   completes the mission and releases the £200.
+
+A *Trench Run* (60-second sprint across the whole grid, weighted to weaker facts) is there
+for extra practice. In Command controls a parent can mark a series as nailed (for example
+the 1s and 10s, if Xander already knows them), change the time limit and the number of days.
 
 ### How Mission 2 is earned
 
