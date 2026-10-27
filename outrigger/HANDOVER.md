@@ -209,26 +209,56 @@ keystroke:
    that the expected-outcome figures are still right.
 5. **Robert Quinn has not seen the Strategy page.**
 
-## 7 · Can you just use Claude Code?
+## 7 · Running it with Claude Code
 
-Yes, and that is the intended way to run this. Anyone at Outrigger can get a
-Claude Code account, open this repository, and ask for changes in plain English:
-"change the headline on the impact page", "add a news item about X", "the team
-page needs a sixth person".
+This is the intended way to maintain the site. Anyone at Outrigger can ask for
+changes in plain English — "change the headline on the impact page", "add a news
+item about the GEF grant", "the team page needs a sixth person" — and Claude
+will make them, run the checks and explain what it did.
 
-Three things to tell whoever does it:
+### Which version, and what each one needs
 
-- **Point them at `CLAIMS.md` and §5 above.** Claude is good at writing copy and
-  has no way of knowing which sentences are load-bearing for FCA purposes unless
-  it is told. It will otherwise cheerfully add the fund's terms to the site
-  because they make the page more persuasive.
-- **Always run `python3 tools/verify.py` before deploying.** Ask Claude to run
-  it. It catches the mistakes that are invisible by eye: this suite found an
-  invalid colour value, an accent that failed contrast at small sizes, and a
-  class of headings rendering white-on-white, none of which looked wrong in a
-  screenshot.
-- **Edit `_src/`, never `public/`.** Claude will know this from `README.md`, but
-  it is the one mistake that silently loses work.
+Claude Code comes in several forms, and they do not all take the same input.
+
+| | What you point it at | Works from this zip alone? |
+|---|---|---|
+| **Desktop app** (Mac/Windows) | a folder on your computer | **Yes** — unzip and open the folder |
+| **Terminal** (`claude` command) | the folder you are sitting in | **Yes** — unzip, `cd` into it, run `claude` |
+| **VS Code / JetBrains** | the folder open in your editor | **Yes** — unzip and open it |
+| **Web** (claude.ai/code) | a GitHub repository | **No** — needs the repository from §3 first |
+
+So: if you want to start this afternoon with nothing else set up, **unzip this
+folder and open it in the Claude Code desktop app**. That works immediately, and
+Claude can edit, build and verify the site straight away.
+
+### But do the GitHub step anyway
+
+Working from a loose folder gets you editing, and nothing else. You would have:
+
+- no history, so no way to see what changed or undo a bad edit;
+- no automatic publishing, so every change needs a manual upload;
+- one copy, on one laptop, with no backup.
+
+The repository in §3 takes about ten minutes and fixes all three. It also
+unlocks the web version, so somebody can fix a typo from a phone without having
+the files on the machine in front of them.
+
+**Recommended order:** do §3 first, then point whichever Claude Code you prefer
+at the result. The desktop app and the terminal work on the cloned folder
+exactly as they would on the unzipped one.
+
+### Three things to tell whoever picks it up
+
+- **Point them at `CLAIMS.md` and §5 above.** Claude writes good copy and has no
+  way of knowing which sentences are load-bearing for FCA purposes unless it is
+  told. It will otherwise cheerfully add the fund's terms to the site, because
+  they make the page more persuasive.
+- **Always run `python3 tools/verify.py` before publishing.** Just ask Claude to
+  run it. It catches what the eye does not: this suite found an invalid colour
+  value, an accent failing contrast at small sizes, and a class of headings
+  rendering white-on-white, none of which looked wrong in a screenshot.
+- **Edit `_src/`, never `public/`.** Claude will read this from `README.md`, but
+  it is the one mistake that silently destroys work.
 
 ## 8 · Keeping the register current
 
