@@ -245,7 +245,9 @@ em.mark { font-style: normal; color: var(--brand); }
 .textlink {
   display: inline-flex; align-items: center; gap: 8px;
   font: 500 13px/1 var(--geo); letter-spacing: .1em; text-transform: uppercase;
-  text-decoration: none; color: var(--brand);
+  /* --brand-dk, not --brand: this is 13px uppercase, so it needs 4.5:1, and
+     --brand measures 4.33:1 on --paper-2. Same reason .eyebrow uses it. */
+  text-decoration: none; color: var(--brand-dk);
   padding-bottom: 4px; border-bottom: 1px solid currentColor;
   transition: gap .2s ease, color .2s ease;
 }
